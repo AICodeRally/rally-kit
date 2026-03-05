@@ -12,27 +12,26 @@ Each team needs:
 - [ ] **Git** installed (for cloning)
 - [ ] **VS Code** or any text editor (for viewing files — Claude does the coding)
 
-### Clone the Repo
+### Clone & Start
 ```bash
 git clone https://github.com/AICodeRally/rally-kit.git team-[name]
 cd team-[name]
+./start.sh
+```
+
+The start script handles everything:
+- Checks prerequisites (Node 20+, npm, Claude Code, API key)
+- Installs dependencies
+- Shows a rally banner and asks for team name
+- Starts the dev server (split pane on iTerm2, new window on Terminal.app, backgrounded on other OS)
+- Opens the browser to localhost:3000
+- Launches Claude Code
+
+**If `./start.sh` doesn't work** (Windows without Git Bash, permissions issues):
+```bash
 npm install
-```
-
-### Two Terminals (important!)
-Students need TWO terminal windows open in the same project folder:
-
-**Terminal 1 — App Server (keep running):**
-```bash
-npm run dev
-```
-Verify: `http://localhost:3000` shows the Rally Kit welcome page.
-
-**Terminal 2 — Claude Code:**
-```bash
-claude
-# Type: "What files are in this project?"
-# Claude should respond with the file list and reference CLAUDE.md
+npm run dev          # Terminal 1 — keep running
+claude               # Terminal 2 — in same folder
 ```
 
 ---
