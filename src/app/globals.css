@@ -1,0 +1,75 @@
+@import 'tailwindcss';
+
+/*
+ * Rally Kit — Vibe Code Rally Design System
+ * Dark theme with orange/cyan/purple accents
+ */
+
+@theme {
+  /* Brand Colors */
+  --color-rally-orange: #f97316;
+  --color-rally-orange-light: #fb923c;
+  --color-rally-orange-dark: #ea580c;
+
+  --color-rally-cyan: #06b6d4;
+  --color-rally-cyan-light: #22d3ee;
+  --color-rally-cyan-dark: #0891b2;
+
+  --color-rally-purple: #a855f7;
+  --color-rally-purple-light: #c084fc;
+  --color-rally-purple-dark: #9333ea;
+
+  /* Dark Backgrounds */
+  --color-bg-primary: #0a0a0f;
+  --color-bg-secondary: #111118;
+  --color-bg-card: #16161f;
+  --color-bg-card-hover: #1c1c28;
+  --color-bg-sidebar: #0e0e15;
+
+  /* Borders */
+  --color-border-default: #2a2a3a;
+  --color-border-subtle: #1e1e2e;
+
+  /* Text */
+  --color-text-primary: #f0f0f5;
+  --color-text-secondary: #9090a8;
+  --color-text-muted: #606078;
+
+  /* Status */
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-danger: #ef4444;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-glow-orange: 0 0 20px rgba(249, 115, 22, 0.15);
+  --shadow-glow-cyan: 0 0 20px rgba(6, 182, 212, 0.15);
+  --shadow-glow-purple: 0 0 20px rgba(168, 85, 247, 0.15);
+}
+
+/* Smooth rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+/* Sidebar scrollbar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
