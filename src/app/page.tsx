@@ -33,15 +33,15 @@ export default function Home() {
           <ol className="space-y-3 text-text-secondary">
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-rally-orange/20 text-rally-orange text-sm font-bold flex items-center justify-center">1</span>
-              <span>Open Claude Code in this project folder</span>
+              <span>Run <code className="px-1.5 py-0.5 bg-bg-secondary rounded text-rally-orange text-xs font-mono">npm run dev</code> in this folder — keep it running</span>
             </li>
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-rally-cyan/20 text-rally-cyan text-sm font-bold flex items-center justify-center">2</span>
-              <span>Tell Claude about your business idea — it will help you design a domain pack</span>
+              <span>Open a <strong className="text-text-primary">second terminal</strong> in the same folder, then run <code className="px-1.5 py-0.5 bg-bg-secondary rounded text-rally-cyan text-xs font-mono">claude</code></span>
             </li>
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-rally-purple/20 text-rally-purple text-sm font-bold flex items-center justify-center">3</span>
-              <span>Say &quot;Now build the app&quot; — Claude builds it page by page</span>
+              <span>Tell Claude about your business idea — it builds the app while you watch it live at <code className="px-1.5 py-0.5 bg-bg-secondary rounded text-rally-purple text-xs font-mono">localhost:3000</code></span>
             </li>
           </ol>
         </div>

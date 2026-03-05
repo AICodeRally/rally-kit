@@ -17,14 +17,19 @@ Each team needs:
 git clone https://github.com/AICodeRally/rally-kit.git team-[name]
 cd team-[name]
 npm install
-npm run dev
 ```
 
+### Two Terminals (important!)
+Students need TWO terminal windows open in the same project folder:
+
+**Terminal 1 — App Server (keep running):**
+```bash
+npm run dev
+```
 Verify: `http://localhost:3000` shows the Rally Kit welcome page.
 
-### Test Claude Code
+**Terminal 2 — Claude Code:**
 ```bash
-# In the project directory:
 claude
 # Type: "What files are in this project?"
 # Claude should respond with the file list and reference CLAUDE.md
