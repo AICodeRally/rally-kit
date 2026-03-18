@@ -10,33 +10,21 @@ interface StatCardProps {
     value: string;
     positive: boolean;
   };
-  accent?: 'orange' | 'cyan' | 'purple' | 'green';
+  accent?: 'primary' | 'secondary' | 'tertiary' | 'success';
 }
 
-const accentStyles = {
-  orange: {
-    iconBg: 'bg-rally-orange/10',
-    iconColor: 'text-rally-orange',
-    border: 'border-rally-orange/20',
-    glow: 'hover:shadow-glow-orange',
+const accentClasses = {
+  primary: {
+    icon: 'bg-accent/10 text-accent',
   },
-  cyan: {
-    iconBg: 'bg-rally-cyan/10',
-    iconColor: 'text-rally-cyan',
-    border: 'border-rally-cyan/20',
-    glow: 'hover:shadow-glow-cyan',
+  secondary: {
+    icon: 'bg-secondary/10 text-secondary',
   },
-  purple: {
-    iconBg: 'bg-rally-purple/10',
-    iconColor: 'text-rally-purple',
-    border: 'border-rally-purple/20',
-    glow: 'hover:shadow-glow-purple',
+  tertiary: {
+    icon: 'bg-tertiary/10 text-tertiary',
   },
-  green: {
-    iconBg: 'bg-green-500/10',
-    iconColor: 'text-green-400',
-    border: 'border-green-500/20',
-    glow: 'hover:shadow-[0_0_20px_rgba(34,197,94,0.15)]',
+  success: {
+    icon: 'bg-success/10 text-success',
   },
 };
 
@@ -46,16 +34,15 @@ export default function StatCard({
   subtitle,
   icon: Icon,
   trend,
-  accent = 'orange',
+  accent = 'primary',
 }: StatCardProps) {
-  const styles = accentStyles[accent];
+  const styles = accentClasses[accent];
 
   return (
     <div
       className={cn(
         'bg-bg-card border border-border-default rounded-xl p-6',
-        'shadow-card hover:shadow-card-hover transition-all duration-200',
-        styles.glow
+        'shadow-card hover:shadow-card-hover transition-all duration-200'
       )}
     >
       <div className="flex items-start justify-between mb-4">
@@ -63,8 +50,8 @@ export default function StatCard({
           {title}
         </h3>
         {Icon && (
-          <div className={cn('p-2 rounded-lg', styles.iconBg)}>
-            <Icon className={cn('w-5 h-5', styles.iconColor)} />
+          <div className={cn('p-2 rounded-lg', styles.icon)}>
+            <Icon className="w-5 h-5" />
           </div>
         )}
       </div>
@@ -81,10 +68,10 @@ export default function StatCard({
           <span
             className={cn(
               'text-sm font-medium',
-              trend.positive ? 'text-green-400' : 'text-red-400'
+              trend.positive ? 'text-success' : 'text-danger'
             )}
           >
-            {trend.positive ? '↑' : '↓'} {trend.value}
+            {trend.positive ? '\u2191' : '\u2193'} {trend.value}
           </span>
         )}
       </div>

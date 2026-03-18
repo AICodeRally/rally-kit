@@ -65,30 +65,32 @@ export default function ChartCard({
         <ResponsiveContainer width="100%" height="100%">
           {type === 'bar' ? (
             <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3a" />
-              <XAxis dataKey={xAxisKey} stroke="#606078" fontSize={12} />
-              <YAxis stroke="#606078" fontSize={12} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey={xAxisKey} stroke="#94a3b8" fontSize={12} />
+              <YAxis stroke="#94a3b8" fontSize={12} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#16161f',
-                  border: '1px solid #2a2a3a',
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
                   borderRadius: '8px',
-                  color: '#f0f0f5',
+                  color: '#0f172a',
+                  fontSize: '14px',
                 }}
               />
               <Bar dataKey={dataKey} fill={chartColor} radius={[4, 4, 0, 0]} />
             </BarChart>
           ) : type === 'line' ? (
             <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3a" />
-              <XAxis dataKey={xAxisKey} stroke="#606078" fontSize={12} />
-              <YAxis stroke="#606078" fontSize={12} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey={xAxisKey} stroke="#94a3b8" fontSize={12} />
+              <YAxis stroke="#94a3b8" fontSize={12} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#16161f',
-                  border: '1px solid #2a2a3a',
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
                   borderRadius: '8px',
-                  color: '#f0f0f5',
+                  color: '#0f172a',
+                  fontSize: '14px',
                 }}
               />
               <Line
@@ -101,15 +103,16 @@ export default function ChartCard({
             </LineChart>
           ) : type === 'area' ? (
             <AreaChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3a" />
-              <XAxis dataKey={xAxisKey} stroke="#606078" fontSize={12} />
-              <YAxis stroke="#606078" fontSize={12} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey={xAxisKey} stroke="#94a3b8" fontSize={12} />
+              <YAxis stroke="#94a3b8" fontSize={12} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#16161f',
-                  border: '1px solid #2a2a3a',
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
                   borderRadius: '8px',
-                  color: '#f0f0f5',
+                  color: '#0f172a',
+                  fontSize: '14px',
                 }}
               />
               <Area
@@ -140,10 +143,11 @@ export default function ChartCard({
               </Pie>
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#16161f',
-                  border: '1px solid #2a2a3a',
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
                   borderRadius: '8px',
-                  color: '#f0f0f5',
+                  color: '#0f172a',
+                  fontSize: '14px',
                 }}
               />
               <Legend />
