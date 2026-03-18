@@ -21,7 +21,7 @@ export default function Home() {
         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-rally-orange via-rally-cyan to-rally-purple bg-clip-text text-transparent">
           Rally Kit
         </h1>
-        <p className="text-xl text-text-secondary mb-8">
+        <p className="text-xl text-white mb-8">
           Your app starts here. Tell Claude what to build.
         </p>
 
@@ -30,7 +30,7 @@ export default function Home() {
           <h2 className="text-lg font-semibold text-rally-cyan mb-4">
             Getting Started
           </h2>
-          <ol className="space-y-3 text-text-secondary">
+          <ol className="space-y-3 text-white">
             <li className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full bg-rally-orange/20 text-rally-orange text-sm font-bold flex items-center justify-center">1</span>
               <span>Run <code className="px-1.5 py-0.5 bg-bg-secondary rounded text-rally-orange text-xs font-mono">npm run dev</code> in this folder — keep it running</span>
@@ -47,7 +47,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-sm text-text-muted">
+        <p className="mt-8 text-sm text-white/60">
           GCU Vibe Code Rally &bull; Powered by Claude
         </p>
       </div>
