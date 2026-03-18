@@ -344,6 +344,14 @@ Your app is live at localhost:3000 in your browser.
 Tell Claude about your business idea!\" buttons {\"Got it!\"} default button 1 with title \"Vibe Code Rally\" with icon note
     " &
 
+    # Resize Terminal window for readability
+    osascript -e '
+tell application "Terminal"
+  set bounds of front window to {50, 50, 1400, 900}
+  set font size of front window to 16
+end tell
+' 2>/dev/null || true
+
     trap - EXIT
     echo ""
     echo -e "  ┌─────────────────────────────────────────────────┐"

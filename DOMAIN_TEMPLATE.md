@@ -1,5 +1,10 @@
 # [Your Business Name] — Domain Pack
 
+> **Track:** Check `.team-track` for your team's chosen track.
+> - **Campus AI** — Think about student pain points (scheduling, studying, organizing)
+> - **Startup AI** — Think about business operations (customers, revenue, marketing)
+> - **Working Toward My Future** — Think about career growth (jobs, skills, networking)
+
 > This is your business design document. Claude will help you fill it out.
 > Take 30 minutes to think through your business before building the app.
 
