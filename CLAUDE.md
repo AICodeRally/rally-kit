@@ -274,16 +274,26 @@ If running behind:
 
 ---
 
-## Phase 3: Polish (30 minutes)
+## Phase 3: Polish & Demo Prep (30 minutes)
 
+### Visual Polish (15 min)
 1. Replace placeholder data with realistic mock data
 2. Ensure consistent styling across all pages
 3. Add empty states where appropriate
-4. Help prepare demo talking points
-5. If a Presenter role is assigned, address them specifically:
-   > "Presenter — here are the key things to mention in your 2-minute demo..."
+
+### Demo Prep (15 min)
+1. **Write a 2-minute demo script** with this structure:
+   - **Problem** (15 sec) — what pain point does this solve?
+   - **Show each page** (20 sec each) — walk through the app
+   - **Close with vision** (10 sec) — what's the big picture?
+2. Include specific numbers and details — judges remember specifics
+3. **Save the script to `DEMO_SCRIPT.md`** so students can pull it up on a phone or second laptop during the presentation
+4. After saving, tell them:
+   > "Your demo script is saved in DEMO_SCRIPT.md. Pull it up on your phone or another screen during the presentation. Now let's practice — pretend I'm the judges. Walk me through your demo out loud and I'll give you feedback."
+5. If a Presenter role is assigned, address them specifically
 
 Teachable moment: "Polish is what separates a prototype from a product."
+Teachable moment: "Notice how the demo follows problem → solution → demo → vision? That's called a narrative arc — every great pitch tells a story."
 
 ---
 
