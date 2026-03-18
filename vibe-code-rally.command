@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Source shell profile so env vars (like ANTHROPIC_API_KEY) are available
+# .command files open a non-login shell that skips profile sourcing
+for f in "$HOME/.zshrc" "$HOME/.bash_profile" "$HOME/.bashrc" "$HOME/.profile"; do
+  if [[ -f "$f" ]]; then source "$f" 2>/dev/null || true; break; fi
+done
+
 # ============================================================================
-# VIBE CODE RALLY — One-line installer
-# Usage: curl -fsSL https://aicoderally.com/rally | bash
+# VIBE CODE RALLY — Double-click installer
 # ============================================================================
 
 # Set dark terminal FIRST — before any output
@@ -130,16 +135,19 @@ fi
 echo ""
 
 if [[ $errors -gt 0 ]]; then
-  echo -e "${RED}${BOLD}Fix the ${errors} issue(s) above, then re-run:${NC}"
+  echo -e "${RED}${BOLD}Fix the ${errors} issue(s) above, then double-click this file again.${NC}"
   echo ""
-  echo -e "  ${CYAN}curl -fsSL https://aicoderally.com/rally | bash${NC}"
-  echo ""
+  echo -e "${DIM}Press any key to close...${NC}"
+  read -n 1 -s
   exit 1
 fi
 
 # ---------------------------------------------------------------------------
 # 2. Download rally-kit
 # ---------------------------------------------------------------------------
+
+# cd to Desktop so the folder lands somewhere visible
+cd ~/Desktop
 
 DEST="rally-kit"
 
@@ -148,9 +156,11 @@ if [[ -d "$DEST" ]]; then
   # Kill processes that lock the folder: dev server, Finder, antivirus
   pkill -f "next.*rally-kit" 2>/dev/null || true
   pkill -f "node.*rally-kit" 2>/dev/null || true
+  # Close any Finder windows showing this folder
   osascript -e 'tell application "Finder" to close every window whose name contains "rally-kit"' 2>/dev/null || true
   sleep 2
   rm -rf "$DEST" 2>/dev/null
+  # If rm failed (antivirus lock), try again
   if [[ -d "$DEST" ]]; then
     sleep 3
     rm -rf "$DEST" 2>/dev/null || true

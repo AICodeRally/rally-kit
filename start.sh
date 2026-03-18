@@ -9,6 +9,21 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ---------------------------------------------------------------------------
+# Find a free port (default 3000, fallback 3001-3009)
+# ---------------------------------------------------------------------------
+find_free_port() {
+  for port in 3000 3001 3002 3003 3004 3005 3006 3007 3008 3009; do
+    if ! lsof -i ":$port" &>/dev/null; then
+      echo "$port"
+      return
+    fi
+  done
+  echo "3000"
+}
+
+RALLY_PORT=$(find_free_port)
+
+# ---------------------------------------------------------------------------
 # Colors — dark terminal with white text, all colors readable
 # ---------------------------------------------------------------------------
 
@@ -314,7 +329,7 @@ case "${TERM_PROGRAM:-}" in
           split horizontally with default profile
         end tell
         tell first session of current tab of current window
-          write text \"cd '$SCRIPT_DIR' && npm run dev\"
+          write text \"cd '$SCRIPT_DIR' && PORT=$RALLY_PORT npm run dev\"
         end tell
         tell second session of current tab of current window
           write text \"cd '$SCRIPT_DIR' && sleep 3 && claude\"
@@ -336,7 +351,7 @@ case "${TERM_PROGRAM:-}" in
     osascript -e "
       tell application \"Terminal\"
         -- Open dev server in new window
-        do script \"cd '$SCRIPT_DIR' && npm run dev\"
+        do script \"cd '$SCRIPT_DIR' && PORT=$RALLY_PORT npm run dev\"
         -- Make the new (dev server) window small and out of the way
         set bounds of front window to {50, 700, 700, 950}
         tell front window
@@ -356,18 +371,18 @@ case "${TERM_PROGRAM:-}" in
       " 2>/dev/null || true
     fi
 
-    info "Waiting for dev server on port 3000..."
-    wait_for_port 3000
+    info "Waiting for dev server on port ${RALLY_PORT}..."
+    wait_for_port "$RALLY_PORT"
     pass "Dev server ready"
 
     # Open browser so students can see their app
-    open_browser "http://localhost:3000"
+    open_browser "http://localhost:${RALLY_PORT}"
 
     trap - EXIT
     echo ""
     echo -e "  ┌──────────────────────────────────────────────────┐"
     echo -e "  │                                                  │"
-    echo -e "  │  ${GREEN}${BOLD}Your app is running at localhost:3000${NC}          │"
+    echo -e "  │  ${GREEN}${BOLD}Your app is running at localhost:${RALLY_PORT}${NC}          │"
     echo -e "  │  ${DIM}(open in your browser — it updates live!)${NC}      │"
     echo -e "  │                                                  │"
     echo -e "  │  ${CYAN}${BOLD}Claude is starting below.${NC}                      │"
@@ -385,20 +400,20 @@ case "${TERM_PROGRAM:-}" in
     trap cleanup EXIT
 
     info "Starting dev server..."
-    (cd "$SCRIPT_DIR" && npm run dev) &
+    (cd "$SCRIPT_DIR" && PORT=$RALLY_PORT npm run dev) &
     DEV_SERVER_PID=$!
 
-    info "Waiting for port 3000..."
-    wait_for_port 3000
-    pass "Dev server ready at ${BOLD}http://localhost:3000${NC}"
+    info "Waiting for port ${RALLY_PORT}..."
+    wait_for_port "$RALLY_PORT"
+    pass "Dev server ready at ${BOLD}http://localhost:${RALLY_PORT}${NC}"
 
-    open_browser "http://localhost:3000"
+    open_browser "http://localhost:${RALLY_PORT}"
 
     echo ""
     echo -e "  ┌─────────────────────────────────────────────────┐"
     echo -e "  │                                                 │"
     echo -e "  │  ${WHITE}${BOLD}App server is running in the background.${NC}       │"
-    echo -e "  │  ${DIM}Your app is live at localhost:3000${NC}              │"
+    echo -e "  │  ${DIM}Your app is live at localhost:${RALLY_PORT}${NC}              │"
     echo -e "  │                                                 │"
     echo -e "  │  ${CYAN}${BOLD}Claude is starting below.${NC}                      │"
     echo -e "  │  ${DIM}Tell it about your business idea!${NC}              │"
