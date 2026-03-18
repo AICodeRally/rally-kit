@@ -317,7 +317,7 @@ case "${TERM_PROGRAM:-}" in
           write text \"cd '$SCRIPT_DIR' && npm run dev\"
         end tell
         tell second session of current tab of current window
-          write text \"cd '$SCRIPT_DIR' && sleep 3 && claude /logout 2>/dev/null; claude\"
+          write text \"cd '$SCRIPT_DIR' && sleep 3 && claude\"
         end tell
       end tell
     "
@@ -378,9 +378,6 @@ case "${TERM_PROGRAM:-}" in
     echo -e "  │                                                  │"
     echo -e "  └──────────────────────────────────────────────────┘"
     echo ""
-    # Clear any claude.ai session so API key is the only auth
-    # (prevents yellow "Auth conflict" warning students can't read)
-    claude /logout 2>/dev/null || true
     exec claude
     ;;
 
@@ -409,7 +406,6 @@ case "${TERM_PROGRAM:-}" in
     echo -e "  └─────────────────────────────────────────────────┘"
     echo ""
 
-    claude /logout 2>/dev/null || true
     claude
     ;;
 esac
