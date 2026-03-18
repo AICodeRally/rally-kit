@@ -37,12 +37,13 @@ Most file operations are auto-approved, but some will still prompt. This is norm
 
 ## Boot Sequence (Run on First Message)
 
-1. Read `.team-name` — use throughout
-2. Read `.team-members` — greet by name
-3. Read `.team-track` — tailor suggestions (see Track Suggestions below)
-4. Read `rally.config.json` — if exists, skip design phase config questions
-5. Read `DOMAIN.md` — if exists, ask: "You already have a domain design. Jump to building, or revise first?"
-6. Read `.rally-progress` — if exists, resume from where they left off
+1. Read `.rally-port` — this is the port the dev server is running on. Use this port in ALL localhost links (e.g., `http://localhost:3001`). If the file doesn't exist, default to `3000`.
+2. Read `.team-name` — use throughout
+3. Read `.team-members` — greet by name
+4. Read `.team-track` — tailor suggestions (see Track Suggestions below)
+5. Read `rally.config.json` — if exists, skip design phase config questions
+6. Read `DOMAIN.md` — if exists, ask: "You already have a domain design. Jump to building, or revise first?"
+7. Read `.rally-progress` — if exists, resume from where they left off
 
 If no dotfiles exist (student ran `claude` directly), start Phase 1 from scratch.
 
@@ -180,7 +181,7 @@ Tell the team:
 > - I'll create files one at a time — you'll see me ask to write files
 > - Just type **Y** and Enter to approve each file
 > - After each page, I'll show you what I built and ask for feedback
-> - Your app is live at **localhost:3000** — refresh your browser to see changes
+> - Your app is live at **localhost:[PORT]** — refresh your browser to see changes
 > - The first page takes the longest (~5 min), then it speeds up"
 
 ### Setup
@@ -204,12 +205,12 @@ Tell the team:
 > "Adding the appointments table — this one has sorting built in."
 > "Setting up your mock data with realistic names and numbers."
 
-**After building each page, ALWAYS include the clickable link:**
-> "Your [page name] page is ready! Open **http://localhost:3000** in your browser to see it.
+**After building each page, ALWAYS include the clickable link (use the port from `.rally-port`):**
+> "Your [page name] page is ready! Open **http://localhost:[PORT]** in your browser to see it.
 > Take a look and tell me: does this match what you had in mind?
 > Anything you want me to change before I move to the next page?"
 
-**IMPORTANT: Always show the link.** Students may not know the URL, may have closed their browser, or may not realize the app updates live. Every time you finish building something, include `http://localhost:3000` (or the current port) in your response. Never assume they can find it on their own.
+**IMPORTANT: Always show the link.** Students may not know the URL, may have closed their browser, or may not realize the app updates live. Every time you finish building something, include `http://localhost:[PORT]` in your response. Never assume they can find it on their own. Read the port from `.rally-port` — do NOT hardcode 3000.
 
 **Wait for their feedback before moving on.** This is critical — students need to feel ownership.
 
@@ -227,6 +228,20 @@ Update `.rally-progress` after each major milestone:
   "lastNudge": "2026-04-15T15:15:00Z"
 }
 ```
+
+### Always End With a Next Step
+
+**NEVER leave students hanging.** Every response must end with a clear prompt for what to do next. If you just built something, ask for feedback. If they gave feedback, suggest the next action. If all pages are done, offer polish options.
+
+Bad (student doesn't know what to do):
+> "All 5 pages are done!"
+
+Good (student knows exactly what's next):
+> "All 5 pages are done! Open **http://localhost:[PORT]** to check them out. When you're ready, here are your options:
+> 1. Add more features (interactivity, new pages)
+> 2. Polish the visuals (better data, animations, branding)
+> 3. Prep your demo pitch (talking points, story arc)
+> Which sounds best?"
 
 ### Time Nudges
 Every 20-30 minutes, give a gentle status update:

@@ -23,6 +23,9 @@ find_free_port() {
 
 RALLY_PORT=$(find_free_port)
 
+# Save port so Claude knows where the app is running
+echo "$RALLY_PORT" > "$SCRIPT_DIR/.rally-port"
+
 # ---------------------------------------------------------------------------
 # Colors — dark terminal with white text, all colors readable
 # ---------------------------------------------------------------------------

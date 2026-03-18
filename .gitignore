@@ -7,4 +7,6 @@ next-env.d.ts
 .team-members
 .team-track
 .rally-progress
+.rally-port
+.rally-status
 .team-roles
