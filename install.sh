@@ -111,6 +111,10 @@ DEST="rally-kit"
 
 if [[ -d "$DEST" ]]; then
   info "rally-kit folder exists — refreshing with latest code..."
+  # Kill any running dev server that might lock files
+  pkill -f "next dev.*rally-kit" 2>/dev/null || true
+  pkill -f "node.*rally-kit" 2>/dev/null || true
+  sleep 1
   rm -rf "$DEST"
   git clone --depth 1 https://github.com/AICodeRally/rally-kit.git "$DEST" 2>/dev/null
   rm -rf "$DEST/.git"
