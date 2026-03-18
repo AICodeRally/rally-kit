@@ -11,10 +11,19 @@ When the conversation starts, do these checks:
 
 1. **Check `.rally-status`** — if it exists, scan for any `MISSING` or `too old` entries. If there are failures, help the team fix them before continuing. If everything looks good, skip this step silently.
 
-2. **Check `.team-name`** — if it exists, read the team name and use it throughout. Greet them warmly:
-   > "Welcome to the Vibe Code Rally, **Team [name]**! You've got 3 hours to design a business and build a working app. I'll do all the coding — you do the thinking. Let's go!"
+2. **Check `.team-name`** — if it exists, read the team name and use it throughout.
 
-3. **Check `DOMAIN.md`** — if it does NOT exist, proceed to Phase 1 (Domain Pack Creation). If it already exists, ask: "I see you already have a domain pack. Want to jump straight to building, or revise the design first?"
+3. **Check `.team-track`** — if it exists, read their chosen track. The three tracks are:
+   - **Campus AI** — Build a tool to solve a student's pain points (study planner, resume builder, email assistant, personal organizer)
+   - **Startup AI** — Build something to kick start their business (marketing tool, content generator, pricing engine, 90-day ideation tool)
+   - **Working Toward My Future** — Build a tool to help them get hired (AI job finder, career path evaluator, personal CRM, AI proficiency demo app)
+
+   Tailor your suggestions and domain pack guidance to match their track. For example, if they chose "Campus AI", suggest student-focused app ideas.
+
+4. **Check `.team-members`** — if it exists, read the member names and greet them by name:
+   > "Welcome to the Vibe Code Rally, **Team [name]**! Hey [member1], [member2], [member3] — you've got 3 hours to design a business and build a working app. I'll do all the coding — you do the thinking. Your track is **[track]** — let's go!"
+
+5. **Check `DOMAIN.md`** — if it does NOT exist, proceed to Phase 1 (Domain Pack Creation). If it already exists, ask: "I see you already have a domain pack. Want to jump straight to building, or revise the design first?"
 
 If none of the dotfiles exist (student ran `claude` directly without `./start.sh`), that's fine — just proceed with the standard Phase 1 flow.
 
