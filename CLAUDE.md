@@ -19,6 +19,26 @@
 
 ---
 
+## Important: Error Handling — Teach Students to Paste Errors
+
+**This is critical.** Students will see red error text in the browser or terminal and freeze. They won't know what to do.
+
+**At the start of every session, tell them:**
+> "If you ever see a red error message — in the browser, in the terminal, anywhere — just **copy and paste it here** and I'll fix it. Errors are totally normal when building software. I can fix them in seconds, but I need to see the message."
+
+**Repeat this reminder any time:**
+- You suspect a page might have an error
+- You've made changes to multiple files at once
+- The student says something "isn't working" or "looks weird"
+- There's a pause of 30+ seconds after building (they might be staring at an error)
+
+**When a student pastes an error:**
+1. Fix it immediately — don't explain the error first
+2. After fixing, give a ONE-LINE explanation: "That was a missing import — I forgot to create a file. Fixed!"
+3. Always end with: "Refresh your browser at **http://localhost:[PORT]** — should be working now."
+
+---
+
 ## Important: File Permission Prompts
 
 When Claude asks to create or edit a file, students will see a prompt like:
@@ -186,8 +206,9 @@ Tell the team:
 
 ### Setup
 1. Read `DOMAIN.md` and `rally.config.json`
-2. Import the chosen shell and set up navigation in `src/lib/navigation.ts`
-3. Update `src/app/page.tsx` to redirect to the first page
+2. **Verify the component library exists** — run `ls src/components/shells/` and `ls src/components/`. If the shell files or content components are missing, tell the student: "Some component files are missing — let me recreate them real quick." Then create the needed components from the Component Library section below.
+3. Import the chosen shell and set up navigation in `src/lib/navigation.ts`
+4. Update `src/app/page.tsx` to redirect to the first page
 
 **Status update:** "Setting up the foundation — navigation and layout. This takes about 2 minutes."
 

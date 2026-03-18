@@ -138,7 +138,31 @@ if [[ -f "$SCRIPT_DIR/setup-terminal.sh" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 3. npm Install
+# 3. Sanity Check — catch corrupted installs
+# ---------------------------------------------------------------------------
+
+# If "src 2" or similar exists, the previous install failed mid-clone
+if ls "$SCRIPT_DIR"/src\ * &>/dev/null 2>&1; then
+  fail "Corrupted install detected (duplicate src folder)"
+  info "Delete the rally-kit folder and double-click the installer again"
+  echo ""
+  echo -e "  ${DIM}Press any key to close...${NC}"
+  read -n 1 -s
+  exit 1
+fi
+
+# Verify shell components exist
+if [[ ! -f "$SCRIPT_DIR/src/components/shells/MobileShell.tsx" ]]; then
+  fail "Component library missing — corrupted install"
+  info "Delete the rally-kit folder and double-click the installer again"
+  echo ""
+  echo -e "  ${DIM}Press any key to close...${NC}"
+  read -n 1 -s
+  exit 1
+fi
+
+# ---------------------------------------------------------------------------
+# 4. npm Install
 # ---------------------------------------------------------------------------
 
 if [[ ! -d "$SCRIPT_DIR/node_modules" ]]; then
