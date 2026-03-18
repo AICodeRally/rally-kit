@@ -111,7 +111,11 @@ fi
 DEST="rally-kit"
 
 if [[ -d "$DEST" ]]; then
-  pass "rally-kit folder already exists — using it"
+  info "rally-kit folder exists — refreshing with latest code..."
+  rm -rf "$DEST"
+  git clone --depth 1 https://github.com/AICodeRally/rally-kit.git "$DEST" 2>/dev/null
+  rm -rf "$DEST/.git"
+  pass "Refreshed with latest version"
 else
   info "Downloading Rally Kit..."
   git clone --depth 1 https://github.com/AICodeRally/rally-kit.git "$DEST" 2>/dev/null
