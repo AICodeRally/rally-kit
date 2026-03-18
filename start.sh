@@ -9,12 +9,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ---------------------------------------------------------------------------
-# Colors — no yellow/orange (unreadable on light terminals)
-# ANSI 33 = "yellow" which renders as pale yellow on macOS Terminal = invisible
+# Colors — dark terminal with white text, all colors readable
 # ---------------------------------------------------------------------------
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
@@ -139,7 +139,7 @@ clear
 
 echo ""
 echo ""
-echo -e "${BLUE}${BOLD}"
+echo -e "${YELLOW}"
 echo '    ██╗   ██╗██╗██████╗ ███████╗   ██████╗ ██████╗ ██████╗ ███████╗'
 echo '    ██║   ██║██║██╔══██╗██╔════╝  ██╔════╝██╔═══██╗██╔══██╗██╔════╝'
 echo '    ██║   ██║██║██████╔╝█████╗    ██║     ██║   ██║██║  ██║█████╗  '
@@ -210,7 +210,7 @@ else
   # ── Track Selection ────────────────────────────────
   echo -e "    ${WHITE}${BOLD}Choose your track:${NC}"
   echo ""
-  echo -e "    ${BLUE}${BOLD}  1  ${NC}${WHITE}${BOLD}Campus AI${NC}"
+  echo -e "    ${YELLOW}  1  ${NC}${WHITE}${BOLD}Campus AI${NC}"
   echo -e "         ${WHITE}Build a tool to solve a student's pain points${NC}"
   echo -e "         ${DIM}Study planner, resume builder, email assistant,${NC}"
   echo -e "         ${DIM}personal organizer for homework/projects/life tasks${NC}"
@@ -250,7 +250,7 @@ fi
 
 echo -e "    ${WHITE}${BOLD}The Phases${NC}"
 echo ""
-echo -e "    ${BLUE}${BOLD}  1 ${NC} ${WHITE}Design your business${NC}         ${DIM}30 min${NC}"
+echo -e "    ${YELLOW}  1 ${NC} ${WHITE}Design your business${NC}         ${DIM}30 min${NC}"
 echo -e "    ${CYAN}${BOLD}  2 ${NC} ${WHITE}Build the app${NC}                ${DIM}2 hours${NC}"
 echo -e "    ${PURPLE}${BOLD}  3 ${NC} ${WHITE}Polish & present${NC}             ${DIM}30 min${NC}"
 echo ""
