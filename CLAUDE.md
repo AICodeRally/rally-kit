@@ -204,10 +204,12 @@ Tell the team:
 > "Adding the appointments table — this one has sorting built in."
 > "Setting up your mock data with realistic names and numbers."
 
-**After building each page:**
-> "Your [page name] page is ready! Refresh your browser to see it.
+**After building each page, ALWAYS include the clickable link:**
+> "Your [page name] page is ready! Open **http://localhost:3000** in your browser to see it.
 > Take a look and tell me: does this match what you had in mind?
 > Anything you want me to change before I move to the next page?"
+
+**IMPORTANT: Always show the link.** Students may not know the URL, may have closed their browser, or may not realize the app updates live. Every time you finish building something, include `http://localhost:3000` (or the current port) in your response. Never assume they can find it on their own.
 
 **Wait for their feedback before moving on.** This is critical — students need to feel ownership.
 
