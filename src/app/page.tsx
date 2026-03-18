@@ -1,54 +1,38 @@
-import { Rocket, Sparkles, Code2 } from 'lucide-react';
+import { Rocket, MessageCircle } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg-primary">
-      <div className="text-center max-w-2xl px-8">
-        {/* Logo area */}
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="p-3 rounded-xl bg-rally-orange/10 border border-rally-orange/20">
-            <Rocket className="w-8 h-8 text-rally-orange" />
-          </div>
-          <div className="p-3 rounded-xl bg-rally-cyan/10 border border-rally-cyan/20">
-            <Code2 className="w-8 h-8 text-rally-cyan" />
-          </div>
-          <div className="p-3 rounded-xl bg-rally-purple/10 border border-rally-purple/20">
-            <Sparkles className="w-8 h-8 text-rally-purple" />
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#ffffff' }}>
+      <div className="text-center max-w-lg px-8">
+        {/* Logo */}
+        <div className="flex items-center justify-center mb-8">
+          <div className="p-4 rounded-2xl" style={{ backgroundColor: '#f0f9ff', border: '1px solid #bae6fd' }}>
+            <Rocket className="w-12 h-12" style={{ color: '#0284c7' }} />
           </div>
         </div>
 
         {/* Title */}
-        <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-rally-orange via-rally-cyan to-rally-purple bg-clip-text text-transparent">
-          Rally Kit
+        <h1 className="text-4xl font-bold mb-3" style={{ color: '#0f172a' }}>
+          Vibe Code Rally
         </h1>
-        <p className="text-xl text-white mb-8">
-          Your app starts here. Tell Claude what to build.
-        </p>
 
-        {/* Instructions card */}
-        <div className="bg-bg-card border border-border-default rounded-xl p-8 text-left shadow-card">
-          <h2 className="text-lg font-semibold text-rally-cyan mb-4">
-            Getting Started
-          </h2>
-          <ol className="space-y-3 text-white">
-            <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-rally-orange/20 text-rally-orange text-sm font-bold flex items-center justify-center">1</span>
-              <span>Run <code className="px-1.5 py-0.5 bg-bg-secondary rounded text-rally-orange text-xs font-mono">npm run dev</code> in this folder — keep it running</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-rally-cyan/20 text-rally-cyan text-sm font-bold flex items-center justify-center">2</span>
-              <span>Open a <strong className="text-text-primary">second terminal</strong> in the same folder, then run <code className="px-1.5 py-0.5 bg-bg-secondary rounded text-rally-cyan text-xs font-mono">claude</code></span>
-            </li>
-            <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-rally-purple/20 text-rally-purple text-sm font-bold flex items-center justify-center">3</span>
-              <span>Tell Claude about your business idea — it builds the app while you watch it live at <code className="px-1.5 py-0.5 bg-bg-secondary rounded text-rally-purple text-xs font-mono">localhost:3000</code></span>
-            </li>
-          </ol>
+        {/* Status */}
+        <div className="rounded-xl p-6 mb-6" style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}>
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <MessageCircle className="w-5 h-5" style={{ color: '#0284c7' }} />
+            <p className="text-lg font-semibold" style={{ color: '#0f172a' }}>
+              Talk to Claude in Terminal
+            </p>
+          </div>
+          <p className="text-base" style={{ color: '#475569' }}>
+            Claude is your AI coding partner. Tell it about your
+            business idea and watch this page transform into your app.
+          </p>
         </div>
 
-        {/* Footer */}
-        <p className="mt-8 text-sm text-white/60">
-          GCU Vibe Code Rally &bull; Powered by Claude
+        {/* Hint */}
+        <p className="text-sm" style={{ color: '#94a3b8' }}>
+          This page updates live as Claude builds your app.
         </p>
       </div>
     </div>

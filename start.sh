@@ -9,13 +9,14 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # ---------------------------------------------------------------------------
-# Colors — no yellow (unreadable on light terminals)
+# Colors — no yellow/orange (unreadable on light terminals)
+# ANSI 33 = "yellow" which renders as pale yellow on macOS Terminal = invisible
 # ---------------------------------------------------------------------------
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
-ORANGE='\033[0;33m'
+BLUE='\033[0;34m'
 PURPLE='\033[0;35m'
 WHITE='\033[1;37m'
 BOLD='\033[1m'
@@ -110,7 +111,22 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
-# 2. npm Install
+# 2. Resize Terminal for Readability (macOS only — BEFORE team setup)
+# ---------------------------------------------------------------------------
+
+if [[ "${TERM_PROGRAM:-}" == "Apple_Terminal" ]]; then
+  osascript -e '
+tell application "Terminal"
+  set bounds of front window to {50, 50, 1400, 900}
+  tell front window
+    set font size of current settings of selected tab to 18
+  end tell
+end tell
+' 2>/dev/null || true
+fi
+
+# ---------------------------------------------------------------------------
+# 3. npm Install
 # ---------------------------------------------------------------------------
 
 if [[ ! -d "$SCRIPT_DIR/node_modules" ]]; then
@@ -129,7 +145,7 @@ clear
 
 echo ""
 echo ""
-echo -e "${ORANGE}${BOLD}"
+echo -e "${BLUE}${BOLD}"
 echo '    ██╗   ██╗██╗██████╗ ███████╗   ██████╗ ██████╗ ██████╗ ███████╗'
 echo '    ██║   ██║██║██╔══██╗██╔════╝  ██╔════╝██╔═══██╗██╔══██╗██╔════╝'
 echo '    ██║   ██║██║██████╔╝█████╗    ██║     ██║   ██║██║  ██║█████╗  '
@@ -200,7 +216,7 @@ else
   # ── Track Selection ────────────────────────────────
   echo -e "    ${WHITE}${BOLD}Choose your track:${NC}"
   echo ""
-  echo -e "    ${ORANGE}${BOLD}  1  ${NC}${WHITE}${BOLD}Campus AI${NC}"
+  echo -e "    ${BLUE}${BOLD}  1  ${NC}${WHITE}${BOLD}Campus AI${NC}"
   echo -e "         ${WHITE}Build a tool to solve a student's pain points${NC}"
   echo -e "         ${DIM}Study planner, resume builder, email assistant,${NC}"
   echo -e "         ${DIM}personal organizer for homework/projects/life tasks${NC}"
@@ -240,7 +256,7 @@ fi
 
 echo -e "    ${WHITE}${BOLD}The Phases${NC}"
 echo ""
-echo -e "    ${ORANGE}${BOLD}  1 ${NC} ${WHITE}Design your business${NC}         ${DIM}30 min${NC}"
+echo -e "    ${BLUE}${BOLD}  1 ${NC} ${WHITE}Design your business${NC}         ${DIM}30 min${NC}"
 echo -e "    ${CYAN}${BOLD}  2 ${NC} ${WHITE}Build the app${NC}                ${DIM}2 hours${NC}"
 echo -e "    ${PURPLE}${BOLD}  3 ${NC} ${WHITE}Polish & present${NC}             ${DIM}30 min${NC}"
 echo ""
@@ -316,57 +332,57 @@ case "${TERM_PROGRAM:-}" in
     ;;
 
   Apple_Terminal)
-    info "Starting dev server in new window..."
+    # Remember THIS window's ID so we can come back to it
+    CLAUDE_WINDOW_ID=$(osascript -e 'tell application "Terminal" to id of front window' 2>/dev/null || echo "")
+
+    info "Starting dev server in background window..."
     echo ""
 
+    # Open dev server in a NEW small window, then push it behind
     osascript -e "
       tell application \"Terminal\"
+        -- Open dev server in new window
         do script \"cd '$SCRIPT_DIR' && npm run dev\"
-        activate
+        -- Make the new (dev server) window small and out of the way
+        set bounds of front window to {50, 700, 700, 950}
+        tell front window
+          set font size of current settings of selected tab to 11
+        end tell
+        set miniaturized of front window to true
       end tell
     "
+
+    # Bring Claude window back to front
+    if [[ -n "$CLAUDE_WINDOW_ID" ]]; then
+      osascript -e "
+        tell application \"Terminal\"
+          set index of window id $CLAUDE_WINDOW_ID to 1
+          activate
+        end tell
+      " 2>/dev/null || true
+    fi
 
     info "Waiting for dev server on port 3000..."
     wait_for_port 3000
     pass "Dev server ready"
 
+    # Open browser so students can see their app
     open_browser "http://localhost:3000"
-
-    # macOS popup so students know what's happening
-    osascript -e "
-      display dialog \"Two windows opened:
-
-• APP SERVER window — runs your app. DO NOT CLOSE IT.
-• THIS window — where you talk to Claude.
-
-Your app is live at localhost:3000 in your browser.
-
-Tell Claude about your business idea!\" buttons {\"Got it!\"} default button 1 with title \"Vibe Code Rally\" with icon note
-    " &
-
-    # Resize Terminal window for readability
-    osascript -e '
-tell application "Terminal"
-  set bounds of front window to {50, 50, 1400, 900}
-  set font size of front window to 16
-end tell
-' 2>/dev/null || true
 
     trap - EXIT
     echo ""
-    echo -e "  ┌─────────────────────────────────────────────────┐"
-    echo -e "  │                                                 │"
-    echo -e "  │  ${WHITE}${BOLD}Two Terminal windows are now open:${NC}             │"
-    echo -e "  │                                                 │"
-    echo -e "  │  ${ORANGE}${BOLD}Window 1${NC} ${WHITE}= App Server${NC}                          │"
-    echo -e "  │    ${DIM}Shows scrolling text. DO NOT CLOSE IT.${NC}       │"
-    echo -e "  │    ${DIM}It keeps your app running at localhost:3000${NC} │"
-    echo -e "  │                                                 │"
-    echo -e "  │  ${CYAN}${BOLD}Window 2${NC} ${WHITE}= Claude (THIS window)${NC}                │"
-    echo -e "  │    ${DIM}This is where you talk to Claude.${NC}            │"
-    echo -e "  │    ${DIM}Tell it about your business idea!${NC}            │"
-    echo -e "  │                                                 │"
-    echo -e "  └─────────────────────────────────────────────────┘"
+    echo -e "  ┌──────────────────────────────────────────────────┐"
+    echo -e "  │                                                  │"
+    echo -e "  │  ${GREEN}${BOLD}Your app is running at localhost:3000${NC}          │"
+    echo -e "  │  ${DIM}(open in your browser — it updates live!)${NC}      │"
+    echo -e "  │                                                  │"
+    echo -e "  │  ${CYAN}${BOLD}Claude is starting below.${NC}                      │"
+    echo -e "  │  ${DIM}Tell it about your business idea!${NC}              │"
+    echo -e "  │                                                  │"
+    echo -e "  │  ${DIM}A small minimized window runs the server.${NC}     │"
+    echo -e "  │  ${DIM}Leave it alone — it keeps your app alive.${NC}     │"
+    echo -e "  │                                                  │"
+    echo -e "  └──────────────────────────────────────────────────┘"
     echo ""
     exec claude
     ;;
