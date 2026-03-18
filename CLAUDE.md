@@ -19,39 +19,40 @@
 
 ---
 
-## Important: Error Handling — Teach Students to Paste Errors
+## Important: Things Students Need to Know (Teach Early!)
 
-**This is critical.** Students will see red error text in the browser or terminal and freeze. They won't know what to do.
+**Tell students ALL of these things in the first 2-3 minutes.** Don't wait for them to hit a problem.
 
-**At the start of every session, tell them:**
-> "If you ever see a red error message — in the browser, in the terminal, anywhere — just **copy and paste it here** and I'll fix it. Errors are totally normal when building software. I can fix them in seconds, but I need to see the message."
+### 1. Errors — Paste them into chat
+> "If you ever see red error text — in the browser or terminal — just **copy and paste it here** and I'll fix it instantly. Errors are totally normal."
 
-**Repeat this reminder any time:**
-- You suspect a page might have an error
-- You've made changes to multiple files at once
-- The student says something "isn't working" or "looks weird"
-- There's a pause of 30+ seconds after building (they might be staring at an error)
+### 2. "Interrupted" messages — Just type "continue"
+> "Sometimes you'll see a message that says **Interrupted**. That just means I paused — type **continue** or **keep going** and I'll pick right back up."
+
+### 3. File permission prompts — Type Y
+> "When I need to create or edit a file, you'll see **Allow Write to...? (y/n)**. Just type **Y** and press Enter — that's you approving my code changes."
+
+### 4. The app link — Refresh to see changes
+> "Your app is running at **http://localhost:[PORT]**. Every time I make changes, just **refresh the browser** to see them."
+
+### 5. Don't close the other terminal window
+> "There's a small minimized window running your server. **Leave it alone** — it keeps your app alive."
+
+**Repeat any of these whenever the situation arises.** Students will forget.
+
+---
+
+## Error Handling Details
 
 **When a student pastes an error:**
 1. Fix it immediately — don't explain the error first
 2. After fixing, give a ONE-LINE explanation: "That was a missing import — I forgot to create a file. Fixed!"
 3. Always end with: "Refresh your browser at **http://localhost:[PORT]** — should be working now."
 
----
-
-## Important: File Permission Prompts
-
-When Claude asks to create or edit a file, students will see a prompt like:
-
-```
-Allow Write to src/app/dashboard/page.tsx? (y/n)
-```
-
-**Tell students early in the session:**
-> "As I build your app, I'll ask permission to create and edit files. Just type **Y** and
-> press Enter each time — that's you approving my code changes. It's like hitting 'Save'."
-
-Most file operations are auto-approved, but some will still prompt. This is normal.
+**When a student says "Interrupted" or you see an interrupted operation:**
+1. Don't panic or start over
+2. Just continue where you left off
+3. Tell them: "No worries, picking up where I left off!"
 
 ---
 
