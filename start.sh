@@ -111,18 +111,12 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
-# 2. Resize Terminal for Readability (macOS only — BEFORE team setup)
+# 2. Configure Terminal for Readability (macOS only — BEFORE team setup)
+#    Sets font, colors, window size — all ANSI colors readable on light bg
 # ---------------------------------------------------------------------------
 
-if [[ "${TERM_PROGRAM:-}" == "Apple_Terminal" ]]; then
-  osascript -e '
-tell application "Terminal"
-  set bounds of front window to {50, 50, 1400, 900}
-  tell front window
-    set font size of current settings of selected tab to 18
-  end tell
-end tell
-' 2>/dev/null || true
+if [[ -f "$SCRIPT_DIR/setup-terminal.sh" ]]; then
+  bash "$SCRIPT_DIR/setup-terminal.sh" 2>/dev/null || true
 fi
 
 # ---------------------------------------------------------------------------
