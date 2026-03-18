@@ -111,11 +111,16 @@ DEST="rally-kit"
 
 if [[ -d "$DEST" ]]; then
   info "rally-kit folder exists — refreshing with latest code..."
-  # Kill any running dev server that might lock files
-  pkill -f "next dev.*rally-kit" 2>/dev/null || true
+  # Kill processes that lock the folder: dev server, Finder, antivirus
+  pkill -f "next.*rally-kit" 2>/dev/null || true
   pkill -f "node.*rally-kit" 2>/dev/null || true
-  sleep 1
-  rm -rf "$DEST"
+  osascript -e 'tell application "Finder" to close every window whose name contains "rally-kit"' 2>/dev/null || true
+  sleep 2
+  rm -rf "$DEST" 2>/dev/null
+  if [[ -d "$DEST" ]]; then
+    sleep 3
+    rm -rf "$DEST" 2>/dev/null || true
+  fi
   git clone --depth 1 https://github.com/AICodeRally/rally-kit.git "$DEST" 2>/dev/null
   rm -rf "$DEST/.git"
   pass "Refreshed with latest version"
