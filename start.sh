@@ -8,6 +8,11 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Load API key from .env if present and not already set
+if [[ -z "${ANTHROPIC_API_KEY:-}" && -f "$SCRIPT_DIR/.env" ]]; then
+  export $(grep -v '^#' "$SCRIPT_DIR/.env" | grep ANTHROPIC_API_KEY | xargs)
+fi
+
 # ---------------------------------------------------------------------------
 # Find a free port (default 3000, fallback 3001-3009)
 # ---------------------------------------------------------------------------

@@ -11,6 +11,16 @@ done
 # VIBE CODE RALLY — Double-click installer
 # ============================================================================
 
+# Load API key from .env if present and not already set
+if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
+  for envfile in "$HOME/Desktop/.env" "$HOME/Desktop/rally-kit/.env"; do
+    if [[ -f "$envfile" ]]; then
+      export $(grep -v '^#' "$envfile" | grep ANTHROPIC_API_KEY | xargs)
+      break
+    fi
+  done
+fi
+
 # Set dark terminal FIRST — before any output
 if [[ "${TERM_PROGRAM:-}" == "Apple_Terminal" ]]; then
   osascript <<'APPLESCRIPT' 2>/dev/null
