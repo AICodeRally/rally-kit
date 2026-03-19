@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-set -uo pipefail
 
-# Extract ANTHROPIC_API_KEY from shell profiles without sourcing them
-# (sourcing .zshrc in bash crashes on zsh-only commands like setopt)
+# ============================================================================
+# VIBE CODE RALLY — Double-click installer
+# ============================================================================
+
+# Get ANTHROPIC_API_KEY from shell profiles (without sourcing — zshrc has
+# zsh-only commands that crash in bash)
 if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
   for f in "$HOME/.bash_profile" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.zshrc"; do
     if [[ -f "$f" ]]; then
@@ -15,25 +18,22 @@ if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
   done
 fi
 
-set -e
-
-# ============================================================================
-# VIBE CODE RALLY — Double-click installer
-# ============================================================================
-
-# Load API key from .env if present and not already set
+# Also check .env files
 if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
   for envfile in "$HOME/Desktop/.env" "$HOME/Desktop/rally-kit/.env"; do
     if [[ -f "$envfile" ]]; then
-      export $(grep -v '^#' "$envfile" | grep ANTHROPIC_API_KEY | xargs)
-      break
+      _key=$(grep -m1 'ANTHROPIC_API_KEY=' "$envfile" 2>/dev/null | sed 's/.*ANTHROPIC_API_KEY=["]*//;s/["]*$//' | tr -d "'") || true
+      if [[ -n "${_key:-}" ]]; then
+        export ANTHROPIC_API_KEY="$_key"
+        break
+      fi
     fi
   done
 fi
 
-# Set dark terminal FIRST — before any output
+# Set dark terminal — before any output
 if [[ "${TERM_PROGRAM:-}" == "Apple_Terminal" ]]; then
-  osascript <<'APPLESCRIPT' 2>/dev/null
+  osascript <<'APPLESCRIPT' 2>/dev/null || true
 tell application "Terminal"
   set currentSettings to current settings of selected tab of front window
   set font name of currentSettings to "Menlo-Regular"
@@ -166,30 +166,18 @@ fi
 # 2. Download rally-kit
 # ---------------------------------------------------------------------------
 
-# cd to Desktop so the folder lands somewhere visible
 cd ~/Desktop
 
 DEST="rally-kit"
 
-if [[ -d "$DEST" ]]; then
-  info "rally-kit folder exists — refreshing with latest code..."
-  # Kill processes that lock the folder: dev server, Finder, antivirus
-  pkill -f "next.*rally-kit" 2>/dev/null || true
-  pkill -f "node.*rally-kit" 2>/dev/null || true
-  # Close any Finder windows showing this folder
-  osascript -e 'tell application "Finder" to close every window whose name contains "rally-kit"' 2>/dev/null || true
-  sleep 2
-  rm -rf "$DEST" 2>/dev/null
-  # If rm failed (antivirus lock), try again
-  if [[ -d "$DEST" ]]; then
-    sleep 3
-    rm -rf "$DEST" 2>/dev/null || true
-  fi
-  git clone --depth 1 https://github.com/AICodeRally/rally-kit.git "$DEST" 2>/dev/null
-  rm -rf "$DEST/.git"
-  pass "Refreshed with latest version"
+if [[ -d "$DEST" && -f "$DEST/start.sh" ]]; then
+  pass "rally-kit folder found"
 else
   info "Downloading Rally Kit..."
+  pkill -f "next.*rally-kit" 2>/dev/null || true
+  pkill -f "node.*rally-kit" 2>/dev/null || true
+  sleep 1
+  rm -rf "$DEST" 2>/dev/null || true
   git clone --depth 1 https://github.com/AICodeRally/rally-kit.git "$DEST" 2>/dev/null
   rm -rf "$DEST/.git"
   pass "Downloaded"
