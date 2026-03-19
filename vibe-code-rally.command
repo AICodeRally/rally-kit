@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
+set -uo pipefail
 
-# Source shell profile BEFORE strict mode — profiles contain zsh-only
-# commands (setopt, compinit) that crash under bash set -e
-for f in "$HOME/.bash_profile" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.zshrc"; do
-  if [[ -f "$f" ]]; then
-    set +e
-    source "$f" 2>/dev/null
-    set -e
-    break
-  fi
-done
+# Extract ANTHROPIC_API_KEY from shell profiles without sourcing them
+# (sourcing .zshrc in bash crashes on zsh-only commands like setopt)
+if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
+  for f in "$HOME/.bash_profile" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.zshrc"; do
+    if [[ -f "$f" ]]; then
+      _key=$(grep -m1 'ANTHROPIC_API_KEY=' "$f" 2>/dev/null | sed 's/.*ANTHROPIC_API_KEY=["]*//;s/["]*$//' | tr -d "'") || true
+      if [[ -n "${_key:-}" ]]; then
+        export ANTHROPIC_API_KEY="$_key"
+        break
+      fi
+    fi
+  done
+fi
 
-set -euo pipefail
+set -e
 
 # ============================================================================
 # VIBE CODE RALLY — Double-click installer
