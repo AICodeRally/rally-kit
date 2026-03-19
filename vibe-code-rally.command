@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
-# Source shell profile so env vars (like ANTHROPIC_API_KEY) are available
-# .command files open a non-login shell that skips profile sourcing
-for f in "$HOME/.zshrc" "$HOME/.bash_profile" "$HOME/.bashrc" "$HOME/.profile"; do
-  if [[ -f "$f" ]]; then source "$f" 2>/dev/null || true; break; fi
+# Source shell profile BEFORE strict mode — profiles contain zsh-only
+# commands (setopt, compinit) that crash under bash set -e
+for f in "$HOME/.bash_profile" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.zshrc"; do
+  if [[ -f "$f" ]]; then
+    set +e
+    source "$f" 2>/dev/null
+    set -e
+    break
+  fi
 done
+
+set -euo pipefail
 
 # ============================================================================
 # VIBE CODE RALLY — Double-click installer
