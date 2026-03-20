@@ -1,13 +1,30 @@
+# Secrets
 .env
+.env.local
+
+# Build
 node_modules/
 .next/
 out/
 *.tsbuildinfo
 next-env.d.ts
+
+# Rally state (created at runtime)
 .team-name
 .team-members
 .team-track
+.team-roles
 .rally-progress
 .rally-port
 .rally-status
-.team-roles
+rally.config.json
+DOMAIN.md
+DEMO_SCRIPT.md
+
+# OS / IDE
+.DS_Store
+.superpowers/
+
+# Logs
+firebase-debug.log
+*.log
