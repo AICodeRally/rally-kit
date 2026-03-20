@@ -23,7 +23,8 @@
 2. Terminal opens with dark background, large font
 3. Answer setup questions: team name, members, track
 4. Dev server starts automatically, browser opens
-5. Claude launches — students start talking to it
+5. **Claude asks "Select login method" — type `2` and press Enter**
+6. Claude launches — students start talking about their business idea
 
 ---
 

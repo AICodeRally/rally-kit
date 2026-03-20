@@ -12,8 +12,14 @@ if [[ -z "${ANTHROPIC_API_KEY:-}" && -f ".env" ]]; then
 fi
 
 # Set dark terminal FIRST — before any output
+# OSC escape sequences (works in iTerm2, Apple Terminal, and most terminals)
+printf '\033]11;rgb:1a/1a/2e\007'    # background: dark navy
+printf '\033]10;rgb:f3/f3/f3\007'    # foreground: light gray
+printf '\033]12;rgb:00/d8/e6\007'    # cursor: cyan
+
+# AppleScript for font/window size (Apple Terminal only)
 if [[ "${TERM_PROGRAM:-}" == "Apple_Terminal" ]]; then
-  osascript <<'APPLESCRIPT' 2>/dev/null
+  osascript <<'APPLESCRIPT' 2>/dev/null || true
 tell application "Terminal"
   set currentSettings to current settings of selected tab of front window
   set font name of currentSettings to "Menlo-Regular"
@@ -25,22 +31,6 @@ tell application "Terminal"
   set normal text color of currentSettings to {62258, 62258, 62258}
   set bold text color of currentSettings to {65535, 65535, 65535}
   set cursor color of currentSettings to {0, 55512, 58982}
-  set ANSI black color of currentSettings to {6682, 6682, 11822}
-  set ANSI red color of currentSettings to {65535, 22359, 20560}
-  set ANSI green color of currentSettings to {11051, 61166, 11051}
-  set ANSI yellow color of currentSettings to {65535, 52428, 0}
-  set ANSI blue color of currentSettings to {10280, 42148, 65535}
-  set ANSI magenta color of currentSettings to {48059, 13107, 55512}
-  set ANSI cyan color of currentSettings to {0, 55512, 58982}
-  set ANSI white color of currentSettings to {55512, 55512, 55512}
-  set ANSI bright black color of currentSettings to {26214, 26214, 32896}
-  set ANSI bright red color of currentSettings to {65535, 30069, 28270}
-  set ANSI bright green color of currentSettings to {20560, 65535, 20560}
-  set ANSI bright yellow color of currentSettings to {65535, 58982, 22359}
-  set ANSI bright blue color of currentSettings to {22359, 50372, 65535}
-  set ANSI bright magenta color of currentSettings to {55512, 22359, 65535}
-  set ANSI bright cyan color of currentSettings to {22359, 65535, 65535}
-  set ANSI bright white color of currentSettings to {65535, 65535, 65535}
 end tell
 APPLESCRIPT
 fi

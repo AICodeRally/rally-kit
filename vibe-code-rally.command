@@ -32,6 +32,20 @@ if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
 fi
 
 # Set dark terminal — before any output
+# Method 1: OSC escape sequences (works immediately, no permissions needed)
+printf '\033]11;rgb:1a/1a/2e\007'    # background: dark navy
+printf '\033]10;rgb:f3/f3/f3\007'    # foreground: light gray
+printf '\033]12;rgb:00/d8/e6\007'    # cursor: cyan
+printf '\033]4;0;rgb:1a/1a/2e\007'   # ANSI black
+printf '\033]4;1;rgb:ff/57/50\007'   # ANSI red
+printf '\033]4;2;rgb:2b/ee/2b\007'   # ANSI green
+printf '\033]4;3;rgb:ff/cc/00\007'   # ANSI yellow
+printf '\033]4;4;rgb:28/a4/ff\007'   # ANSI blue
+printf '\033]4;5;rgb:bb/33/d8\007'   # ANSI magenta
+printf '\033]4;6;rgb:00/d8/e6\007'   # ANSI cyan
+printf '\033]4;7;rgb:d8/d8/d8\007'   # ANSI white
+
+# Method 2: AppleScript for font/window size (Apple Terminal only)
 if [[ "${TERM_PROGRAM:-}" == "Apple_Terminal" ]]; then
   osascript <<'APPLESCRIPT' 2>/dev/null || true
 tell application "Terminal"
@@ -45,22 +59,6 @@ tell application "Terminal"
   set normal text color of currentSettings to {62258, 62258, 62258}
   set bold text color of currentSettings to {65535, 65535, 65535}
   set cursor color of currentSettings to {0, 55512, 58982}
-  set ANSI black color of currentSettings to {6682, 6682, 11822}
-  set ANSI red color of currentSettings to {65535, 22359, 20560}
-  set ANSI green color of currentSettings to {11051, 61166, 11051}
-  set ANSI yellow color of currentSettings to {65535, 52428, 0}
-  set ANSI blue color of currentSettings to {10280, 42148, 65535}
-  set ANSI magenta color of currentSettings to {48059, 13107, 55512}
-  set ANSI cyan color of currentSettings to {0, 55512, 58982}
-  set ANSI white color of currentSettings to {55512, 55512, 55512}
-  set ANSI bright black color of currentSettings to {26214, 26214, 32896}
-  set ANSI bright red color of currentSettings to {65535, 30069, 28270}
-  set ANSI bright green color of currentSettings to {20560, 65535, 20560}
-  set ANSI bright yellow color of currentSettings to {65535, 58982, 22359}
-  set ANSI bright blue color of currentSettings to {22359, 50372, 65535}
-  set ANSI bright magenta color of currentSettings to {55512, 22359, 65535}
-  set ANSI bright cyan color of currentSettings to {22359, 65535, 65535}
-  set ANSI bright white color of currentSettings to {65535, 65535, 65535}
 end tell
 APPLESCRIPT
 fi

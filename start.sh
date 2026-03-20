@@ -13,6 +13,29 @@ if [[ -z "${ANTHROPIC_API_KEY:-}" && -f "$SCRIPT_DIR/.env" ]]; then
   export $(grep -v '^#' "$SCRIPT_DIR/.env" | grep ANTHROPIC_API_KEY | xargs)
 fi
 
+# Pre-approve API key so Claude skips login/onboarding prompts
+if [[ -n "${ANTHROPIC_API_KEY:-}" ]]; then
+  if [[ ! -f "$HOME/.claude.json" ]]; then
+    cat > "$HOME/.claude.json" << CJSON
+{
+  "hasCompletedOnboarding": true,
+  "customApiKeyResponses": { "approved": ["ANTHROPIC_API_KEY"], "rejected": [] }
+}
+CJSON
+  else
+    # Patch existing file: set onboarding true and approve the key
+    python3 -c "
+import json, sys
+try:
+    with open('$HOME/.claude.json','r') as f: d=json.load(f)
+    d['hasCompletedOnboarding']=True
+    d['customApiKeyResponses']={'approved':['ANTHROPIC_API_KEY'],'rejected':[]}
+    with open('$HOME/.claude.json','w') as f: json.dump(d,f,indent=2)
+except: pass
+" 2>/dev/null || true
+  fi
+fi
+
 # ---------------------------------------------------------------------------
 # Find a free port (default 3000, fallback 3001-3009)
 # ---------------------------------------------------------------------------
@@ -34,6 +57,11 @@ echo "$RALLY_PORT" > "$SCRIPT_DIR/.rally-port"
 # ---------------------------------------------------------------------------
 # Colors — dark terminal with white text, all colors readable
 # ---------------------------------------------------------------------------
+
+# Set dark background via OSC escape sequences (works in any terminal)
+printf '\033]11;rgb:1a/1a/2e\007'    # background: dark navy
+printf '\033]10;rgb:f3/f3/f3\007'    # foreground: light gray
+printf '\033]12;rgb:00/d8/e6\007'    # cursor: cyan
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -349,6 +377,9 @@ wait_for_port() {
   return 1
 }
 
+# Clear stale Next.js cache to prevent build errors
+rm -rf "$SCRIPT_DIR/.next" 2>/dev/null || true
+
 # Detect terminal and launch accordingly
 case "${TERM_PROGRAM:-}" in
   iTerm.app)
@@ -425,7 +456,7 @@ case "${TERM_PROGRAM:-}" in
     echo -e "  │                                                  │"
     echo -e "  └──────────────────────────────────────────────────┘"
     echo ""
-    exec claude
+    ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" exec claude
     ;;
 
   *)
@@ -442,17 +473,17 @@ case "${TERM_PROGRAM:-}" in
     open_browser "http://localhost:${RALLY_PORT}"
 
     echo ""
-    echo -e "  ┌─────────────────────────────────────────────────┐"
-    echo -e "  │                                                 │"
-    echo -e "  │  ${WHITE}${BOLD}App server is running in the background.${NC}       │"
-    echo -e "  │  ${DIM}Your app is live at localhost:${RALLY_PORT}${NC}              │"
-    echo -e "  │                                                 │"
+    echo -e "  ┌──────────────────────────────────────────────────┐"
+    echo -e "  │                                                  │"
+    echo -e "  │  ${GREEN}${BOLD}Your app is running at localhost:${RALLY_PORT}${NC}          │"
+    echo -e "  │  ${DIM}(open in your browser — it updates live!)${NC}      │"
+    echo -e "  │                                                  │"
     echo -e "  │  ${CYAN}${BOLD}Claude is starting below.${NC}                      │"
     echo -e "  │  ${DIM}Tell it about your business idea!${NC}              │"
-    echo -e "  │                                                 │"
-    echo -e "  └─────────────────────────────────────────────────┘"
+    echo -e "  │                                                  │"
+    echo -e "  └──────────────────────────────────────────────────┘"
     echo ""
 
-    claude
+    ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" claude
     ;;
 esac
