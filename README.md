@@ -22,26 +22,34 @@
 | Claude CLI | `claude --version` | `npm install -g @anthropic-ai/claude-code` |
 | API Key | `echo $ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com/settings/keys) |
 
-### Option A: Double-Click Installer (Recommended)
+### Mac (Double-Click)
 
-1. Put `vibe-code-rally.command` on the Desktop
-2. Set the API key in the shell profile or in `~/Desktop/rally-kit/.env`:
-   ```
-   ANTHROPIC_API_KEY=sk-ant-...
-   ```
-3. Double-click `vibe-code-rally.command`
-4. Follow the on-screen prompts
+1. Unzip `rally-kit.zip` to Desktop
+2. Double-click `vibe-code-rally.command`
+3. Follow the on-screen prompts — that's it
 
-### Option B: Manual
+### Windows (Double-Click)
+
+1. Unzip `rally-kit.zip` to Desktop
+2. Double-click `start.bat`
+3. Follow the on-screen prompts — that's it
+
+> **Windows note:** Requires Node.js 20+, Claude CLI, and `curl` (ships with Windows 10+).
+> If the `.bat` has trouble, open Command Prompt and run manually:
+> ```
+> cd %USERPROFILE%\Desktop\rally-kit
+> npm install
+> start /min cmd /c "npm run dev"
+> claude
+> ```
+
+### Manual (Any OS)
 
 ```bash
-cd ~/Desktop
-git clone https://github.com/AICodeRally/rally-kit.git
-cd rally-kit
-echo "ANTHROPIC_API_KEY=sk-ant-..." > .env
+cd ~/Desktop/rally-kit    # or wherever you unzipped
 npm install
-npm run dev &
-claude
+npm run dev &             # start dev server (use 'start /min cmd /c "npm run dev"' on Windows)
+claude                    # launch AI coding partner
 ```
 
 ## The 3-Hour Flow
