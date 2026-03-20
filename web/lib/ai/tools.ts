@@ -5,7 +5,7 @@ export const rallyTools = {
   writeFile: tool({
     description:
       "Write or update a file in the student's project. Always provide complete file contents.",
-    parameters: z.object({
+    inputSchema: z.object({
       path: z
         .string()
         .describe(
@@ -17,7 +17,7 @@ export const rallyTools = {
 
   readFile: tool({
     description: "Read the current contents of a file in the student's project",
-    parameters: z.object({
+    inputSchema: z.object({
       path: z
         .string()
         .describe('File path relative to project root'),
@@ -26,7 +26,7 @@ export const rallyTools = {
 
   listFiles: tool({
     description: "List files and directories in a path in the student's project",
-    parameters: z.object({
+    inputSchema: z.object({
       path: z
         .string()
         .describe(
