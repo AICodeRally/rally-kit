@@ -5,17 +5,14 @@ import { buildSystemPrompt } from '@/lib/ai/system-prompt'
 import { rallyTools } from '@/lib/ai/tools'
 
 export async function POST(req: Request) {
-  const {
-    messages,
-    team,
-  }: {
-    messages: UIMessage[]
-    team: {
-      name: string
-      members: string[]
-      track: 'campus' | 'startup' | 'future'
-    }
-  } = await req.json()
+  const url = new URL(req.url)
+  const team = JSON.parse(url.searchParams.get('team') || '{}') as {
+    name: string
+    members: string[]
+    track: 'campus' | 'startup' | 'future'
+  }
+
+  const { messages }: { messages: UIMessage[] } = await req.json()
 
   const modelMessages = await convertToModelMessages(messages)
 

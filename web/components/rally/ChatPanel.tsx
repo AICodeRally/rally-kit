@@ -25,9 +25,9 @@ export function ChatPanel({ team, webcontainer, onFileWritten }: ChatPanelProps)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const { messages, sendMessage, addToolOutput, status } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/chat' }),
-
-    body: { team },
+    transport: new DefaultChatTransport({
+      api: `/api/chat?team=${encodeURIComponent(JSON.stringify(team))}`,
+    }),
 
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
 
