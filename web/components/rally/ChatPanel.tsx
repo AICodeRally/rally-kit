@@ -72,6 +72,15 @@ export function ChatPanel({ team, webcontainer, onFileWritten }: ChatPanelProps)
     },
   })
 
+  // Auto-start rally when WebContainer is ready
+  const hasStarted = useRef(false)
+  useEffect(() => {
+    if (webcontainer && !hasStarted.current) {
+      hasStarted.current = true
+      sendMessage({ text: '/rally' })
+    }
+  }, [webcontainer, sendMessage])
+
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })

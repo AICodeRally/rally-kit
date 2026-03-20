@@ -1,4 +1,5 @@
 import { TeamSetupForm } from '@/components/landing/TeamSetupForm'
+import { BrowserCheck } from '@/components/landing/BrowserCheck'
 
 export default function LandingPage() {
   return (
@@ -9,6 +10,7 @@ export default function LandingPage() {
           GCU · 3 Hours · Build a Real App with AI
         </p>
       </div>
+      <BrowserCheck />
       <TeamSetupForm />
     </div>
   )

@@ -50,9 +50,9 @@ export function RallyShell({ team }: { team: TeamInfo }) {
       </header>
 
       {/* Main content */}
-      <div className="flex-1 flex min-h-0">
-        {/* Chat — 400px fixed */}
-        <div className="w-[400px] shrink-0">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0">
+        {/* Chat — 400px fixed on desktop, full width on mobile */}
+        <div className="w-full md:w-[400px] shrink-0 h-1/2 md:h-auto">
           <ChatPanel
             team={team}
             webcontainer={webcontainer}
@@ -61,11 +61,13 @@ export function RallyShell({ team }: { team: TeamInfo }) {
         </div>
 
         {/* Preview — remaining space */}
-        {isReady ? (
-          <PreviewPanel previewUrl={previewUrl} modifiedFiles={modifiedFiles} />
-        ) : (
-          <BootScreen status={sandboxStatus} />
-        )}
+        <div className="flex-1 h-1/2 md:h-auto">
+          {isReady ? (
+            <PreviewPanel previewUrl={previewUrl} modifiedFiles={modifiedFiles} />
+          ) : (
+            <BootScreen status={sandboxStatus} />
+          )}
+        </div>
       </div>
 
       {/* Status bar */}
