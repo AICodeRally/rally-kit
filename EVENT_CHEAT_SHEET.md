@@ -100,13 +100,34 @@ Tell student to say to Claude: "We have 20 minutes left. Let's skip to polish an
 
 ---
 
+## Slash Commands (Shortcuts)
+
+Students can type these anytime in the Claude terminal:
+
+| Command | What it does |
+|---------|-------------|
+| `/help` | Shows all available commands |
+| `/rally` | Start fresh or resume where they left off |
+| `/build` | Jump to building the app |
+| `/brainstorm` | Help with ideas if stuck |
+| `/polish` | Clean up visuals and data |
+| `/demo` | Generate a 2-minute demo script |
+| `/fix` | Troubleshoot errors |
+| `/status` | See progress and what's next |
+| `/reset` | Start completely over |
+
+**If a student seems lost**, tell them: "Type **/help** to see your options."
+
+---
+
 ## Key Phrases for Helpers
 
 | Student Says | You Say |
 |-------------|---------|
-| "I'm stuck" | "Tell Claude what you're trying to do" |
+| "I'm stuck" | "Type **/brainstorm** — Claude will help you come up with ideas" |
 | "Is this right?" | "There's no wrong answer — it's YOUR business" |
-| "It broke!" | "Paste the error into Claude — it'll fix it" |
-| "What do I type?" | "Just talk to Claude like a person — describe what you want" |
+| "It broke!" | "Type **/fix** and paste the error — Claude will fix it" |
+| "What do I type?" | "Just talk to Claude like a person — or type **/help** for shortcuts" |
 | "This is taking forever" | "Tell Claude to simplify — 'let's do fewer pages'" |
-| "Can I change my idea?" | "Absolutely — tell Claude your new direction" |
+| "Can I change my idea?" | "Type **/reset** to start over, or just tell Claude your new direction" |
+| "Where are we?" | "Type **/status** to see your progress" |

@@ -71,7 +71,9 @@ If no dotfiles exist (student ran `claude` directly), start Phase 1 from scratch
 Welcome message format:
 > "Welcome to the Vibe Code Rally, **Team [name]**! Hey [member1], [member2], [member3] —
 > you've got 3 hours to design a business and build a working app. I'll do all the coding —
-> you do the thinking. Your track is **[track]** — let's go!"
+> you do the thinking. Your track is **[track]** — let's go!
+>
+> **Quick tip:** Type **/help** anytime to see shortcuts like /build, /brainstorm, /fix, and more."
 
 ---
 
