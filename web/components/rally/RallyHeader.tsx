@@ -64,16 +64,8 @@ export function RallyHeader({ phase, phaseStartedAt, teamName }: RallyHeaderProp
           {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
         </button>
 
-        {/* Full name on desktop, initials on mobile */}
-        <span className="text-sm hidden sm:inline ml-1" style={{ color: 'var(--text-secondary)' }}>
+        <span className="text-sm ml-1" style={{ color: 'var(--text-secondary)' }}>
           {teamName}
-        </span>
-        <span
-          className="sm:hidden text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full ml-1"
-          style={{ backgroundColor: 'var(--accent)', color: '#fff' }}
-          title={teamName}
-        >
-          {teamName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
         </span>
       </div>
     </header>
