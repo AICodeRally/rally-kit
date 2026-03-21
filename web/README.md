@@ -1,6 +1,19 @@
 # Rally Kit Web — Architecture Guide
 
-> The web version of AICR Rally Kit. Students open a URL, chat with AI, and build a working Next.js app in an in-browser sandbox. Zero install.
+> The web version of AICR Rally Kit. Students open a URL, chat with AI, and build a working app in the browser.
+
+## Canonical Docs
+
+For implementation-accurate docs, start with `web/docs/README.md`.
+
+- Product: `web/docs/product-overview.md`
+- Architecture: `web/docs/architecture-data-flow.md`
+- APIs: `web/docs/api-chat.md`, `web/docs/api-telemetry.md`
+- Ops: `web/docs/operations-runbook.md`
+- Setup/Deploy: `web/docs/developer-setup-deployment.md`
+- Roadmap: `web/docs/known-gaps-roadmap.md`
+
+This file includes legacy context and may lag behind the canonical docs above.
 
 ---
 

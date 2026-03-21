@@ -28,7 +28,11 @@ The CLI version requires Node.js, Claude Code, and an API key on every student l
 
 ## Web App (`web/`)
 
-The active development target. See `web/README.md` for full architecture.
+The active development target.
+
+Canonical docs for current runtime behavior live in `web/docs/README.md` (with API, architecture, ops, setup, and roadmap docs).
+
+Legacy architecture notes remain in `web/README.md` for historical context.
 
 ```
 web/
