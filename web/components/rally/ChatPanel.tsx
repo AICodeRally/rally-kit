@@ -1,26 +1,26 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { useChat } from '@ai-sdk/react'
 import {
   DefaultChatTransport,
   lastAssistantMessageIsCompleteWithToolCalls,
 } from 'ai'
-import type { WebContainer } from '@webcontainer/api'
 import { MessageResponse } from '@/components/ai-elements/message'
 import { SlashToolbar } from './SlashToolbar'
 import { FileChangeNotification } from '@/components/chat/FileChangeNotification'
-import { writeFile, readFile, listFiles } from '@/lib/webcontainer/operations'
 import type { TeamInfo, DesignIdea, Phase } from '@/lib/rally/types'
 import { Send } from 'lucide-react'
 
-// Regex to extract [IDEA:category:title]description[/IDEA] markers
-const IDEA_REGEX = /\[IDEA:(problem|pages|data|shell|theme):([^\]]+)\]([\s\S]*?)\[\/IDEA\]/g
+// Pattern for [IDEA:category:title]description[/IDEA] markers.
+// IMPORTANT: Create a new regex per call — global regexes are stateful (lastIndex).
+const IDEA_PATTERN = /\[IDEA:(problem|pages|data|shell|theme):([^\]]+)\]([\s\S]*?)\[\/IDEA\]/g
 
 function extractIdeas(text: string): DesignIdea[] {
+  const re = new RegExp(IDEA_PATTERN.source, IDEA_PATTERN.flags)
   const ideas: DesignIdea[] = []
   let match: RegExpExecArray | null
-  while ((match = IDEA_REGEX.exec(text)) !== null) {
+  while ((match = re.exec(text)) !== null) {
     ideas.push({
       id: crypto.randomUUID(),
       category: match[1] as DesignIdea['category'],
@@ -33,138 +33,62 @@ function extractIdeas(text: string): DesignIdea[] {
 
 interface ChatPanelProps {
   team: TeamInfo
-  webcontainer: WebContainer | null
   phase?: string
+  onAppUpdate: (html: string) => void
   onFileWritten: (path: string) => void
-  onBuildRequested: () => void
   onIdeaCaptured?: (idea: DesignIdea) => void
   onPhaseChange?: (phase: Phase) => void
 }
 
 export function ChatPanel({
   team,
-  webcontainer,
   phase,
+  onAppUpdate,
   onFileWritten,
-  onBuildRequested,
   onIdeaCaptured,
   onPhaseChange,
 }: ChatPanelProps) {
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const capturedTitles = useRef<Set<string>>(new Set())
-  const pendingToolCalls = useRef<Array<{ toolCall: { toolName: string; toolCallId: string; input: unknown; dynamic?: boolean } }>>([])
 
-  const { messages, sendMessage, addToolOutput, status } = useChat({
-    transport: new DefaultChatTransport({
+  const transport = useMemo(
+    () => new DefaultChatTransport({
       api: `/api/chat?team=${encodeURIComponent(JSON.stringify(team))}`,
     }),
+    [team],
+  )
+
+  const { messages, sendMessage, addToolOutput, status, error } = useChat({
+    transport,
 
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
 
     async onToolCall({ toolCall }) {
       if (toolCall.dynamic) return
 
-      // Any tool call means we're building — auto-transition
-      onPhaseChange?.('build')
-
-      if (!webcontainer) {
-        onBuildRequested()
-        // Queue tool call for execution when WebContainer boots
-        pendingToolCalls.current.push({ toolCall })
-        // Send tool output so AI SDK doesn't hang waiting
+      if (toolCall.toolName === 'writeApp') {
+        const { html } = toolCall.input as { html: string }
+        onAppUpdate(html)
+        // addToolOutput FIRST — before any state change that might unmount this component
         addToolOutput({
-          tool: toolCall.toolName,
+          tool: 'writeApp',
           toolCallId: toolCall.toolCallId,
-          output: `File queued — sandbox is booting, will write shortly.`,
+          output: 'App updated — preview refreshed.',
         })
-        return
+        // Phase transition last — onFileWritten handles design→build transition
+        onFileWritten('app')
       }
-
-      await executeToolCall(toolCall, webcontainer)
     },
   })
-
-  // Execute queued tool calls once WebContainer boots (side-effect only, output already sent)
-  useEffect(() => {
-    if (!webcontainer || pendingToolCalls.current.length === 0) return
-    const pending = [...pendingToolCalls.current]
-    pendingToolCalls.current = []
-    for (const { toolCall } of pending) {
-      executePendingToolCall(toolCall, webcontainer)
-    }
-  }, [webcontainer])
-
-  // Execute a queued tool call (side-effect only — tool output was already returned)
-  const executePendingToolCall = useCallback(async (
-    toolCall: { toolName: string; toolCallId: string; input: unknown },
-    wc: WebContainer,
-  ) => {
-    try {
-      if (toolCall.toolName === 'writeFile') {
-        const { path, content } = toolCall.input as { path: string; content: string }
-        await writeFile(wc, path, content)
-        onFileWritten(path)
-      } else if (toolCall.toolName === 'readFile') {
-        const { path } = toolCall.input as { path: string }
-        await readFile(wc, path)
-      } else if (toolCall.toolName === 'listFiles') {
-        const { path } = toolCall.input as { path: string }
-        await listFiles(wc, path)
-      }
-    } catch {
-      // Silently ignore — tool output was already sent
-    }
-  }, [onFileWritten])
-
-  const executeToolCall = useCallback(async (
-    toolCall: { toolName: string; toolCallId: string; input: unknown },
-    wc: WebContainer,
-  ) => {
-    try {
-      if (toolCall.toolName === 'writeFile') {
-        const { path, content } = toolCall.input as { path: string; content: string }
-        const result = await writeFile(wc, path, content)
-        onFileWritten(path)
-        addToolOutput({
-          tool: 'writeFile',
-          toolCallId: toolCall.toolCallId,
-          output: result,
-        })
-      } else if (toolCall.toolName === 'readFile') {
-        const { path } = toolCall.input as { path: string }
-        const result = await readFile(wc, path)
-        addToolOutput({
-          tool: 'readFile',
-          toolCallId: toolCall.toolCallId,
-          output: result,
-        })
-      } else if (toolCall.toolName === 'listFiles') {
-        const { path } = toolCall.input as { path: string }
-        const result = await listFiles(wc, path)
-        addToolOutput({
-          tool: 'listFiles',
-          toolCallId: toolCall.toolCallId,
-          output: result,
-        })
-      }
-    } catch (err) {
-      addToolOutput({
-        tool: toolCall.toolName,
-        toolCallId: toolCall.toolCallId,
-        state: 'output-error',
-        errorText: err instanceof Error ? err.message : 'Tool execution failed',
-      })
-    }
-  }, [addToolOutput, onFileWritten])
 
   // Extract ideas from assistant messages
   useEffect(() => {
     if (!onIdeaCaptured) return
     for (const msg of messages) {
       if (msg.role !== 'assistant') continue
-      for (const part of msg.parts) {
-        if (part.type !== 'text') continue
+      for (const part of msg.parts ?? []) {
+        if (part.type !== 'text' || !part.text) continue
         const ideas = extractIdeas(part.text)
         for (const idea of ideas) {
           if (!capturedTitles.current.has(idea.title)) {
@@ -176,14 +100,20 @@ export function ChatPanel({
     }
   }, [messages, onIdeaCaptured])
 
-  // Auto-start rally immediately
+  // Auto-start rally in design phase (not after a refresh into build/polish)
   const hasStarted = useRef(false)
   useEffect(() => {
     if (!hasStarted.current) {
       hasStarted.current = true
-      sendMessage({ text: '/rally' })
+      if (phase === 'design') {
+        // Send /rally which triggers the full welcome + first design question
+        sendMessage({ text: '/rally' })
+      } else {
+        // Resuming a session — give context instead of restarting design flow
+        sendMessage({ text: `/status` })
+      }
     }
-  }, [sendMessage])
+  }, [sendMessage, phase])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -192,12 +122,19 @@ export function ChatPanel({
 
   function routeCommand(text: string) {
     if (text === '/build') {
-      onBuildRequested()
       onPhaseChange?.('build')
     } else if (text === '/polish') {
       onPhaseChange?.('polish')
     } else if (text === '/reset') {
       if (!window.confirm('Start completely over? All progress will be lost.')) return false
+      // Clear THIS team's persisted state only — other teams on shared laptops are safe
+      try {
+        const teamPrefix = `rally-${team.slug}`
+        const keys = Object.keys(sessionStorage).filter(k => k === teamPrefix || k.startsWith(`${teamPrefix}-`))
+        keys.forEach(k => sessionStorage.removeItem(k))
+      } catch {}
+      window.location.reload()
+      return false
     }
     return true
   }
@@ -241,27 +178,33 @@ export function ChatPanel({
                   : undefined
               }
             >
-              {message.parts.map((part, i) => {
-                if (part.type === 'text') {
-                  // Strip IDEA markers from displayed text
-                  const displayText = part.text.replace(IDEA_REGEX, '').trim()
-                  if (!displayText) return null
-                  return message.role === 'assistant' ? (
-                    <MessageResponse key={i}>{displayText}</MessageResponse>
-                  ) : (
-                    <span key={i}>{displayText}</span>
-                  )
-                }
-                if (
-                  part.type === 'tool-writeFile' &&
-                  (part.state === 'output-available' || part.state === 'input-available')
-                ) {
-                  return (
-                    <FileChangeNotification
-                      key={i}
-                      path={(part.input as { path: string })?.path ?? 'unknown'}
-                    />
-                  )
+              {(message.parts ?? []).map((part, i) => {
+                try {
+                  if (part.type === 'text') {
+                    if (!part.text) return null
+                    // Strip IDEA markers from displayed text
+                    const displayText = part.text.replace(new RegExp(IDEA_PATTERN.source, IDEA_PATTERN.flags), '').trim()
+                    if (!displayText) return null
+                    return message.role === 'assistant' ? (
+                      <MessageResponse key={i}>{displayText}</MessageResponse>
+                    ) : (
+                      <span key={i}>{displayText}</span>
+                    )
+                  }
+                  if (
+                    part.type === 'tool-writeApp' &&
+                    part.state === 'output-available'
+                  ) {
+                    return (
+                      <FileChangeNotification
+                        key={i}
+                        path="app"
+                      />
+                    )
+                  }
+                } catch {
+                  // Swallow render errors for individual parts — never crash the whole chat
+                  return null
                 }
                 return null
               })}
@@ -270,6 +213,39 @@ export function ChatPanel({
         ))}
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Error indicator — API failure, rate limit, network error */}
+      {error && (
+        <div className="px-4 py-3 mx-3 mb-1 rounded-lg" style={{ backgroundColor: '#fef2f2', border: '1px solid #fca5a5' }}>
+          <p className="text-sm font-medium" style={{ color: '#dc2626' }}>
+            The AI hit a snag. Try sending your message again.
+          </p>
+          <p className="text-xs mt-1" style={{ color: '#7f1d1d' }}>
+            {error.message?.includes('429') ? 'Too many requests — wait a few seconds and retry.' : 'If this keeps happening, ask your facilitator for help.'}
+          </p>
+        </div>
+      )}
+
+      {/* Streaming / thinking indicator */}
+      {isStreaming && (
+        <div className="px-4 py-2 flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+          <span className="flex gap-1">
+            {[0, 150, 300].map((delay) => (
+              <span
+                key={delay}
+                className="w-2 h-2 rounded-full"
+                style={{
+                  backgroundColor: 'var(--accent)',
+                  animation: 'bounce 1s infinite',
+                  animationDelay: `${delay}ms`,
+                }}
+              />
+            ))}
+          </span>
+          <span className="text-sm font-medium">AI is working...</span>
+          <style>{`@keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }`}</style>
+        </div>
+      )}
 
       {/* Slash command toolbar */}
       <SlashToolbar onCommand={handleCommand} phase={phase} />
