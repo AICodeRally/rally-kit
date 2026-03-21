@@ -129,7 +129,7 @@ Top-right of the screen:
 
 ### "How do we get back to where we were?"
 - Type `/status` to see progress
-- The app auto-saves the conversation — refresh the page
+- **Note:** The app does NOT persist conversations across refreshes yet. If a student refreshes, they will need to restart with `/rally`
 
 ### "It's taking too long to build"
 - Tell the AI: "We have 30 minutes left, let's simplify and do fewer pages"

@@ -16,7 +16,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
   const [sandboxStatus, setSandboxStatus] = useState<SandboxStatus>('idle')
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [phase, setPhase] = useState<Phase>('design')
-  const [phaseStartedAt] = useState(Date.now())
+  const [phaseStartedAt, setPhaseStartedAt] = useState(Date.now())
   const [modifiedFiles, setModifiedFiles] = useState<string[]>([])
   const [ideas, setIdeas] = useState<DesignIdea[]>([])
   const [showSplash, setShowSplash] = useState(true)
@@ -43,6 +43,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     // First file write triggers auto-transition to build phase
     setPhase((p) => {
       if (p === 'design') {
+        setPhaseStartedAt(Date.now())
         setShowBuildTransition(true)
         return 'build'
       }
@@ -50,10 +51,16 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     })
   }, [])
 
-  const handlePhaseChange = useCallback((newPhase: 'build') => {
-    setPhase(newPhase)
-    setShowBuildTransition(true)
-    ensureWebContainer()
+  const handlePhaseChange = useCallback((newPhase: Phase) => {
+    setPhase((prev) => {
+      if (prev === newPhase) return prev
+      setPhaseStartedAt(Date.now())
+      return newPhase
+    })
+    if (newPhase === 'build') {
+      setShowBuildTransition(true)
+      ensureWebContainer()
+    }
   }, [ensureWebContainer])
 
   const handleAddIdea = useCallback((idea: DesignIdea) => {

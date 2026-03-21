@@ -30,7 +30,7 @@ export function PreviewPanel({ previewUrl, modifiedFiles }: PreviewPanelProps) {
       >
         <button
           onClick={() => setTab('preview')}
-          className="px-3 py-1 text-xs rounded"
+          className="px-3 py-1.5 min-h-[44px] text-xs rounded focus-visible:outline-none focus-visible:ring-2"
           style={
             tab === 'preview'
               ? { backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontWeight: 500 }
@@ -41,14 +41,14 @@ export function PreviewPanel({ previewUrl, modifiedFiles }: PreviewPanelProps) {
         </button>
         <button
           onClick={() => setTab('code')}
-          className="px-3 py-1 text-xs rounded"
+          className="px-3 py-1.5 min-h-[44px] text-xs rounded focus-visible:outline-none focus-visible:ring-2"
           style={
             tab === 'code'
               ? { backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontWeight: 500 }
               : { color: 'var(--text-muted)' }
           }
         >
-          Code {modifiedFiles.length > 0 && `(${modifiedFiles.length})`}
+          File Activity {modifiedFiles.length > 0 && `(${modifiedFiles.length})`}
         </button>
       </div>
 

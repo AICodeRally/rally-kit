@@ -11,7 +11,7 @@ import { MessageResponse } from '@/components/ai-elements/message'
 import { SlashToolbar } from './SlashToolbar'
 import { FileChangeNotification } from '@/components/chat/FileChangeNotification'
 import { writeFile, readFile, listFiles } from '@/lib/webcontainer/operations'
-import type { TeamInfo, DesignIdea } from '@/lib/rally/types'
+import type { TeamInfo, DesignIdea, Phase } from '@/lib/rally/types'
 import { Send } from 'lucide-react'
 
 // Regex to extract [IDEA:category:title]description[/IDEA] markers
@@ -38,7 +38,7 @@ interface ChatPanelProps {
   onFileWritten: (path: string) => void
   onBuildRequested: () => void
   onIdeaCaptured?: (idea: DesignIdea) => void
-  onPhaseChange?: (phase: 'build') => void
+  onPhaseChange?: (phase: Phase) => void
 }
 
 export function ChatPanel({
@@ -157,22 +157,28 @@ export function ChatPanel({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  function handleSend() {
-    if (!input.trim()) return
-    const text = input.trim()
+  function routeCommand(text: string) {
     if (text === '/build') {
       onBuildRequested()
       onPhaseChange?.('build')
+    } else if (text === '/polish') {
+      onPhaseChange?.('polish')
+    } else if (text === '/reset') {
+      if (!window.confirm('Start completely over? All progress will be lost.')) return false
     }
+    return true
+  }
+
+  function handleSend() {
+    if (!input.trim()) return
+    const text = input.trim()
+    if (!routeCommand(text)) return
     sendMessage({ text })
     setInput('')
   }
 
   function handleCommand(command: string) {
-    if (command === '/build') {
-      onBuildRequested()
-      onPhaseChange?.('build')
-    }
+    if (!routeCommand(command)) return
     sendMessage({ text: command })
   }
 
@@ -245,7 +251,7 @@ export function ChatPanel({
             onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
             placeholder={isStreaming ? 'AI is working...' : 'Type a message...'}
             disabled={isStreaming}
-            className="flex-1 px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50"
+            className="flex-1 px-3 py-2 min-h-[44px] text-sm rounded-lg focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50"
             style={{
               backgroundColor: 'var(--bg-muted)',
               color: 'var(--text-primary)',
@@ -255,7 +261,7 @@ export function ChatPanel({
           <button
             onClick={handleSend}
             disabled={isStreaming || !input.trim()}
-            className="p-2 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2"
             style={{ backgroundColor: 'var(--accent)' }}
           >
             <Send className="w-4 h-4" />

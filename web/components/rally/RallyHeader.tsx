@@ -41,15 +41,15 @@ export function RallyHeader({ phase, phaseStartedAt, teamName }: RallyHeaderProp
       <PhaseIndicator phase={phase} startedAt={phaseStartedAt} />
 
       {/* Right: font size + theme toggle + team name */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <button
           onClick={cycleFontSize}
-          className="flex items-center gap-1 px-2 py-1 rounded-md transition-colors"
+          className="flex items-center justify-center gap-1 min-w-[44px] min-h-[44px] rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2"
           style={{ color: 'var(--text-muted)' }}
           aria-label={`Font size: ${fontSize}`}
           title={`Font size: ${fontSize} (click to cycle)`}
         >
-          <Type className="w-3.5 h-3.5" />
+          <Type className="w-4 h-4" />
           <span className="text-xs font-mono" style={{ fontSize: FONT_SIZES[fontSize] }}>
             {FONT_LABELS[fontSize]}
           </span>
@@ -57,15 +57,23 @@ export function RallyHeader({ phase, phaseStartedAt, teamName }: RallyHeaderProp
 
         <button
           onClick={toggleTheme}
-          className="p-1.5 rounded-md transition-colors"
+          className="flex items-center justify-center min-w-[44px] min-h-[44px] rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2"
           style={{ color: 'var(--text-muted)' }}
           aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
           {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
         </button>
 
-        <span className="text-sm hidden sm:inline" style={{ color: 'var(--text-secondary)' }}>
+        {/* Full name on desktop, initials on mobile */}
+        <span className="text-sm hidden sm:inline ml-1" style={{ color: 'var(--text-secondary)' }}>
           {teamName}
+        </span>
+        <span
+          className="sm:hidden text-xs font-bold w-7 h-7 flex items-center justify-center rounded-full ml-1"
+          style={{ backgroundColor: 'var(--accent)', color: '#fff' }}
+          title={teamName}
+        >
+          {teamName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
         </span>
       </div>
     </header>

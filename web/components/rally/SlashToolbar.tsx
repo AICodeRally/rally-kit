@@ -35,7 +35,7 @@ export function SlashToolbar({
             <button
               key={cmd.label}
               onClick={() => onCommand(cmd.label)}
-              className="shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg transition-colors hover:opacity-80"
+              className="shrink-0 flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs rounded-lg transition-colors hover:opacity-80 focus-visible:outline-none focus-visible:ring-2"
               style={{
                 backgroundColor: 'var(--bg-muted)',
                 color: 'var(--text-secondary)',
