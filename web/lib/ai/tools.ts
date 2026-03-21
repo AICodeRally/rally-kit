@@ -2,35 +2,14 @@ import { tool } from 'ai'
 import { z } from 'zod'
 
 export const rallyTools = {
-  writeFile: tool({
+  writeApp: tool({
     description:
-      "Write or update a file in the student's project. Always provide complete file contents.",
+      "Write or update the student's app. Provide a complete, self-contained HTML document with React components, Tailwind styling, and all pages. The HTML renders immediately in the preview panel. Always include the full app — this replaces the previous version entirely.",
     inputSchema: z.object({
-      path: z
+      html: z
         .string()
         .describe(
-          "File path relative to project root, e.g. 'src/app/dashboard/page.tsx'",
-        ),
-      content: z.string().describe('Complete file content'),
-    }),
-  }),
-
-  readFile: tool({
-    description: "Read the current contents of a file in the student's project",
-    inputSchema: z.object({
-      path: z
-        .string()
-        .describe('File path relative to project root'),
-    }),
-  }),
-
-  listFiles: tool({
-    description: "List files and directories in a path in the student's project",
-    inputSchema: z.object({
-      path: z
-        .string()
-        .describe(
-          "Directory path relative to project root, e.g. 'src/app' or 'src/components'",
+          'Complete HTML document including CDN script tags, Tailwind config, styles, and all React components in a single <script type="text/babel"> block',
         ),
     }),
   }),

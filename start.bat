@@ -133,9 +133,23 @@ if exist ".team-name" (
     echo.
 )
 
-REM ── Save port ──────────────────────────────────────────────
+REM ── Find free port (3000-3009) ─────────────────────────────
 
-echo 3000>.rally-port
+set RALLY_PORT=3000
+for /l %%p in (3000,1,3009) do (
+    netstat -an 2>nul | findstr ":%%p " | findstr "LISTENING" >nul 2>&1
+    if errorlevel 1 (
+        set RALLY_PORT=%%p
+        goto :port_found
+    )
+)
+echo   X  No free port found (3000-3009). Close other apps and try again.
+pause
+exit /b 1
+
+:port_found
+echo %RALLY_PORT%>.rally-port
+echo   OK Using port %RALLY_PORT%
 
 REM ── Clear stale cache ──────────────────────────────────────
 
@@ -143,26 +157,38 @@ if exist ".next" rmdir /s /q ".next" 2>nul
 
 REM ── Start dev server in separate window ────────────────────
 
-echo   Starting dev server...
-start "Rally Dev Server" /min cmd /c "cd /d %~dp0 && npm run dev"
+echo   Starting dev server on port %RALLY_PORT%...
+start "Rally Dev Server" /min cmd /c "cd /d %~dp0 && set PORT=%RALLY_PORT% && npm run dev"
 
-REM ── Wait for server ────────────────────────────────────────
+REM ── Wait for server (max 30 attempts) ─────────────────────
 
-echo   Waiting for dev server on port 3000...
+echo   Waiting for dev server on port %RALLY_PORT%...
+set attempts=0
 :waitloop
-timeout /t 1 /nobreak >nul
-curl -s http://localhost:3000 >nul 2>&1
-if %errorlevel% neq 0 goto waitloop
+timeout /t 2 /nobreak >nul
+set /a attempts+=1
+curl -s http://localhost:%RALLY_PORT% >nul 2>&1
+if %errorlevel% equ 0 goto :server_ready
+if %attempts% geq 30 (
+    echo.
+    echo   X  Dev server didn't start after 60 seconds.
+    echo      Try running manually: npm run dev
+    pause
+    exit /b 1
+)
+goto waitloop
+
+:server_ready
 echo   OK Dev server ready
 
 REM ── Open browser ───────────────────────────────────────────
 
-start http://localhost:3000
+start http://localhost:%RALLY_PORT%
 
 echo.
 echo   ┌──────────────────────────────────────────────────┐
 echo   │                                                  │
-echo   │  Your app is running at localhost:3000            │
+echo   │  Your app is running at localhost:%RALLY_PORT%            │
 echo   │  (open in your browser — it updates live!)       │
 echo   │                                                  │
 echo   │  Claude is starting below.                       │

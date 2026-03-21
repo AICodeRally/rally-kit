@@ -56,6 +56,21 @@ function sendTelemetry(teamSlug: string, status: string, detail?: string, track?
   }).catch(() => {})  // fire-and-forget
 }
 
+function sendShowcaseSnapshot(payload: {
+  teamId: string
+  teamName: string
+  track: TeamInfo['track']
+  phase: Phase
+  shell?: 'mobile' | 'dashboard' | 'portfolio'
+  appHtml: string
+}) {
+  fetch('/api/showcase/snapshot', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  }).catch(() => {}) // fire-and-forget
+}
+
 function storageKey(slug: string, key: string) {
   return `rally-${slug}-${key}`
 }
@@ -158,7 +173,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     if (hydrated) {
       sendTelemetry(team.slug, 'session:start', team.name, team.track)
     }
-  }, [hydrated, team.name, team.track])
+  }, [hydrated, team.slug, team.name, team.track])
 
   const handleAppUpdate = useCallback((html: string) => {
     setAppHtml((prev) => {
@@ -167,7 +182,15 @@ export function RallyShell({ team }: { team: TeamInfo }) {
       return html
     })
     sendTelemetry(team.slug, 'app:updated')
-  }, [team.name])
+    sendShowcaseSnapshot({
+      teamId: team.slug,
+      teamName: team.name,
+      track: team.track,
+      phase,
+      shell: selectedShell,
+      appHtml: html,
+    })
+  }, [phase, selectedShell, team.slug, team.name, team.track])
 
   const handleFileWritten = useCallback(() => {
     setPhase((p) => {
@@ -186,7 +209,36 @@ export function RallyShell({ team }: { team: TeamInfo }) {
       sendTelemetry(team.slug, `phase:${newPhase}`)
       return newPhase
     })
-  }, [team.name])
+  }, [team.slug])
+
+  // Keep showcase cards alive even without new code writes.
+  useEffect(() => {
+    if (!hydrated || !appHtml) return
+    const interval = setInterval(() => {
+      sendShowcaseSnapshot({
+        teamId: team.slug,
+        teamName: team.name,
+        track: team.track,
+        phase,
+        shell: selectedShell,
+        appHtml,
+      })
+    }, 15000)
+    return () => clearInterval(interval)
+  }, [hydrated, appHtml, phase, selectedShell, team.slug, team.name, team.track])
+
+  // Publish metadata changes (phase/shell) to showcase even if code stayed the same.
+  useEffect(() => {
+    if (!hydrated || !appHtml) return
+    sendShowcaseSnapshot({
+      teamId: team.slug,
+      teamName: team.name,
+      track: team.track,
+      phase,
+      shell: selectedShell,
+      appHtml,
+    })
+  }, [hydrated, appHtml, phase, selectedShell, team.slug, team.name, team.track])
 
   const handleAddIdea = useCallback((idea: DesignIdea) => {
     setIdeas((prev) => {
