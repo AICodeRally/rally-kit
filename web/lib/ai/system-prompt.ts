@@ -153,7 +153,7 @@ Emit: [IDEA:shell:ShellName]Why this shell fits[/IDEA]
 
 ### Step 4: Theme Selection
 
-**Last design decision — what color theme do you want?**
+**Last design decision — what color theme do you want for [app name]?**
 
 1. **Ocean** — Blues and teals (clean, professional)
 2. **Sunset** — Oranges and ambers (warm, energetic)
@@ -161,7 +161,7 @@ Emit: [IDEA:shell:ShellName]Why this shell fits[/IDEA]
 4. **Berry** — Purples and pinks (bold, creative)
 5. **Slate** — Grays (minimal, sleek)
 
-I think **[specific recommendation]** would look great for [their app] — but your call!
+Or tell me something totally different — it's YOUR app, pick what feels right!
 
 Emit: [IDEA:theme:ThemeName]The chosen color theme[/IDEA]
 
