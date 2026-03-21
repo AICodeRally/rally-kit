@@ -4,12 +4,18 @@ import { buildSystemPrompt } from '@/lib/ai/system-prompt'
 import { rallyTools } from '@/lib/ai/tools'
 
 // ── Vercel AI Gateway — Full Failover Infrastructure ──────────────────
-// OIDC auth is automatic on Vercel. No API keys needed.
+// OIDC auth handles gateway access. BYOK passes provider keys per-request
+// so fallback actually works even if dashboard keys aren't configured.
 //
 // Failover chain (gateway handles model-level failures automatically):
 //   1. anthropic/claude-sonnet-4.6  — primary (best for code gen)
 //   2. openai/gpt-5.4               — fallback 1 (strong code gen)
 //   3. google/gemini-2.0-flash      — fallback 2 (fast, high capacity)
+//
+// Env vars needed on Vercel:
+//   ANTHROPIC_API_KEY   — required (primary)
+//   OPENAI_API_KEY      — required for fallback 1
+//   GOOGLE_API_KEY      — required for fallback 2
 //
 // Application-level retry handles network/gateway failures (2 retries).
 // ──────────────────────────────────────────────────────────────────────
@@ -18,6 +24,21 @@ const PRIMARY_MODEL = 'anthropic/claude-sonnet-4.6'
 const FALLBACK_MODELS = ['openai/gpt-5.4', 'google/gemini-2.0-flash']
 const MAX_RETRIES = 2
 const RETRY_DELAY_MS = 1000
+
+// Build BYOK credentials from env vars — only include providers that have keys
+function buildByok() {
+  const byok: Record<string, Array<{ apiKey: string }>> = {}
+  if (process.env.ANTHROPIC_API_KEY) {
+    byok.anthropic = [{ apiKey: process.env.ANTHROPIC_API_KEY }]
+  }
+  if (process.env.OPENAI_API_KEY) {
+    byok.openai = [{ apiKey: process.env.OPENAI_API_KEY }]
+  }
+  if (process.env.GOOGLE_API_KEY) {
+    byok.google = [{ apiKey: process.env.GOOGLE_API_KEY }]
+  }
+  return Object.keys(byok).length > 0 ? byok : undefined
+}
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -85,6 +106,7 @@ export async function POST(req: Request) {
         providerOptions: {
           gateway: {
             models: FALLBACK_MODELS,
+            ...(buildByok() ? { byok: buildByok() } : {}),
           },
         },
       })
