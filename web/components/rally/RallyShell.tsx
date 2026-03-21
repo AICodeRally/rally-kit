@@ -28,24 +28,23 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     bootStarted.current = true
     setSandboxStatus('booting')
 
-    bootWebContainer((status) => {
+    bootWebContainer((status, detail) => {
       setSandboxStatus(status)
+      if (detail) console.log('[WebContainer]', status, detail)
     }).then((result) => {
       setWebcontainer(result.webcontainer)
       setPreviewUrl(result.previewUrl)
-    }).catch(() => {
+    }).catch((err) => {
+      console.error('[WebContainer] Boot failed:', err)
       setSandboxStatus('error')
     })
   }, [])
 
   const retryWebContainer = useCallback(() => {
-    bootStarted.current = false
-    setWebcontainer(null)
-    setPreviewUrl(null)
-    setSandboxStatus('idle')
-    // Small delay to let state settle, then retry
-    setTimeout(() => ensureWebContainer(), 100)
-  }, [ensureWebContainer])
+    // WebContainer.boot() can only be called once per page —
+    // the only reliable retry is a full page reload
+    window.location.reload()
+  }, [])
 
   const handleFileWritten = useCallback((path: string) => {
     setModifiedFiles((prev) => [path, ...prev.filter((p) => p !== path)])

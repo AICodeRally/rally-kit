@@ -29,12 +29,21 @@ export async function bootWebContainer(
     }
   }
 
+  // WebContainers require cross-origin isolation (COOP + COEP headers)
+  if (typeof window !== 'undefined' && !window.crossOriginIsolated) {
+    const msg = 'Cross-origin isolation not enabled — COOP/COEP headers may be missing'
+    console.error('[WebContainer]', msg)
+    onStatus('error', msg)
+    throw new Error(msg)
+  }
+
   onStatus('booting')
   let wc: WebContainer
   try {
     wc = await WebContainer.boot()
   } catch (err) {
-    onStatus('error', 'Failed to start sandbox — your browser may not support WebContainers')
+    const msg = err instanceof Error ? err.message : 'Unknown boot error'
+    onStatus('error', `Failed to start sandbox: ${msg}`)
     throw err
   }
 
