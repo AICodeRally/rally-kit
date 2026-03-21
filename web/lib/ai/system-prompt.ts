@@ -153,7 +153,7 @@ Ready to build, ${team.name}? Type **yes** or just say **let's go** and I'll sta
 
 ---
 
-Then WAIT for them to say yes/go before writing any files.
+When they confirm (say yes, let's go, build, ready, etc.) — IMMEDIATELY start writing code. Call writeFile with the layout.tsx file right away. Do NOT send another text-only message asking if they're ready. The act of writing files triggers the build phase transition automatically.
 
 ${team.members.length >= 3 ? `### Optional: Role Assignment
 For a team of ${team.members.length}, you can suggest roles:
@@ -255,7 +255,7 @@ Available pre-built components (import from '@/components/'):
 ## Tech Stack (LOCKED — do not deviate)
 - Next.js 15 with App Router
 - TypeScript
-- Tailwind CSS 4
+- Tailwind CSS 3
 - Lucide React for icons
 - Recharts for charts
 - clsx + tailwind-merge for className merging

@@ -65,24 +65,52 @@ export function ChatPanel({
     async onToolCall({ toolCall }) {
       if (toolCall.dynamic) return
 
+      // Any tool call means we're building — auto-transition
+      onPhaseChange?.('build')
+
       if (!webcontainer) {
         onBuildRequested()
+        // Queue tool call for execution when WebContainer boots
         pendingToolCalls.current.push({ toolCall })
-        return
+        // Return result string so AI SDK doesn't hang waiting for tool output
+        return `File queued — sandbox is booting, will write shortly.`
       }
 
       await executeToolCall(toolCall, webcontainer)
     },
   })
 
+  // Execute queued tool calls once WebContainer boots (side-effect only, output already sent)
   useEffect(() => {
     if (!webcontainer || pendingToolCalls.current.length === 0) return
     const pending = [...pendingToolCalls.current]
     pendingToolCalls.current = []
     for (const { toolCall } of pending) {
-      executeToolCall(toolCall, webcontainer)
+      executePendingToolCall(toolCall, webcontainer)
     }
   }, [webcontainer])
+
+  // Execute a queued tool call (side-effect only — tool output was already returned)
+  const executePendingToolCall = useCallback(async (
+    toolCall: { toolName: string; toolCallId: string; input: unknown },
+    wc: WebContainer,
+  ) => {
+    try {
+      if (toolCall.toolName === 'writeFile') {
+        const { path, content } = toolCall.input as { path: string; content: string }
+        await writeFile(wc, path, content)
+        onFileWritten(path)
+      } else if (toolCall.toolName === 'readFile') {
+        const { path } = toolCall.input as { path: string }
+        await readFile(wc, path)
+      } else if (toolCall.toolName === 'listFiles') {
+        const { path } = toolCall.input as { path: string }
+        await listFiles(wc, path)
+      }
+    } catch {
+      // Silently ignore — tool output was already sent
+    }
+  }, [onFileWritten])
 
   const executeToolCall = useCallback(async (
     toolCall: { toolName: string; toolCallId: string; input: unknown },
