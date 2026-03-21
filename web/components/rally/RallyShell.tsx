@@ -21,6 +21,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
   const [ideas, setIdeas] = useState<DesignIdea[]>([])
   const [showSplash, setShowSplash] = useState(true)
   const [showBuildTransition, setShowBuildTransition] = useState(false)
+  const [bootDetail, setBootDetail] = useState<string | undefined>()
   const bootStarted = useRef(false)
 
   const ensureWebContainer = useCallback(() => {
@@ -30,7 +31,10 @@ export function RallyShell({ team }: { team: TeamInfo }) {
 
     bootWebContainer((status, detail) => {
       setSandboxStatus(status)
-      if (detail) console.log('[WebContainer]', status, detail)
+      if (detail) {
+        setBootDetail(detail)
+        console.log('[WebContainer]', status, detail)
+      }
     }).then((result) => {
       setWebcontainer(result.webcontainer)
       setPreviewUrl(result.previewUrl)
@@ -110,6 +114,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
           team={team}
           webcontainer={webcontainer}
           sandboxStatus={sandboxStatus}
+          sandboxDetail={bootDetail}
           previewUrl={previewUrl}
           modifiedFiles={modifiedFiles}
           onFileWritten={handleFileWritten}

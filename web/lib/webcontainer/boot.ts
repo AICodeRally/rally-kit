@@ -70,6 +70,11 @@ export async function bootWebContainer(
     new WritableStream({
       write(chunk) {
         console.log('[npm install]', chunk)
+        // Stream last meaningful line to UI
+        const line = chunk.trim().split('\n').pop()?.trim()
+        if (line) {
+          onStatus('installing', line)
+        }
       },
     }),
   )

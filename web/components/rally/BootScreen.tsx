@@ -14,7 +14,7 @@ const FUN_FACTS = [
   'Mock data makes everything feel real',
 ]
 
-export function BootScreen({ status }: { status: SandboxStatus }) {
+export function BootScreen({ status, detail }: { status: SandboxStatus; detail?: string }) {
   const randomFact = FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)]
 
   return (
@@ -29,7 +29,7 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
         Setting up your workspace...
       </h2>
 
-      <div className="space-y-4 mb-8 w-72">
+      <div className="space-y-4 mb-8 w-80">
         {STEPS.map((step) => {
           const currentIdx = STEPS.findIndex((s) => s.status === status)
           const stepIdx = STEPS.findIndex((s) => s.status === step.status)
@@ -37,32 +37,43 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
           const isCurrent = step.status === status
 
           return (
-            <div key={step.status} className="flex items-center gap-3">
-              <span
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${
-                  isDone
-                    ? 'bg-green-500 text-white'
-                    : isCurrent
-                      ? 'bg-blue-500 text-white animate-pulse'
-                      : ''
-                }`}
-                style={
-                  !isDone && !isCurrent
-                    ? { backgroundColor: 'var(--bg-muted)', color: 'var(--text-muted)' }
-                    : undefined
-                }
-              >
-                {isDone ? '\u2713' : stepIdx + 1}
-              </span>
-              <span
-                className="text-base"
-                style={{
-                  color: isDone || !isCurrent ? 'var(--text-muted)' : 'var(--text-primary)',
-                  fontWeight: isCurrent ? 500 : 400,
-                }}
-              >
-                {step.label}
-              </span>
+            <div key={step.status}>
+              <div className="flex items-center gap-3">
+                <span
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${
+                    isDone
+                      ? 'bg-green-500 text-white'
+                      : isCurrent
+                        ? 'bg-blue-500 text-white animate-pulse'
+                        : ''
+                  }`}
+                  style={
+                    !isDone && !isCurrent
+                      ? { backgroundColor: 'var(--bg-muted)', color: 'var(--text-muted)' }
+                      : undefined
+                  }
+                >
+                  {isDone ? '\u2713' : stepIdx + 1}
+                </span>
+                <span
+                  className="text-base"
+                  style={{
+                    color: isDone || !isCurrent ? 'var(--text-muted)' : 'var(--text-primary)',
+                    fontWeight: isCurrent ? 500 : 400,
+                  }}
+                >
+                  {step.label}
+                </span>
+              </div>
+              {/* Show live detail for the current step */}
+              {isCurrent && detail && (
+                <p
+                  className="ml-9 mt-1 text-sm font-mono truncate max-w-[280px]"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  {detail}
+                </p>
+              )}
             </div>
           )
         })}

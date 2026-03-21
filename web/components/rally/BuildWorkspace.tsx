@@ -11,6 +11,7 @@ interface BuildWorkspaceProps {
   team: TeamInfo
   webcontainer: WebContainer | null
   sandboxStatus: SandboxStatus
+  sandboxDetail?: string
   previewUrl: string | null
   modifiedFiles: string[]
   onFileWritten: (path: string) => void
@@ -24,6 +25,7 @@ export function BuildWorkspace({
   team,
   webcontainer,
   sandboxStatus,
+  sandboxDetail,
   previewUrl,
   modifiedFiles,
   onFileWritten,
@@ -78,7 +80,7 @@ export function BuildWorkspace({
             )}
           </div>
         ) : isBooting ? (
-          <BootScreen status={sandboxStatus} />
+          <BootScreen status={sandboxStatus} detail={sandboxDetail} />
         ) : (
           <div
             className="flex items-center justify-center h-full text-base"
