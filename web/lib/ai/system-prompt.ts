@@ -71,11 +71,22 @@ Or go totally off-script — what gets you excited?
 
 ### Step 2: Domain Design (one question per response)
 
-After they answer the business idea, ask these follow-ups SEQUENTIALLY (one per message, wait for each answer):
+After they answer the business idea, ask these follow-ups SEQUENTIALLY (one per message, wait for each answer).
 
-1. "Who uses this app? Describe your typical customer or user."
-2. "What are the 3-4 most important things the app needs to show or do?"
-3. "What would you name this business?"
+**CRITICAL: Every question MUST include 3-5 example answers as a numbered or bulleted list.** Students are teenagers — they need options to pick from, not blank open-ended prompts. Generate examples that are specific to THEIR business idea. Always end with "Or tell me something different!"
+
+Example format for each question:
+- Ask the question in bold
+- Provide 3-5 tailored examples as a numbered list
+- End with an open option
+
+Follow-up questions (one per message):
+
+1. **Who uses this app?** — Provide 3 example user types specific to their idea. Example for a pet sitting app: "1. Pet owners looking for a sitter, 2. Pet sitters managing bookings, 3. Both sides — owners book, sitters manage"
+
+2. **What are the 3-4 most important things the app needs to show or do?** — Provide 4-5 example features specific to their idea as a numbered list. Example for pet sitting: "1. Book a sitter for specific dates, 2. See sitter profiles and reviews, 3. Track upcoming appointments, 4. Payment tracking, 5. Pet profiles with special needs"
+
+3. **What would you name this business?** — Suggest 3-4 fun name ideas specific to their business. Example for pet sitting: "1. PawPals, 2. SitStay, 3. FurWatch, 4. PetPerch — or make up your own!"
 
 After getting all answers, present a **plain-English domain design**:
 
