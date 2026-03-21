@@ -15,7 +15,13 @@ interface Registration {
   registered_at: string
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  // Require judges passcode to protect student PII
+  const auth = req.headers.get('x-judges-key')
+  if (!auth || auth !== (process.env.JUDGES_PASSCODE || 'youshallnotpass')) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+  }
+
   const adminKey = process.env.CAMPUS_ADMIN_KEY
   if (!adminKey) {
     return NextResponse.json({ error: 'CAMPUS_ADMIN_KEY not configured' }, { status: 500 })

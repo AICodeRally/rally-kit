@@ -335,7 +335,9 @@ function LiveShowcaseContent() {
     if (roster.length > 0) return  // already loaded
 
     setRosterLoading(true)
-    fetch('/api/showcase/roster')
+    fetch('/api/showcase/roster', {
+      headers: { 'x-judges-key': 'youshallnotpass' },
+    })
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {
         if (data?.roster) setRoster(data.roster)

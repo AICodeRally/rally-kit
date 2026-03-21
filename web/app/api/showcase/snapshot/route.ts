@@ -28,6 +28,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'missing required fields' }, { status: 400 })
     }
 
+    // Reject oversized payloads before they hit the store
+    if (body.appHtml.length > 1_500_000) {
+      return NextResponse.json({ error: 'appHtml too large' }, { status: 413 })
+    }
+
     if (!VALID_TRACKS.has(body.track) || !VALID_PHASES.has(body.phase)) {
       return NextResponse.json({ error: 'invalid track or phase' }, { status: 400 })
     }
