@@ -336,7 +336,7 @@ function LiveShowcaseContent() {
 
     setRosterLoading(true)
     fetch('/api/showcase/roster', {
-      headers: { 'x-judges-key': 'youshallnotpass' },
+      headers: { 'x-judges-key': sessionStorage.getItem('rally-judges-key') || '' },
     })
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {

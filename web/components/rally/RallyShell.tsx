@@ -67,7 +67,7 @@ function sendShowcaseSnapshot(payload: {
 }) {
   fetch('/api/showcase/snapshot', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'x-rally-key': 'gcu2526' },
     body: JSON.stringify(payload),
   }).catch(() => {}) // fire-and-forget
 }

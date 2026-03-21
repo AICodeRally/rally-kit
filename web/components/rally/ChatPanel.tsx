@@ -70,6 +70,7 @@ export function ChatPanel({
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const capturedTitles = useRef<Set<string>>(new Set())
+  const lastDocMessageIdx = useRef(0)
 
   const transport = useMemo(
     () => new DefaultChatTransport({
@@ -119,10 +120,12 @@ export function ChatPanel({
     }
   }, [messages, onIdeaCaptured])
 
-  // Extract documents from assistant messages
+  // Extract documents from assistant messages (only scan new messages)
   useEffect(() => {
     if (!onDocUpdate) return
-    for (const msg of messages) {
+    const start = lastDocMessageIdx.current
+    for (let i = start; i < messages.length; i++) {
+      const msg = messages[i]
       if (msg.role !== 'assistant') continue
       for (const part of msg.parts ?? []) {
         if (part.type !== 'text' || !part.text) continue
@@ -132,6 +135,7 @@ export function ChatPanel({
         }
       }
     }
+    lastDocMessageIdx.current = messages.length
   }, [messages, onDocUpdate])
 
   // Auto-start rally in design phase (not after a refresh into build/polish)

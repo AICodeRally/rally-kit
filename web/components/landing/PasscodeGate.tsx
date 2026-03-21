@@ -29,7 +29,11 @@ export function PasscodeGate({ passcode, storageKey, label = 'Enter Passcode', c
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (input.trim().toUpperCase() === passcode.toUpperCase()) {
-      try { sessionStorage.setItem(storageKey, 'true') } catch {}
+      try {
+        sessionStorage.setItem(storageKey, 'true')
+        // Store the actual passcode so authenticated fetches can use it
+        sessionStorage.setItem('rally-judges-key', passcode.toLowerCase())
+      } catch {}
       setUnlocked(true)
       setError(false)
     } else {

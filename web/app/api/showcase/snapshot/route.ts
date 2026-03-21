@@ -6,12 +6,9 @@ const VALID_TRACKS = new Set(['campus', 'startup', 'future'])
 const VALID_SHELLS = new Set(['mobile', 'dashboard', 'portfolio'])
 
 export async function POST(req: Request) {
-  const requiredToken = process.env.SHOWCASE_INGEST_TOKEN
-  if (requiredToken) {
-    const provided = req.headers.get('x-showcase-token')
-    if (provided !== requiredToken) {
-      return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-    }
+  const provided = req.headers.get('x-rally-key')
+  if (provided !== 'gcu2526') {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
   try {
