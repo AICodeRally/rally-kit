@@ -9,7 +9,7 @@ export const RALLY_KIT_FILES: FileSystemTree = {
           version: '0.1.0',
           private: true,
           scripts: {
-            dev: 'next dev --turbopack',
+            dev: 'next dev',
             build: 'next build',
             start: 'next start',
           },
@@ -18,13 +18,15 @@ export const RALLY_KIT_FILES: FileSystemTree = {
             react: '19.0.0',
             'react-dom': '19.0.0',
             'lucide-react': '0.469.0',
+            recharts: '2.15.0',
             clsx: '2.1.1',
             'tailwind-merge': '3.0.0',
           },
           devDependencies: {
             typescript: '5.7.3',
-            '@tailwindcss/postcss': '4.0.0',
-            tailwindcss: '4.0.0',
+            tailwindcss: '3.4.17',
+            postcss: '8.4.49',
+            autoprefixer: '10.4.20',
           },
         },
         null,
@@ -76,7 +78,61 @@ export const RALLY_KIT_FILES: FileSystemTree = {
 
   'postcss.config.mjs': {
     file: {
-      contents: `const config = { plugins: { '@tailwindcss/postcss': {} } }\nexport default config`,
+      contents: `const config = { plugins: { tailwindcss: {}, autoprefixer: {} } }\nexport default config`,
+    },
+  },
+
+  'tailwind.config.ts': {
+    file: {
+      contents: `import type { Config } from 'tailwindcss'
+
+const config: Config = {
+  content: ['./src/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+        mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
+      },
+      colors: {
+        accent: {
+          DEFAULT: 'var(--color-accent)',
+          light: 'var(--color-accent-light)',
+          dark: 'var(--color-accent-dark)',
+        },
+        secondary: 'var(--color-secondary)',
+        tertiary: 'var(--color-tertiary)',
+        success: 'var(--color-success)',
+        warning: 'var(--color-warning)',
+        danger: 'var(--color-danger)',
+        bg: {
+          primary: 'var(--color-bg-primary)',
+          secondary: 'var(--color-bg-secondary)',
+          card: 'var(--color-bg-card)',
+          'card-hover': 'var(--color-bg-card-hover)',
+          sidebar: 'var(--color-bg-sidebar)',
+          nav: 'var(--color-bg-nav)',
+        },
+        text: {
+          primary: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
+          muted: 'var(--color-text-muted)',
+        },
+        border: {
+          default: 'var(--color-border-default)',
+          subtle: 'var(--color-border-subtle)',
+        },
+      },
+      boxShadow: {
+        card: 'var(--shadow-card)',
+        'card-hover': 'var(--shadow-card-hover)',
+      },
+    },
+  },
+  plugins: [],
+}
+
+export default config`,
     },
   },
 
@@ -87,17 +143,14 @@ export const RALLY_KIT_FILES: FileSystemTree = {
           'layout.tsx': {
             file: {
               contents: `import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import './globals.css';
 import { ThemeInitializer } from '@/components/ThemeInitializer';
 
-const inter = Inter({ subsets: ['latin'] });
-
 export const metadata: Metadata = {
-  title: 'Rally Kit \u2014 Vibe Code Rally',
-  description: 'Built with AI at the GCU Vibe Code Rally',
+  title: 'Rally Kit \u2014 AICR Rally',
+  description: 'Built with AI at the AICR Rally',
 };
 
 function readRallyConfig(): { theme?: string; customAccent?: string } {
@@ -121,7 +174,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={\`\${inter.className} bg-bg-primary text-text-primary min-h-screen\`}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+      </head>
+      <body className="font-sans bg-bg-primary text-text-primary min-h-screen">
         <ThemeInitializer theme={config.theme} customAccent={config.customAccent} />
         {children}
       </body>
@@ -178,15 +236,17 @@ export default function Home() {
 
           'globals.css': {
             file: {
-              contents: `@import 'tailwindcss';
+              contents: `@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /*
- * Rally Kit \u2014 Vibe Code Rally Design System
+ * Rally Kit \u2014 AICR Rally Design System
  * LIGHT theme \u2014 readability first (16px+ body, high contrast)
  * Accent colors set dynamically via theme.ts
  */
 
-@theme {
+:root {
   /* Accent colors \u2014 set by theme.ts at runtime, defaults to Ocean */
   --color-accent: #0ea5e9;
   --color-accent-light: #38bdf8;
