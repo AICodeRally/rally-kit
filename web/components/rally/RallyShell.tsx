@@ -1,76 +1,109 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import type { WebContainer } from '@webcontainer/api'
 import { bootWebContainer } from '@/lib/webcontainer/boot'
-import { ChatPanel } from './ChatPanel'
-import { PreviewPanel } from './PreviewPanel'
+import { RallyHeader } from './RallyHeader'
+import { DesignWorkspace } from './DesignWorkspace'
+import { BuildWorkspace } from './BuildWorkspace'
+import { BuildTransition } from './BuildTransition'
 import { StatusBar } from './StatusBar'
-import { PhaseIndicator } from './PhaseIndicator'
-import { BootScreen } from './BootScreen'
-import type { TeamInfo, Phase, SandboxStatus } from '@/lib/rally/types'
+import { SplashScreen } from './SplashScreen'
+import type { TeamInfo, Phase, SandboxStatus, DesignIdea } from '@/lib/rally/types'
 
 export function RallyShell({ team }: { team: TeamInfo }) {
   const [webcontainer, setWebcontainer] = useState<WebContainer | null>(null)
-  const [sandboxStatus, setSandboxStatus] = useState<SandboxStatus>('booting')
+  const [sandboxStatus, setSandboxStatus] = useState<SandboxStatus>('idle')
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const [phase] = useState<Phase>('design')
+  const [phase, setPhase] = useState<Phase>('design')
   const [phaseStartedAt] = useState(Date.now())
   const [modifiedFiles, setModifiedFiles] = useState<string[]>([])
+  const [ideas, setIdeas] = useState<DesignIdea[]>([])
+  const [showSplash, setShowSplash] = useState(true)
+  const [showBuildTransition, setShowBuildTransition] = useState(false)
+  const bootStarted = useRef(false)
 
-  // Boot WebContainer on mount
-  useEffect(() => {
-    let cancelled = false
+  const ensureWebContainer = useCallback(() => {
+    if (bootStarted.current) return
+    bootStarted.current = true
+    setSandboxStatus('booting')
+
     bootWebContainer((status) => {
-      if (!cancelled) setSandboxStatus(status)
+      setSandboxStatus(status)
     }).then((result) => {
-      if (!cancelled) {
-        setWebcontainer(result.webcontainer)
-        setPreviewUrl(result.previewUrl)
-      }
+      setWebcontainer(result.webcontainer)
+      setPreviewUrl(result.previewUrl)
     }).catch(() => {
-      if (!cancelled) setSandboxStatus('error')
+      setSandboxStatus('error')
     })
-    return () => { cancelled = true }
   }, [])
 
   const handleFileWritten = useCallback((path: string) => {
     setModifiedFiles((prev) => [path, ...prev.filter((p) => p !== path)])
+    // First file write triggers auto-transition to build phase
+    setPhase((p) => {
+      if (p === 'design') {
+        setShowBuildTransition(true)
+        return 'build'
+      }
+      return p
+    })
   }, [])
 
-  const isReady = sandboxStatus === 'ready'
+  const handlePhaseChange = useCallback((newPhase: 'build') => {
+    setPhase(newPhase)
+    setShowBuildTransition(true)
+    ensureWebContainer()
+  }, [ensureWebContainer])
+
+  const handleAddIdea = useCallback((idea: DesignIdea) => {
+    setIdeas((prev) => {
+      if (prev.some((i) => i.title === idea.title)) return prev
+      return [...prev, idea]
+    })
+  }, [])
+
+  if (showSplash) {
+    return <SplashScreen teamName={team.name} onComplete={() => setShowSplash(false)} />
+  }
 
   return (
-    <div className="flex flex-col h-screen">
-      {/* Header */}
-      <header className="h-10 px-4 flex items-center justify-between bg-white border-b border-gray-200">
-        <span className="text-sm font-semibold">Vibe Code Rally</span>
-        <PhaseIndicator phase={phase} startedAt={phaseStartedAt} />
-        <span className="text-sm text-gray-500">{team.name}</span>
-      </header>
+    <div className="flex flex-col h-screen" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <RallyHeader phase={phase} phaseStartedAt={phaseStartedAt} teamName={team.name} />
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col md:flex-row min-h-0">
-        {/* Chat — 400px fixed on desktop, full width on mobile */}
-        <div className="w-full md:w-[400px] shrink-0 h-1/2 md:h-auto">
-          <ChatPanel
-            team={team}
-            webcontainer={webcontainer}
-            onFileWritten={handleFileWritten}
-          />
-        </div>
+      {showBuildTransition && (
+        <BuildTransition
+          teamName={team.name}
+          sandboxStatus={sandboxStatus}
+          onComplete={() => setShowBuildTransition(false)}
+        />
+      )}
 
-        {/* Preview — remaining space */}
-        <div className="flex-1 h-1/2 md:h-auto">
-          {isReady ? (
-            <PreviewPanel previewUrl={previewUrl} modifiedFiles={modifiedFiles} />
-          ) : (
-            <BootScreen status={sandboxStatus} />
-          )}
-        </div>
-      </div>
+      {phase === 'design' ? (
+        <DesignWorkspace
+          team={team}
+          webcontainer={webcontainer}
+          ideas={ideas}
+          onAddIdea={handleAddIdea}
+          onFileWritten={handleFileWritten}
+          onBuildRequested={ensureWebContainer}
+          onIdeaCaptured={handleAddIdea}
+          onPhaseChange={handlePhaseChange}
+        />
+      ) : (
+        <BuildWorkspace
+          team={team}
+          webcontainer={webcontainer}
+          sandboxStatus={sandboxStatus}
+          previewUrl={previewUrl}
+          modifiedFiles={modifiedFiles}
+          onFileWritten={handleFileWritten}
+          onBuildRequested={ensureWebContainer}
+          onIdeaCaptured={handleAddIdea}
+          onPhaseChange={handlePhaseChange}
+        />
+      )}
 
-      {/* Status bar */}
       <StatusBar status={sandboxStatus} />
     </div>
   )

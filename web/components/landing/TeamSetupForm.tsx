@@ -20,7 +20,6 @@ export function TeamSetupForm() {
 
     const filledMembers = members.filter((m) => m.trim())
 
-    // Store team info in sessionStorage (simplest approach, no DB needed)
     sessionStorage.setItem(
       `rally-${slug}`,
       JSON.stringify({ name: teamName, slug, members: filledMembers, track }),
@@ -48,7 +47,10 @@ export function TeamSetupForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-sm font-medium mb-1"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           Team Name
         </label>
         <input
@@ -56,14 +58,22 @@ export function TeamSetupForm() {
           value={teamName}
           onChange={(e) => setTeamName(e.target.value)}
           placeholder="e.g. Thunder Squad"
-          className="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-3 text-lg rounded-lg focus:outline-none focus:ring-2"
+          style={{
+            backgroundColor: 'var(--bg-muted)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border)',
+          }}
           required
           autoFocus
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-sm font-medium mb-1"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           Team Members
         </label>
         <div className="space-y-2">
@@ -74,14 +84,20 @@ export function TeamSetupForm() {
               value={member}
               onChange={(e) => updateMember(i, e.target.value)}
               placeholder={`Member ${i + 1}`}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2"
+              style={{
+                backgroundColor: 'var(--bg-muted)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border)',
+              }}
             />
           ))}
           {members.length < 5 && (
             <button
               type="button"
               onClick={addMember}
-              className="text-sm text-blue-600 hover:text-blue-800"
+              className="text-sm"
+              style={{ color: 'var(--accent)' }}
             >
               + Add member
             </button>
@@ -90,18 +106,21 @@ export function TeamSetupForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          className="block text-sm font-medium mb-2"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           Track
         </label>
         <div className="space-y-2">
           {TRACKS.map((t) => (
             <label
               key={t.value}
-              className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
-                track === t.value
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors"
+              style={{
+                border: `1px solid ${track === t.value ? 'var(--accent)' : 'var(--border)'}`,
+                backgroundColor: track === t.value ? 'var(--user-bubble)' : 'transparent',
+              }}
             >
               <input
                 type="radio"
@@ -112,8 +131,12 @@ export function TeamSetupForm() {
                 className="accent-blue-600"
               />
               <div>
-                <div className="font-medium">{t.label}</div>
-                <div className="text-sm text-gray-500">{t.desc}</div>
+                <div className="font-medium" style={{ color: 'var(--text-primary)' }}>
+                  {t.label}
+                </div>
+                <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                  {t.desc}
+                </div>
               </div>
             </label>
           ))}
@@ -122,9 +145,10 @@ export function TeamSetupForm() {
 
       <button
         type="submit"
-        className="w-full py-3 px-6 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+        className="w-full py-3 px-6 text-white text-lg font-semibold rounded-lg transition-colors"
+        style={{ backgroundColor: 'var(--accent)' }}
       >
-        Start Building →
+        Start Building &rarr;
       </button>
     </form>
   )

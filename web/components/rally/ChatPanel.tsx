@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useChat } from '@ai-sdk/react'
 import {
   DefaultChatTransport,
@@ -11,18 +11,49 @@ import { MessageResponse } from '@/components/ai-elements/message'
 import { SlashToolbar } from './SlashToolbar'
 import { FileChangeNotification } from '@/components/chat/FileChangeNotification'
 import { writeFile, readFile, listFiles } from '@/lib/webcontainer/operations'
-import type { TeamInfo } from '@/lib/rally/types'
+import type { TeamInfo, DesignIdea } from '@/lib/rally/types'
 import { Send } from 'lucide-react'
+
+// Regex to extract [IDEA:category:title]description[/IDEA] markers
+const IDEA_REGEX = /\[IDEA:(problem|pages|data|shell|theme):([^\]]+)\]([\s\S]*?)\[\/IDEA\]/g
+
+function extractIdeas(text: string): DesignIdea[] {
+  const ideas: DesignIdea[] = []
+  let match: RegExpExecArray | null
+  while ((match = IDEA_REGEX.exec(text)) !== null) {
+    ideas.push({
+      id: crypto.randomUUID(),
+      category: match[1] as DesignIdea['category'],
+      title: match[2].trim(),
+      description: match[3].trim(),
+    })
+  }
+  return ideas
+}
 
 interface ChatPanelProps {
   team: TeamInfo
   webcontainer: WebContainer | null
+  phase?: string
   onFileWritten: (path: string) => void
+  onBuildRequested: () => void
+  onIdeaCaptured?: (idea: DesignIdea) => void
+  onPhaseChange?: (phase: 'build') => void
 }
 
-export function ChatPanel({ team, webcontainer, onFileWritten }: ChatPanelProps) {
+export function ChatPanel({
+  team,
+  webcontainer,
+  phase,
+  onFileWritten,
+  onBuildRequested,
+  onIdeaCaptured,
+  onPhaseChange,
+}: ChatPanelProps) {
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const capturedTitles = useRef<Set<string>>(new Set())
+  const pendingToolCalls = useRef<Array<{ toolCall: { toolName: string; toolCallId: string; input: unknown; dynamic?: boolean } }>>([])
 
   const { messages, sendMessage, addToolOutput, status } = useChat({
     transport: new DefaultChatTransport({
@@ -32,54 +63,94 @@ export function ChatPanel({ team, webcontainer, onFileWritten }: ChatPanelProps)
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
 
     async onToolCall({ toolCall }) {
-      if (!webcontainer || toolCall.dynamic) return
+      if (toolCall.dynamic) return
 
-      try {
-        if (toolCall.toolName === 'writeFile') {
-          const { path, content } = toolCall.input as { path: string; content: string }
-          const result = await writeFile(webcontainer, path, content)
-          onFileWritten(path)
-          addToolOutput({
-            tool: 'writeFile',
-            toolCallId: toolCall.toolCallId,
-            output: result,
-          })
-        } else if (toolCall.toolName === 'readFile') {
-          const { path } = toolCall.input as { path: string }
-          const result = await readFile(webcontainer, path)
-          addToolOutput({
-            tool: 'readFile',
-            toolCallId: toolCall.toolCallId,
-            output: result,
-          })
-        } else if (toolCall.toolName === 'listFiles') {
-          const { path } = toolCall.input as { path: string }
-          const result = await listFiles(webcontainer, path)
-          addToolOutput({
-            tool: 'listFiles',
-            toolCallId: toolCall.toolCallId,
-            output: result,
-          })
-        }
-      } catch (err) {
-        addToolOutput({
-          tool: toolCall.toolName,
-          toolCallId: toolCall.toolCallId,
-          state: 'output-error',
-          errorText: err instanceof Error ? err.message : 'Tool execution failed',
-        })
+      if (!webcontainer) {
+        onBuildRequested()
+        pendingToolCalls.current.push({ toolCall })
+        return
       }
+
+      await executeToolCall(toolCall, webcontainer)
     },
   })
 
-  // Auto-start rally when WebContainer is ready
+  useEffect(() => {
+    if (!webcontainer || pendingToolCalls.current.length === 0) return
+    const pending = [...pendingToolCalls.current]
+    pendingToolCalls.current = []
+    for (const { toolCall } of pending) {
+      executeToolCall(toolCall, webcontainer)
+    }
+  }, [webcontainer])
+
+  const executeToolCall = useCallback(async (
+    toolCall: { toolName: string; toolCallId: string; input: unknown },
+    wc: WebContainer,
+  ) => {
+    try {
+      if (toolCall.toolName === 'writeFile') {
+        const { path, content } = toolCall.input as { path: string; content: string }
+        const result = await writeFile(wc, path, content)
+        onFileWritten(path)
+        addToolOutput({
+          tool: 'writeFile',
+          toolCallId: toolCall.toolCallId,
+          output: result,
+        })
+      } else if (toolCall.toolName === 'readFile') {
+        const { path } = toolCall.input as { path: string }
+        const result = await readFile(wc, path)
+        addToolOutput({
+          tool: 'readFile',
+          toolCallId: toolCall.toolCallId,
+          output: result,
+        })
+      } else if (toolCall.toolName === 'listFiles') {
+        const { path } = toolCall.input as { path: string }
+        const result = await listFiles(wc, path)
+        addToolOutput({
+          tool: 'listFiles',
+          toolCallId: toolCall.toolCallId,
+          output: result,
+        })
+      }
+    } catch (err) {
+      addToolOutput({
+        tool: toolCall.toolName,
+        toolCallId: toolCall.toolCallId,
+        state: 'output-error',
+        errorText: err instanceof Error ? err.message : 'Tool execution failed',
+      })
+    }
+  }, [addToolOutput, onFileWritten])
+
+  // Extract ideas from assistant messages
+  useEffect(() => {
+    if (!onIdeaCaptured) return
+    for (const msg of messages) {
+      if (msg.role !== 'assistant') continue
+      for (const part of msg.parts) {
+        if (part.type !== 'text') continue
+        const ideas = extractIdeas(part.text)
+        for (const idea of ideas) {
+          if (!capturedTitles.current.has(idea.title)) {
+            capturedTitles.current.add(idea.title)
+            onIdeaCaptured(idea)
+          }
+        }
+      }
+    }
+  }, [messages, onIdeaCaptured])
+
+  // Auto-start rally immediately
   const hasStarted = useRef(false)
   useEffect(() => {
-    if (webcontainer && !hasStarted.current) {
+    if (!hasStarted.current) {
       hasStarted.current = true
       sendMessage({ text: '/rally' })
     }
-  }, [webcontainer, sendMessage])
+  }, [sendMessage])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -88,18 +159,33 @@ export function ChatPanel({ team, webcontainer, onFileWritten }: ChatPanelProps)
 
   function handleSend() {
     if (!input.trim()) return
-    sendMessage({ text: input })
+    const text = input.trim()
+    if (text === '/build') {
+      onBuildRequested()
+      onPhaseChange?.('build')
+    }
+    sendMessage({ text })
     setInput('')
   }
 
   function handleCommand(command: string) {
+    if (command === '/build') {
+      onBuildRequested()
+      onPhaseChange?.('build')
+    }
     sendMessage({ text: command })
   }
 
   const isStreaming = status === 'streaming' || status === 'submitted'
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-gray-200">
+    <div
+      className="flex flex-col h-full"
+      style={{
+        backgroundColor: 'var(--bg-primary)',
+        borderRight: '1px solid var(--border)',
+      }}
+    >
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
@@ -107,19 +193,26 @@ export function ChatPanel({ team, webcontainer, onFileWritten }: ChatPanelProps)
             <div
               className={
                 message.role === 'user'
-                  ? 'bg-blue-50 rounded-lg p-3 text-sm'
+                  ? 'rounded-lg p-3 text-sm'
                   : 'text-sm'
+              }
+              style={
+                message.role === 'user'
+                  ? { backgroundColor: 'var(--user-bubble)' }
+                  : undefined
               }
             >
               {message.parts.map((part, i) => {
                 if (part.type === 'text') {
+                  // Strip IDEA markers from displayed text
+                  const displayText = part.text.replace(IDEA_REGEX, '').trim()
+                  if (!displayText) return null
                   return message.role === 'assistant' ? (
-                    <MessageResponse key={i}>{part.text}</MessageResponse>
+                    <MessageResponse key={i}>{displayText}</MessageResponse>
                   ) : (
-                    <span key={i}>{part.text}</span>
+                    <span key={i}>{displayText}</span>
                   )
                 }
-                // Show file change indicators for writeFile tool calls
                 if (
                   part.type === 'tool-writeFile' &&
                   (part.state === 'output-available' || part.state === 'input-available')
@@ -140,10 +233,10 @@ export function ChatPanel({ team, webcontainer, onFileWritten }: ChatPanelProps)
       </div>
 
       {/* Slash command toolbar */}
-      <SlashToolbar onCommand={handleCommand} />
+      <SlashToolbar onCommand={handleCommand} phase={phase} />
 
       {/* Input */}
-      <div className="p-3 border-t border-gray-200">
+      <div className="p-3" style={{ borderTop: '1px solid var(--border)' }}>
         <div className="flex gap-2">
           <input
             type="text"
@@ -152,12 +245,18 @@ export function ChatPanel({ team, webcontainer, onFileWritten }: ChatPanelProps)
             onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
             placeholder={isStreaming ? 'AI is working...' : 'Type a message...'}
             disabled={isStreaming}
-            className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+            className="flex-1 px-3 py-2 text-sm rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50"
+            style={{
+              backgroundColor: 'var(--bg-muted)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border)',
+            }}
           />
           <button
             onClick={handleSend}
             disabled={isStreaming || !input.trim()}
-            className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: 'var(--accent)' }}
           >
             <Send className="w-4 h-4" />
           </button>

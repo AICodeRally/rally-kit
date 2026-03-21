@@ -18,8 +18,16 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
   const randomFact = FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)]
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center bg-white p-8">
-      <h2 className="text-2xl font-bold mb-8">Setting up your workspace...</h2>
+    <div
+      className="flex-1 flex flex-col items-center justify-center p-8"
+      style={{ backgroundColor: 'var(--bg-primary)' }}
+    >
+      <h2
+        className="text-2xl font-bold mb-8"
+        style={{ color: 'var(--text-primary)' }}
+      >
+        Setting up your workspace...
+      </h2>
 
       <div className="space-y-3 mb-8 w-64">
         {STEPS.map((step) => {
@@ -36,15 +44,21 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
                     ? 'bg-green-500 text-white'
                     : isCurrent
                       ? 'bg-blue-500 text-white animate-pulse'
-                      : 'bg-gray-200 text-gray-400'
+                      : ''
                 }`}
+                style={
+                  !isDone && !isCurrent
+                    ? { backgroundColor: 'var(--bg-muted)', color: 'var(--text-muted)' }
+                    : undefined
+                }
               >
                 {isDone ? '\u2713' : stepIdx + 1}
               </span>
               <span
-                className={
-                  isDone ? 'text-gray-400' : isCurrent ? 'font-medium' : 'text-gray-400'
-                }
+                style={{
+                  color: isDone || !isCurrent ? 'var(--text-muted)' : 'var(--text-primary)',
+                  fontWeight: isCurrent ? 500 : 400,
+                }}
               >
                 {step.label}
               </span>
@@ -53,7 +67,7 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
         })}
       </div>
 
-      <p className="text-sm text-gray-400 italic">{randomFact}</p>
+      <p className="text-sm italic" style={{ color: 'var(--text-muted)' }}>{randomFact}</p>
     </div>
   )
 }

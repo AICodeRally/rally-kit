@@ -8,6 +8,7 @@ export interface TeamInfo {
 export type Phase = 'design' | 'build' | 'polish'
 
 export type SandboxStatus =
+  | 'idle'
   | 'booting'
   | 'mounting'
   | 'installing'
@@ -24,4 +25,11 @@ export interface RallyState {
     previewUrl: string | null
   }
   modifiedFiles: string[]
+}
+
+export interface DesignIdea {
+  id: string
+  title: string
+  description: string
+  category: 'problem' | 'pages' | 'data' | 'shell' | 'theme'
 }

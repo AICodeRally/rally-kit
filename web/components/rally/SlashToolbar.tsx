@@ -1,34 +1,55 @@
 'use client'
 
+import {
+  Play, HelpCircle, Hammer, Lightbulb, BarChart3,
+  Sparkles, Presentation, Wrench, RotateCcw,
+} from 'lucide-react'
+
 const COMMANDS = [
-  { label: '/rally', description: 'Start or resume' },
-  { label: '/help', description: 'Show commands' },
-  { label: '/build', description: 'Start building' },
-  { label: '/brainstorm', description: 'Get ideas' },
-  { label: '/status', description: 'See progress' },
-  { label: '/polish', description: 'Clean up' },
-  { label: '/demo', description: 'Demo script' },
-  { label: '/fix', description: 'Fix an error' },
-  { label: '/reset', description: 'Start over' },
+  { label: '/rally', description: 'Start', icon: Play, phases: ['design', 'build', 'polish'] },
+  { label: '/help', description: 'Help', icon: HelpCircle, phases: ['design', 'build', 'polish'] },
+  { label: '/brainstorm', description: 'Ideas', icon: Lightbulb, phases: ['design'] },
+  { label: '/build', description: 'Build', icon: Hammer, phases: ['design'] },
+  { label: '/status', description: 'Progress', icon: BarChart3, phases: ['design', 'build', 'polish'] },
+  { label: '/polish', description: 'Polish', icon: Sparkles, phases: ['build', 'polish'] },
+  { label: '/demo', description: 'Demo script', icon: Presentation, phases: ['polish', 'build'] },
+  { label: '/fix', description: 'Fix error', icon: Wrench, phases: ['build', 'polish'] },
+  { label: '/reset', description: 'Start over', icon: RotateCcw, phases: ['design', 'build', 'polish'] },
 ]
 
 export function SlashToolbar({
   onCommand,
+  phase = 'design',
 }: {
   onCommand: (command: string) => void
+  phase?: string
 }) {
+  const visible = COMMANDS.filter((cmd) => cmd.phases.includes(phase as 'design'))
+
   return (
-    <div className="flex gap-1.5 overflow-x-auto py-1.5 px-2">
-      {COMMANDS.map((cmd) => (
-        <button
-          key={cmd.label}
-          onClick={() => onCommand(cmd.label)}
-          className="shrink-0 px-2.5 py-1 text-xs font-mono bg-gray-100 hover:bg-gray-200 rounded-full text-gray-600 hover:text-gray-900 transition-colors"
-          title={cmd.description}
-        >
-          {cmd.label}
-        </button>
-      ))}
+    <div className="py-1.5 px-2">
+      <div className="flex gap-1.5 flex-wrap">
+        {visible.map((cmd) => {
+          const Icon = cmd.icon
+          return (
+            <button
+              key={cmd.label}
+              onClick={() => onCommand(cmd.label)}
+              className="shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg transition-colors hover:opacity-80"
+              style={{
+                backgroundColor: 'var(--bg-muted)',
+                color: 'var(--text-secondary)',
+              }}
+            >
+              <Icon className="w-3 h-3" style={{ color: 'var(--accent)' }} />
+              <span className="font-mono">{cmd.label}</span>
+              <span className="hidden sm:inline" style={{ color: 'var(--text-muted)' }}>
+                {cmd.description}
+              </span>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

@@ -1,38 +1,57 @@
-# Facilitator Guide — GCU Vibe Code Rally
+# Facilitator Guide — AICR Rally Kit
 
 > For Todd, Joe, Paul, and event helpers.
+> Updated for the **web version** — students use a browser, not a terminal.
 
-## Pre-Event Checklist (do this the day before)
+---
 
-### Student Machine Setup
-Each team needs:
-- [ ] **Node.js 20+** installed (`node -v` to verify)
-- [ ] **Claude Code** installed (`npm install -g @anthropic-ai/claude-code`)
-- [ ] **Anthropic API key** set (`export ANTHROPIC_API_KEY=sk-ant-...`)
-- [ ] **Git** installed (for cloning)
-- [ ] **VS Code** or any text editor (for viewing files — Claude does the coding)
+## What Changed (CLI → Web)
 
-### Clone & Start
-```bash
-git clone https://github.com/AICodeRally/rally-kit.git team-[name]
-cd team-[name]
-./start.sh
-```
+| Before (CLI) | Now (Web) |
+|---|---|
+| Clone repo + `./start.sh` per station | Students open a URL |
+| Claude Code in terminal | Chat panel in the browser |
+| `localhost:PORT` in separate browser tab | Live preview iframe next to chat |
+| Mac-only reliable | Any device with Chrome/Edge/Safari 16.4+ |
+| Need Node.js, Claude CLI, API key | Need only Wi-Fi |
+| Setup: 10-15 min per station | Setup: 0 min |
 
-The start script handles everything:
-- Checks prerequisites (Node 20+, npm, Claude Code, API key)
-- Installs dependencies
-- Shows a rally banner and asks for team name
-- Starts the dev server (split pane on iTerm2, new window on Terminal.app, backgrounded on other OS)
-- Opens the browser to localhost:3000
-- Launches Claude Code
+**Students no longer see a terminal.** Everything happens in the browser — chat on the left, app preview on the right. Slash commands are clickable buttons below the chat input.
 
-**If `./start.sh` doesn't work** (Windows without Git Bash, permissions issues):
-```bash
-npm install
-npm run dev          # Terminal 1 — keep running
-claude               # Terminal 2 — in same folder
-```
+---
+
+## Pre-Event Checklist
+
+### Infrastructure (do this days before)
+- [ ] **Deploy web app** to `rally.aicoderally.com` (Vercel)
+- [ ] **Verify ANTHROPIC_API_KEY** is set in Vercel env vars
+- [ ] **Test the full flow** — open the URL, create a team, chat through Phase 1, trigger Phase 2, verify preview works
+- [ ] **Test on multiple browsers** — Chrome, Edge, Safari. WebContainers require COOP/COEP headers.
+
+### Venue (day before)
+- [ ] Wi-Fi works and supports 60+ devices
+- [ ] Each station has a laptop/Chromebook with a modern browser
+- [ ] URL is written on a whiteboard or printed on table tents: `rally.aicoderally.com`
+- [ ] Projector ready for kickoff demo and final presentations
+
+### Day-of
+- [ ] Verify the URL loads on one device
+- [ ] Have the Event Cheat Sheet printed for helpers (see `EVENT_CHEAT_SHEET.md`)
+
+---
+
+## Student Quick Start
+
+1. Open browser to `rally.aicoderally.com`
+2. Enter team name, member names, and pick a track
+3. Click **Start Rally**
+4. Splash screen plays, then the AI greets the team and starts asking design questions
+5. Students talk to the AI by typing in the chat — AI asks **one question at a time**
+6. After 30 min of design, type `/build` or click the Build button to start coding
+7. AI builds the app — preview appears on the right side of the screen
+8. Students give feedback after each page is built
+
+**That's it.** No terminal, no file permissions, no port numbers.
 
 ---
 
@@ -40,104 +59,114 @@ claude               # Terminal 2 — in same folder
 
 | Time | Duration | Phase | What's Happening |
 |------|----------|-------|-----------------|
-| 0:00 | 15 min | **Kickoff** | Welcome, rules, team formation, hand out API keys |
-| 0:15 | 5 min | **Demo** | Show a 60-second demo of what a finished app looks like |
-| 0:20 | 30 min | **Phase 1: Design** | Teams create DOMAIN.md with Claude's help |
-| 0:50 | 5 min | **Check-in** | Walk the room, make sure every team has a DOMAIN.md |
-| 0:55 | 60 min | **Phase 2: Build** | Claude builds the app, teams give feedback |
-| 1:55 | 5 min | **Check-in** | Walk the room, troubleshoot any stuck teams |
-| 2:00 | 30 min | **Phase 3: Polish** | Finalize mock data, styling, prepare demo |
+| 0:00 | 10 min | **Kickoff** | Welcome, show the URL, brief demo of a finished app |
+| 0:10 | 30 min | **Phase 1: Design** | Teams chat with AI about their business idea |
+| 0:40 | 5 min | **Check-in** | Walk the room — every team should have ideas on the board |
+| 0:45 | 75 min | **Phase 2: Build** | AI builds the app, teams give feedback on each page |
+| 2:00 | 5 min | **Check-in** | Walk the room — every team should have 2+ pages built |
+| 2:05 | 25 min | **Phase 3: Polish** | Clean up visuals, generate demo script |
 | 2:30 | 25 min | **Demos** | Each team presents (2-3 min each) |
-| 2:55 | 5 min | **Judging & Awards** | Announce winners |
+| 2:55 | 5 min | **Wrap** | Awards, photos, celebration |
 
 ---
 
-## Kickoff Script (15 min)
+## What Helpers Need to Know
 
-1. **Welcome** (2 min)
-   - "You're going to build a real web app in 3 hours — with zero coding experience."
-   - "AI does the coding. You do the thinking."
+### The UI Layout
 
-2. **Rules** (3 min)
-   - Teams of 3-4
-   - Build an app for ANY business — you pick the industry
-   - Use Claude Code to build everything
-   - Mock data only (no real databases)
-   - Must use the dark theme (it's a rally, not a spreadsheet)
+**Phase 1 (Design):** Full-width chat + idea board on the right. A stepper at the top shows progress through 5 design steps: Problem → Pages → Data → Shell → Theme.
 
-3. **How It Works** (5 min)
-   - "Phase 1: You'll design your business. Claude helps you create a domain pack — think of it as the blueprint."
-   - "Phase 2: You tell Claude 'build the app.' It reads your blueprint and builds pages one at a time. You give feedback."
-   - "Phase 3: Polish it up for your demo."
+**Phase 2 (Build):** Chat on the left (narrow), live preview on the right. When Phase 2 starts, a full-screen transition shows the WebContainer booting (~30 seconds). Students can click through to the chat while it finishes.
 
-4. **Demo** (5 min)
-   - Show a finished example app (dashboard, list page, detail page)
-   - "This is what you'll have in 3 hours."
+**Phase 3 (Polish):** Same layout as Build. AI walks through polish checklist.
 
----
+### Slash Commands
 
-## Troubleshooting
+Students can click these as buttons below the chat input, or type them:
 
-### "Claude isn't reading CLAUDE.md"
-- Make sure they're running `claude` from the project root directory
-- The file must be named exactly `CLAUDE.md` (case-sensitive)
+| Command | When to suggest it |
+|---------|-------------------|
+| `/help` | Student seems lost — "click /help to see your options" |
+| `/brainstorm` | Student can't think of an idea |
+| `/build` | Design is done, time to start coding |
+| `/status` | Student asks "where are we?" |
+| `/fix` | Something looks wrong in the preview |
+| `/polish` | App is built, time to clean up |
+| `/demo` | Need the demo script for presentation |
 
-### "npm install failed"
-- Check Node.js version: `node -v` (needs 20+)
-- Delete `node_modules` and `package-lock.json`, try again
-- If on a network with restrictions, try mobile hotspot
+### Header Controls
 
-### "The app won't start"
-- Check if port 3000 is in use: `lsof -i :3000`
-- Try: `npm run dev -- -p 3001`
-
-### "Claude installed a new package"
-- CLAUDE.md says not to, but if it happens: `npm install` and continue
-- Gently remind the team: "You don't need extra packages — everything's included"
-
-### "Claude went off-rails"
-- Start a new Claude conversation: close and reopen `claude`
-- The CLAUDE.md will reload and reset the guardrails
-
-### "Team is stuck on domain design"
-- Suggest industries: pet care, food trucks, campus services, fitness studio, event planning
-- Ask: "What business do you wish existed? Build that."
-- Help them with 3-4 page ideas to get momentum
+Top-right of the screen:
+- **A button** — cycles font size (small → medium → large)
+- **Moon/Sun icon** — toggles dark/light mode
+- **Team name** — displayed for reference
 
 ---
 
-## Judging Criteria
+## Common Issues & Fixes
 
-| Category | Points | What to Look For |
-|----------|--------|-----------------|
-| **Business Design** | 30 | Is the domain pack well-thought-out? Does the app solve a real problem? |
-| **App Quality** | 30 | Does it work? Is the data realistic? Are all pages connected? |
-| **Visual Polish** | 20 | Does it look professional? Consistent styling? Good use of charts? |
-| **Presentation** | 20 | Can they explain their business? Demo flows smoothly? |
-| **Total** | 100 | |
+### "The page won't load / blank screen"
+- Check Wi-Fi connection
+- Try a different browser (Chrome works best for WebContainers)
+- Hard refresh: Ctrl+Shift+R (Windows) or Cmd+Shift+R (Mac)
 
-### Award Categories
-- **Best Overall** — highest total score
-- **Best Business Idea** — most creative/viable business concept
-- **Best Looking** — most polished visual design
-- **Best Presentation** — most engaging demo
+### "The preview is stuck on 'Setting up your workspace'"
+- WebContainer boot takes ~30 seconds — this is normal
+- If stuck for over 2 minutes, refresh the whole page
+- Safari 16.4+ is required — older Safari won't work
+
+### "AI is saying weird things / not following the flow"
+- Type `/rally` to restart the design conversation
+- Type `/reset` to start completely over (confirms first)
+
+### "We want to change our business idea"
+- In Phase 1: just tell the AI "let's change direction"
+- After Phase 2 started: type `/reset` to start fresh
+
+### "The preview shows an error"
+- Tell the student to type `/fix` and describe the error
+- Or just tell the AI what's wrong — it will fix the code
+
+### "How do we get back to where we were?"
+- Type `/status` to see progress
+- The app auto-saves the conversation — refresh the page
+
+### "It's taking too long to build"
+- Tell the AI: "We have 30 minutes left, let's simplify and do fewer pages"
+- Or type `/polish` to skip to cleanup mode
+
+### "The chat is too small to read"
+- Click the **A** button in the top-right to increase font size
 
 ---
 
-## API Key Distribution
+## Key Phrases for Helpers
 
-Options (pick one):
-1. **Pre-loaded on machines** — set `ANTHROPIC_API_KEY` in shell profile before event
-2. **Printed cards** — one API key per team, written on index cards
-3. **Shared key** — one key for all teams (simpler but less isolation)
-
-**Recommended:** Pre-load on machines. Less friction, fewer typos, faster start.
+| Student Says | You Say |
+|-------------|---------|
+| "I'm stuck" | "Click **/brainstorm** — the AI will help you come up with ideas" |
+| "Is this right?" | "There's no wrong answer — it's YOUR business" |
+| "The preview broke" | "Click **/fix** and tell the AI what happened" |
+| "What do I do?" | "Just talk to the AI like a person, or click one of the buttons below the chat" |
+| "This is taking forever" | "Tell the AI you want fewer pages — or click **/polish** to wrap up" |
+| "Where's my app?" | "It's the preview on the right side of the screen. If it's loading, wait 30 seconds." |
+| "Where are we?" | "Click **/status** to see your progress" |
 
 ---
 
-## Post-Event
+## Emergency Contacts
 
-- Collect screenshots/recordings of final apps
-- Rotate API keys if using individual keys
-- Ask teams to push their repos (optional — nice portfolio piece)
-- Collect feedback: "What was the hardest part? What was the most fun?"
+- **Tech Lead:** _______________
+- **Event Organizer:** _______________
+- **Wi-Fi Password:** _______________
+- **App URL:** `rally.aicoderally.com`
+
+---
+
+## For Advanced Teams
+
+If a team finishes early or wants to go deeper:
+- Add more pages beyond the original 4
+- Ask the AI to add interactivity (click handlers, modals)
+- Ask for a custom color scheme
+- Practice the demo multiple times with AI feedback

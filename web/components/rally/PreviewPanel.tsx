@@ -12,7 +12,10 @@ export function PreviewPanel({ previewUrl, modifiedFiles }: PreviewPanelProps) {
 
   if (!previewUrl) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50 text-gray-400">
+      <div
+        className="flex-1 flex items-center justify-center"
+        style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-muted)' }}
+      >
         Preview will appear here once the sandbox is ready
       </div>
     )
@@ -21,16 +24,29 @@ export function PreviewPanel({ previewUrl, modifiedFiles }: PreviewPanelProps) {
   return (
     <div className="flex-1 flex flex-col">
       {/* Tab bar */}
-      <div className="flex gap-1 px-2 py-1 bg-gray-50 border-b border-gray-200">
+      <div
+        className="flex gap-1 px-2 py-1"
+        style={{ backgroundColor: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)' }}
+      >
         <button
           onClick={() => setTab('preview')}
-          className={`px-3 py-1 text-xs rounded ${tab === 'preview' ? 'bg-white shadow-sm font-medium' : 'text-gray-500'}`}
+          className="px-3 py-1 text-xs rounded"
+          style={
+            tab === 'preview'
+              ? { backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontWeight: 500 }
+              : { color: 'var(--text-muted)' }
+          }
         >
           Preview
         </button>
         <button
           onClick={() => setTab('code')}
-          className={`px-3 py-1 text-xs rounded ${tab === 'code' ? 'bg-white shadow-sm font-medium' : 'text-gray-500'}`}
+          className="px-3 py-1 text-xs rounded"
+          style={
+            tab === 'code'
+              ? { backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontWeight: 500 }
+              : { color: 'var(--text-muted)' }
+          }
         >
           Code {modifiedFiles.length > 0 && `(${modifiedFiles.length})`}
         </button>
@@ -46,14 +62,19 @@ export function PreviewPanel({ previewUrl, modifiedFiles }: PreviewPanelProps) {
           />
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto p-4 font-mono text-sm bg-gray-50">
-          <h3 className="text-xs font-medium text-gray-500 mb-2">Recently modified files</h3>
+        <div
+          className="flex-1 overflow-y-auto p-4 font-mono text-sm"
+          style={{ backgroundColor: 'var(--bg-secondary)' }}
+        >
+          <h3 className="text-xs font-medium mb-2" style={{ color: 'var(--text-muted)' }}>
+            Recently modified files
+          </h3>
           {modifiedFiles.length === 0 ? (
-            <p className="text-gray-400">No files modified yet</p>
+            <p style={{ color: 'var(--text-muted)' }}>No files modified yet</p>
           ) : (
             <ul className="space-y-1">
               {modifiedFiles.map((f) => (
-                <li key={f} className="text-green-700">{f}</li>
+                <li key={f} className="text-green-500">{f}</li>
               ))}
             </ul>
           )}
