@@ -1,8 +1,15 @@
 import { streamText, convertToModelMessages, stepCountIs } from 'ai'
 import type { UIMessage } from 'ai'
-import { gateway } from '@ai-sdk/gateway'
+import { createAnthropic } from '@ai-sdk/anthropic'
 import { buildSystemPrompt } from '@/lib/ai/system-prompt'
 import { rallyTools } from '@/lib/ai/tools'
+
+function getModel() {
+  // Use direct Anthropic SDK — works both locally (ANTHROPIC_API_KEY)
+  // and on Vercel (same key in env vars)
+  const anthropic = createAnthropic()
+  return anthropic('claude-sonnet-4-6')
+}
 
 export async function POST(req: Request) {
   const url = new URL(req.url)
@@ -17,7 +24,7 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages)
 
   const result = streamText({
-    model: gateway('anthropic/claude-sonnet-4.6'),
+    model: getModel(),
     system: buildSystemPrompt(team),
     messages: modelMessages,
     tools: rallyTools,
