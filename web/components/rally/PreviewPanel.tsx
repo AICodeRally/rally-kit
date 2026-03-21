@@ -1,7 +1,9 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { Download } from 'lucide-react'
+
+type PreviewTab = 'product' | 'code' | 'docs'
 
 interface PreviewPanelProps {
   appHtml: string | null
@@ -169,16 +171,238 @@ function injectShim(html: string): string {
   return PREVIEW_SHIM + html
 }
 
+// Extract a pseudo file-system tree from the HTML source
+function extractFileTree(html: string): string[] {
+  const files: string[] = ['index.html']
+  // Count components defined in the code
+  const componentMatches = html.match(/(?:function|const)\s+([A-Z][a-zA-Z0-9]+)\s*(?:\(|=)/g) || []
+  const components = componentMatches
+    .map((m) => m.replace(/^(?:function|const)\s+/, '').replace(/\s*[=(]$/, ''))
+    .filter((name) => !['React', 'ReactDOM', 'ErrorBoundary'].includes(name))
+
+  if (components.length > 0) {
+    files.push('src/')
+    files.push('  App.jsx')
+    // Group into pages and components
+    const pages = components.filter((c) => c.endsWith('Page') || c === 'Dashboard' || c === 'App')
+    const comps = components.filter((c) => !pages.includes(c))
+    if (pages.length > 0) {
+      files.push('  pages/')
+      pages.forEach((p) => files.push(`    ${p}.jsx`))
+    }
+    if (comps.length > 0) {
+      files.push('  components/')
+      comps.forEach((c) => files.push(`    ${c}.jsx`))
+    }
+  }
+
+  // Check for mock data
+  if (html.includes('MOCK_') || html.includes('mockData') || html.includes('sampleData') || html.match(/const\s+\w+Data\s*=/)) {
+    files.push('  data/')
+    files.push('    mockData.js')
+  }
+
+  // Check for icons
+  if (html.includes('ICONS') || html.includes('Icon')) {
+    files.push('  assets/')
+    files.push('    icons.js')
+  }
+
+  files.push('package.json')
+  files.push('tailwind.config.js')
+
+  return files
+}
+
+// Format HTML with basic indentation for display
+function formatCode(html: string): string {
+  // Extract just the JSX/component code (the <script type="text/babel"> block)
+  const babelMatch = html.match(/<script\s+type="text\/babel"[^>]*>([\s\S]*?)<\/script>/i)
+  if (babelMatch) {
+    return babelMatch[1].trim()
+  }
+  return html
+}
+
+function TabBar({ activeTab, onTabChange, hasApp }: { activeTab: PreviewTab; onTabChange: (t: PreviewTab) => void; hasApp: boolean }) {
+  const tabs: { id: PreviewTab; label: string }[] = [
+    { id: 'product', label: 'Product' },
+    { id: 'code', label: 'Code' },
+    { id: 'docs', label: 'Documents' },
+  ]
+
+  return (
+    <div
+      className="flex shrink-0"
+      style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--bg-primary)' }}
+    >
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => onTabChange(tab.id)}
+          disabled={!hasApp && tab.id !== 'product'}
+          className="px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{
+            color: activeTab === tab.id ? 'var(--accent)' : 'var(--text-muted)',
+            borderBottom: activeTab === tab.id ? '2px solid var(--accent)' : '2px solid transparent',
+          }}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+function CodeView({ html }: { html: string }) {
+  const code = useMemo(() => formatCode(html), [html])
+  const lineCount = code.split('\n').length
+
+  return (
+    <div className="flex-1 overflow-auto" style={{ backgroundColor: '#1e1e1e' }}>
+      <div className="flex">
+        {/* Line numbers */}
+        <div className="shrink-0 py-3 px-3 text-right select-none" style={{ color: '#858585', minWidth: '3rem' }}>
+          {Array.from({ length: lineCount }, (_, i) => (
+            <div key={i} className="text-xs leading-5 font-mono">{i + 1}</div>
+          ))}
+        </div>
+        {/* Code */}
+        <pre className="flex-1 py-3 pr-4 overflow-x-auto">
+          <code className="text-xs leading-5 font-mono" style={{ color: '#d4d4d4' }}>
+            {code}
+          </code>
+        </pre>
+      </div>
+    </div>
+  )
+}
+
+function FileTreeView({ html }: { html: string }) {
+  const files = useMemo(() => extractFileTree(html), [html])
+
+  return (
+    <div className="p-4 space-y-1">
+      <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>
+        Project Structure
+      </h3>
+      <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
+        If this were a real project, here is how the files would be organized.
+        Your entire app is actually one HTML file — but in production, you would split it up like this.
+      </p>
+      {files.map((file, i) => {
+        const indent = file.length - file.trimStart().length
+        const name = file.trim()
+        const isDir = name.endsWith('/')
+        return (
+          <div
+            key={i}
+            className="flex items-center gap-2 text-sm font-mono"
+            style={{ paddingLeft: indent * 8, color: isDir ? 'var(--accent)' : 'var(--text-secondary)' }}
+          >
+            <span style={{ color: isDir ? 'var(--accent)' : 'var(--text-muted)' }}>
+              {isDir ? '📁' : '📄'}
+            </span>
+            {name}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function DocsView({ html }: { html: string }) {
+  // Extract component names and mock data references for the "what we built" view
+  const componentMatches = html.match(/(?:function|const)\s+([A-Z][a-zA-Z0-9]+)\s*(?:\(|=)/g) || []
+  const components = componentMatches
+    .map((m) => m.replace(/^(?:function|const)\s+/, '').replace(/\s*[=(]$/, ''))
+    .filter((name) => !['React', 'ReactDOM', 'ErrorBoundary'].includes(name))
+
+  const pages = components.filter((c) => c.endsWith('Page') || c === 'Dashboard')
+  const uiComponents = components.filter((c) => !pages.includes(c) && c !== 'App')
+
+  return (
+    <div className="flex-1 overflow-y-auto p-5 space-y-6" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+      <div className="rounded-lg p-5" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+        <h3 className="text-base font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
+          What the AI Built
+        </h3>
+        <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
+          This is a real-time view of what is in your app right now. As the AI builds more pages and features, this list grows.
+        </p>
+
+        {pages.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Pages ({pages.length})</h4>
+            <div className="space-y-1">
+              {pages.map((p) => (
+                <div key={p} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-primary)' }}>
+                  <span style={{ color: 'var(--accent)' }}>●</span>
+                  {p.replace(/Page$/, '')}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {uiComponents.length > 0 && (
+          <div className="mb-4">
+            <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Components ({uiComponents.length})</h4>
+            <div className="flex flex-wrap gap-2">
+              {uiComponents.map((c) => (
+                <span
+                  key={c}
+                  className="px-2 py-1 text-xs rounded font-mono"
+                  style={{ backgroundColor: 'var(--bg-muted)', color: 'var(--text-secondary)' }}
+                >
+                  {c}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-lg p-5" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+        <h3 className="text-base font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
+          Tech Stack
+        </h3>
+        <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
+          These are the real technologies powering your app — the same ones used by companies like Netflix, Airbnb, and Instagram.
+        </p>
+        <div className="space-y-2">
+          {[
+            { name: 'React 18', desc: 'UI framework by Meta — builds interactive interfaces from components' },
+            { name: 'Tailwind CSS', desc: 'Utility-first CSS — style anything with class names, no custom CSS needed' },
+            { name: 'Babel', desc: 'JavaScript compiler — lets you write modern JSX that browsers understand' },
+          ].map((tech) => (
+            <div key={tech.name} className="flex gap-3 text-sm">
+              <span className="font-semibold shrink-0" style={{ color: 'var(--accent)' }}>{tech.name}</span>
+              <span style={{ color: 'var(--text-muted)' }}>{tech.desc}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-lg p-5" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
+        <h3 className="text-base font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
+          Project File Structure
+        </h3>
+        <FileTreeView html={html} />
+      </div>
+    </div>
+  )
+}
+
 export function PreviewPanel({ appHtml, shell, teamName, building, phase }: PreviewPanelProps) {
-  // Safety net: if the iframe navigates away from srcdoc (e.g., AI generated <a href="/page">),
-  // force it back by re-setting srcdoc. This fires on the iframe's load event.
+  const [activeTab, setActiveTab] = useState<PreviewTab>('product')
+
+  // Safety net: if the iframe navigates away from srcdoc, force it back
   const handleIframeLoad = useCallback((e: React.SyntheticEvent<HTMLIFrameElement>) => {
     try {
       const iframe = e.currentTarget
       const iframeUrl = iframe.contentWindow?.location?.href
-      // srcdoc iframes report "about:srcdoc" — anything else means navigation happened
       if (iframeUrl && iframeUrl !== 'about:srcdoc' && iframeUrl !== 'about:blank') {
-        // Force back to srcdoc by removing and re-adding the attribute
         const src = iframe.getAttribute('srcdoc')
         if (src) {
           iframe.removeAttribute('srcdoc')
@@ -189,6 +413,7 @@ export function PreviewPanel({ appHtml, shell, teamName, building, phase }: Prev
       // Cross-origin access blocked — iframe is still on srcdoc, nothing to do
     }
   }, [])
+
   if (!appHtml) {
     return (
       <div
@@ -197,7 +422,6 @@ export function PreviewPanel({ appHtml, shell, teamName, building, phase }: Prev
       >
         {building ? (
           <div className="text-center space-y-6 max-w-xs">
-            {/* Skeleton shimmer while AI builds */}
             <div className="space-y-3 w-64">
               <div className="h-4 rounded" style={{ backgroundColor: 'var(--border)', animation: 'shimmer 1.5s infinite' }} />
               <div className="h-4 rounded w-3/4" style={{ backgroundColor: 'var(--border)', animation: 'shimmer 1.5s infinite', animationDelay: '0.2s' }} />
@@ -233,29 +457,41 @@ export function PreviewPanel({ appHtml, shell, teamName, building, phase }: Prev
     />
   )
 
-  if (shell === 'mobile') {
+  // Render the product view based on shell type
+  function renderProductView() {
+    if (shell === 'mobile') {
+      return (
+        <div className="relative flex-1 flex">
+          {phase === 'polish' && <ExportButton appHtml={appHtml!} teamName={teamName} />}
+          <PhoneFrame>{iframe}</PhoneFrame>
+        </div>
+      )
+    }
+
+    if (shell === 'dashboard' || shell === 'portfolio') {
+      return (
+        <div className="relative flex-1 flex flex-col">
+          {phase === 'polish' && <ExportButton appHtml={appHtml!} teamName={teamName} />}
+          <BrowserFrame>{iframe}</BrowserFrame>
+        </div>
+      )
+    }
+
+    // No shell selected — plain iframe
     return (
-      <div className="relative flex-1 flex">
-        {phase === 'polish' && <ExportButton appHtml={appHtml} teamName={teamName} />}
-        <PhoneFrame>{iframe}</PhoneFrame>
+      <div className="flex-1 relative" style={{ backgroundColor: 'var(--bg-secondary)' }}>
+        {phase === 'polish' && <ExportButton appHtml={appHtml!} teamName={teamName} />}
+        {iframe}
       </div>
     )
   }
 
-  if (shell === 'dashboard' || shell === 'portfolio') {
-    return (
-      <div className="relative flex-1 flex flex-col">
-        {phase === 'polish' && <ExportButton appHtml={appHtml} teamName={teamName} />}
-        <BrowserFrame>{iframe}</BrowserFrame>
-      </div>
-    )
-  }
-
-  // No shell selected — plain iframe
   return (
-    <div className="flex-1 relative" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-      {phase === 'polish' && <ExportButton appHtml={appHtml} teamName={teamName} />}
-      {iframe}
+    <div className="flex-1 flex flex-col">
+      <TabBar activeTab={activeTab} onTabChange={setActiveTab} hasApp={!!appHtml} />
+      {activeTab === 'product' && renderProductView()}
+      {activeTab === 'code' && <CodeView html={appHtml} />}
+      {activeTab === 'docs' && <DocsView html={appHtml} />}
     </div>
   )
 }

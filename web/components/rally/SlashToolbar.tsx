@@ -15,6 +15,7 @@ const COMMANDS = [
   { label: '/polish', description: 'Polish mode', icon: Sparkles, phases: ['build', 'polish'] },
   { label: '/demo', description: 'Demo script', icon: Presentation, phases: ['polish', 'build'] },
   { label: '/fix', description: 'Fix an error', icon: Wrench, phases: ['build', 'polish'] },
+  { label: '/score', description: 'Score your project', icon: BarChart3, phases: ['polish'] },
   { label: '/reset', description: 'Start completely over', icon: RotateCcw, phases: ['design', 'build', 'polish'] },
 ]
 
