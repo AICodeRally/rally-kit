@@ -48,11 +48,11 @@ class RallyErrorBoundary extends React.Component<
   }
 }
 
-function sendTelemetry(teamName: string, status: string, detail?: string, track?: string) {
+function sendTelemetry(teamSlug: string, status: string, detail?: string, track?: string) {
   fetch('/api/telemetry', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ team: teamName, status, detail, track }),
+    headers: { 'Content-Type': 'application/json', 'x-rally-key': 'gcu2526' },
+    body: JSON.stringify({ team: teamSlug, status, detail, track }),
   }).catch(() => {})  // fire-and-forget
 }
 
@@ -156,7 +156,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
   // Send initial telemetry with track info
   useEffect(() => {
     if (hydrated) {
-      sendTelemetry(team.name, 'session:start', undefined, team.track)
+      sendTelemetry(team.slug, 'session:start', team.name, team.track)
     }
   }, [hydrated, team.name, team.track])
 
@@ -166,7 +166,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
       if (!prev) setShowConfetti(true)
       return html
     })
-    sendTelemetry(team.name, 'app:updated')
+    sendTelemetry(team.slug, 'app:updated')
   }, [team.name])
 
   const handleFileWritten = useCallback(() => {
@@ -183,7 +183,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     setPhase((prev) => {
       if (prev === newPhase) return prev
       setPhaseStartedAt(Date.now())
-      sendTelemetry(team.name, `phase:${newPhase}`)
+      sendTelemetry(team.slug, `phase:${newPhase}`)
       return newPhase
     })
   }, [team.name])

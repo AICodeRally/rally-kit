@@ -17,8 +17,8 @@ const spaceMono = Space_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'AICR Rally Kit',
-  description: 'Build a real app in 3 hours with AI',
+  title: 'Rally Kit — AI Code Rally',
+  description: 'Stop Planning. Start Building. Your team, your idea, your app — 3 hours with AI.',
 }
 
 export default function RootLayout({

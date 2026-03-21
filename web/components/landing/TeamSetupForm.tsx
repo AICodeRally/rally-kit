@@ -23,11 +23,14 @@ export function TeamSetupForm() {
     e.preventDefault()
     if (!teamName.trim()) return
 
-    const slug = teamName
+    const base = teamName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '')
       || 'team'
+    // Append 4-char random suffix to avoid slug collisions on shared devices
+    const suffix = Math.random().toString(36).slice(2, 6)
+    const slug = `${base}-${suffix}`
 
     const filledMembers = members.filter((m) => m.trim())
 
