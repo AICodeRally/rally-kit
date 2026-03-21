@@ -16,14 +16,14 @@ interface LiveSnapshot {
   updatedAt: number
 }
 
-// ── Pre-registered teams from GCU signup ──
-// Todd: paste team names from the signup sheet here before the event.
-// These are the teams that SIGNED UP. We track who actually shows up.
-const REGISTERED_TEAMS: string[] = [
-  // 'Thunder Squad',
-  // 'Code Monkeys',
-  // ... paste from signup sheet
-]
+interface RosterEntry {
+  name: string
+  firstName: string
+  email: string
+  track: string | null
+  year: string | null
+  music: string | null
+}
 
 const PHASE_META: Record<LiveSnapshot['phase'], { label: string; border: string; bg: string; text: string }> = {
   design: { label: 'Design', border: '#3b82f6', bg: '#eff6ff', text: '#1d4ed8' },
@@ -166,28 +166,65 @@ function FocusView({
 }
 
 // ── Attendance Panel ──
+// Matches roster entries to checked-in teams by checking if any team member's
+// first name appears in the roster. Individual registration → team check-in.
+function matchRosterToTeams(roster: RosterEntry[], snapshots: LiveSnapshot[]) {
+  // Build a set of all first names that appear in any active team's member list
+  // Team names often contain member first names, and the team name itself is what we have.
+  // We match by checking if a roster member's first name appears in any snapshot's teamName
+  // or if a snapshot has member data from telemetry.
+  const checkedInNames = new Set<string>()
+  for (const s of snapshots) {
+    // The team name and team members may contain first names
+    checkedInNames.add(s.teamName.toLowerCase().trim())
+  }
+
+  const present: RosterEntry[] = []
+  const missing: RosterEntry[] = []
+
+  for (const r of roster) {
+    // Check if this person's first name appears in any team name (fuzzy match)
+    const firstName = r.firstName.toLowerCase().trim()
+    const found = snapshots.some((s) =>
+      s.teamName.toLowerCase().includes(firstName)
+    )
+    if (found) {
+      present.push(r)
+    } else {
+      missing.push(r)
+    }
+  }
+
+  return { present, missing }
+}
+
 function AttendancePanel({
   snapshots,
+  roster,
+  rosterLoading,
   onClose,
 }: {
   snapshots: LiveSnapshot[]
+  roster: RosterEntry[]
+  rosterLoading: boolean
   onClose: () => void
 }) {
-  const checkedIn = new Set(snapshots.map((s) => s.teamName.toLowerCase().trim()))
-  const registered = REGISTERED_TEAMS.filter(Boolean)
-  const hasRoster = registered.length > 0
+  const hasRoster = roster.length > 0
+  const { present, missing } = hasRoster
+    ? matchRosterToTeams(roster, snapshots)
+    : { present: [] as RosterEntry[], missing: [] as RosterEntry[] }
 
   return (
     <div
-      className="fixed right-0 top-0 bottom-0 w-80 z-40 flex flex-col shadow-xl"
+      className="fixed right-0 top-0 bottom-0 w-96 z-40 flex flex-col shadow-xl"
       style={{ backgroundColor: '#fff', borderLeft: '1px solid #e5e7eb' }}
     >
       <header className="px-4 py-3 flex items-center gap-2" style={{ borderBottom: '1px solid #e5e7eb' }}>
         <Users className="w-4 h-4" style={{ color: '#6b7280' }} />
         <h3 className="text-sm font-bold" style={{ color: '#111827' }}>Attendance</h3>
         <span className="ml-auto text-xs font-mono" style={{ color: '#6b7280' }}>
-          {snapshots.length} checked in
-          {hasRoster && ` / ${registered.length} signed up`}
+          {snapshots.length} teams active
+          {hasRoster && ` · ${roster.length} registered`}
         </span>
         <button onClick={onClose} className="p-1 rounded hover:bg-gray-100">
           <X className="w-4 h-4" style={{ color: '#6b7280' }} />
@@ -195,9 +232,9 @@ function AttendancePanel({
       </header>
 
       <div className="flex-1 overflow-y-auto p-3 space-y-1">
-        {/* Checked-in teams (from live snapshots) */}
+        {/* Active teams from live snapshots */}
         <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: '#10b981' }}>
-          Checked In ({snapshots.length})
+          Active Teams ({snapshots.length})
         </p>
         {snapshots.map((s) => {
           const phaseMeta = PHASE_META[s.phase]
@@ -212,24 +249,70 @@ function AttendancePanel({
           )
         })}
 
-        {/* Not yet checked in (from roster) */}
-        {hasRoster && (() => {
-          const missing = registered.filter((name) => !checkedIn.has(name.toLowerCase().trim()))
-          if (missing.length === 0) return null
-          return (
-            <>
-              <p className="text-[11px] font-semibold uppercase tracking-wide mt-4 mb-2" style={{ color: '#ef4444' }}>
-                Not Yet Here ({missing.length})
-              </p>
-              {missing.map((name) => (
-                <div key={name} className="flex items-center gap-2 px-2 py-1.5 rounded-lg" style={{ backgroundColor: '#fef2f2' }}>
-                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#d1d5db' }} />
-                  <span className="text-sm truncate" style={{ color: '#9ca3af' }}>{name}</span>
-                </div>
-              ))}
-            </>
-          )
-        })()}
+        {/* Roster section */}
+        {rosterLoading && (
+          <p className="text-xs mt-4" style={{ color: '#9ca3af' }}>Loading registration roster...</p>
+        )}
+
+        {hasRoster && (
+          <>
+            {/* Matched — registered students who appear to be checked in */}
+            {present.length > 0 && (
+              <>
+                <p className="text-[11px] font-semibold uppercase tracking-wide mt-4 mb-2" style={{ color: '#10b981' }}>
+                  Registered &amp; Here ({present.length})
+                </p>
+                {present.map((r) => (
+                  <div key={r.email} className="flex items-center gap-2 px-2 py-1.5 rounded-lg" style={{ backgroundColor: '#f0fdf4' }}>
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#10b981' }} />
+                    <span className="text-sm truncate" style={{ color: '#111827' }}>{r.name}</span>
+                    <span className="ml-auto text-[10px]" style={{ color: '#6b7280' }}>{r.track || ''}</span>
+                  </div>
+                ))}
+              </>
+            )}
+
+            {/* Missing — registered but not yet checked in */}
+            {missing.length > 0 && (
+              <>
+                <p className="text-[11px] font-semibold uppercase tracking-wide mt-4 mb-2" style={{ color: '#ef4444' }}>
+                  Registered, Not Yet Here ({missing.length})
+                </p>
+                {missing.map((r) => (
+                  <div key={r.email} className="flex items-center gap-2 px-2 py-1.5 rounded-lg" style={{ backgroundColor: '#fef2f2' }}>
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#d1d5db' }} />
+                    <span className="text-sm truncate" style={{ color: '#9ca3af' }}>{r.name}</span>
+                    <span className="ml-auto text-[10px]" style={{ color: '#d1d5db' }}>{r.year || ''} · {r.track || ''}</span>
+                  </div>
+                ))}
+              </>
+            )}
+
+            {/* Music preferences summary */}
+            {(() => {
+              const musicCounts: Record<string, number> = {}
+              for (const r of roster) {
+                if (r.music) musicCounts[r.music] = (musicCounts[r.music] || 0) + 1
+              }
+              const entries = Object.entries(musicCounts).sort((a, b) => b[1] - a[1])
+              if (entries.length === 0) return null
+              return (
+                <>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide mt-4 mb-2" style={{ color: '#6b7280' }}>
+                    Music Preferences
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {entries.map(([genre, count]) => (
+                      <span key={genre} className="text-[11px] px-2 py-1 rounded-full" style={{ backgroundColor: '#f3f4f6', color: '#374151' }}>
+                        {genre} ({count})
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )
+            })()}
+          </>
+        )}
       </div>
     </div>
   )
@@ -243,6 +326,23 @@ function LiveShowcaseContent() {
   const [focusTeamId, setFocusTeamId] = useState<string | null>(null)
   const [autoRotate, setAutoRotate] = useState(false)
   const [showAttendance, setShowAttendance] = useState(false)
+  const [roster, setRoster] = useState<RosterEntry[]>([])
+  const [rosterLoading, setRosterLoading] = useState(false)
+
+  // Fetch registration roster when attendance panel opens
+  useEffect(() => {
+    if (!showAttendance) return
+    if (roster.length > 0) return  // already loaded
+
+    setRosterLoading(true)
+    fetch('/api/showcase/roster')
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.roster) setRoster(data.roster)
+      })
+      .catch(() => {})
+      .finally(() => setRosterLoading(false))
+  }, [showAttendance, roster.length])
 
   // Poll for snapshots
   useEffect(() => {
@@ -307,7 +407,7 @@ function LiveShowcaseContent() {
 
       {/* Attendance panel */}
       {showAttendance && (
-        <AttendancePanel snapshots={snapshots} onClose={() => setShowAttendance(false)} />
+        <AttendancePanel snapshots={snapshots} roster={roster} rosterLoading={rosterLoading} onClose={() => setShowAttendance(false)} />
       )}
 
       {/* Header */}
