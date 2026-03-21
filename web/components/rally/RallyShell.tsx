@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import type { WebContainer } from '@webcontainer/api'
 import { bootWebContainer } from '@/lib/webcontainer/boot'
 import { RallyHeader } from './RallyHeader'
@@ -11,11 +11,15 @@ import { StatusBar } from './StatusBar'
 import { SplashScreen } from './SplashScreen'
 import type { TeamInfo, Phase, SandboxStatus, DesignIdea } from '@/lib/rally/types'
 
+const bootTimestamp = { start: 0 }
+
 function sendTelemetry(teamName: string, status: string, detail?: string) {
+  if (status === 'booting') bootTimestamp.start = Date.now()
+  const elapsed = bootTimestamp.start ? Math.round((Date.now() - bootTimestamp.start) / 1000) : 0
   fetch('/api/telemetry', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ team: teamName, status, detail }),
+    body: JSON.stringify({ team: teamName, status, detail, elapsedSec: elapsed }),
   }).catch(() => {})  // fire-and-forget — never block UI
 }
 
@@ -95,6 +99,14 @@ export function RallyShell({ team }: { team: TeamInfo }) {
       return [...prev, idea]
     })
   }, [])
+
+  // Boot WebContainer eagerly during design phase so it's ready when students hit build.
+  // ensureWebContainer is idempotent — the bootStarted ref prevents double calls.
+  useEffect(() => {
+    if (!showSplash) {
+      ensureWebContainer()
+    }
+  }, [showSplash, ensureWebContainer])
 
   if (showSplash) {
     return <SplashScreen teamName={team.name} onComplete={() => setShowSplash(false)} />
