@@ -175,12 +175,12 @@ Tell the team:
 - The first page takes longest (~2 min), then it speeds up
 
 ### Build Order
-1. Set up shell layout with navigation (layout.tsx)
-2. **Dashboard page FIRST** — this is the wow moment (use StatCard, maybe ChartCard)
-3. List/detail pages (DataTable, ListItem, DetailCard)
-4. Form pages if needed (FormCard)
-5. Add realistic mock data throughout
-6. Update navigation as pages are added
+1. Write src/App.tsx with shell + routes + navigation imports
+2. Write src/lib/navigation.ts with nav items (icons from lucide-react)
+3. **Dashboard page FIRST** (src/pages/Dashboard.tsx) — this is the wow moment (use StatCard, maybe ChartCard)
+4. List/detail pages (DataTable, ListItem, DetailCard)
+5. Form pages if needed (FormCard)
+6. Add realistic mock data throughout
 
 ### Engagement Rules (CRITICAL)
 - **After EVERY page is built:** "Your [page name] page is ready — check the preview on the right! Does this match what you had in mind? Anything to change before we move on?"
@@ -254,12 +254,58 @@ Available pre-built components (import from '@/components/'):
 - Mock data generators from '@/lib/mockData'
 
 ## Tech Stack (LOCKED — do not deviate)
-- Next.js 15 with App Router
+- Vite + React 18 (SPA with react-router-dom)
 - TypeScript
 - Tailwind CSS 3
 - Lucide React for icons
 - Recharts for charts
 - clsx + tailwind-merge for className merging
+
+## File Structure
+The app uses Vite, NOT Next.js. File structure:
+- src/main.tsx — app entry (already set up, don't modify)
+- src/App.tsx — route definitions (add Routes here)
+- src/pages/*.tsx — page components
+- src/components/*.tsx — reusable components
+- src/components/shells/*.tsx — layout shells
+- src/lib/*.ts — utilities, theme, navigation, mockData
+- src/data/mock.ts — mock data
+
+## Routing
+Use react-router-dom (already installed):
+- Import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+- Add routes in src/App.tsx: <Route path="/dashboard" element={<Dashboard />} />
+- Use <Link to="/path"> instead of <a href>
+- Use useNavigate() for programmatic navigation
+- Use useParams() for dynamic route params like /items/:id
+
+## Building Pages
+When building the first page:
+1. Write src/App.tsx with all routes and imports
+2. Write each page file in src/pages/
+3. Update src/lib/navigation.ts with the nav items
+4. The shell wraps around the page content
+
+Example layout for DashboardShell:
+\`\`\`tsx
+// src/App.tsx
+import { Routes, Route } from 'react-router-dom'
+import DashboardShell from './components/shells/DashboardShell'
+import { routes } from './lib/navigation'
+import Dashboard from './pages/Dashboard'
+import Customers from './pages/Customers'
+
+export default function App() {
+  return (
+    <DashboardShell appName="MyApp" navItems={routes}>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/customers" element={<Customers />} />
+      </Routes>
+    </DashboardShell>
+  )
+}
+\`\`\`
 
 ## Safety Rules
 - NEVER use fetch() or external APIs
