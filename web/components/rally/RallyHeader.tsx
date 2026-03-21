@@ -7,7 +7,7 @@ import { Sun, Moon, Type } from 'lucide-react'
 import type { Phase } from '@/lib/rally/types'
 
 const FONT_LABELS = { sm: 'A', md: 'A', lg: 'A' } as const
-const FONT_SIZES = { sm: '12px', md: '14px', lg: '16px' } as const
+const FONT_SIZES = { sm: '14px', md: '16px', lg: '18px' } as const
 
 interface RallyHeaderProps {
   phase: Phase
@@ -64,7 +64,7 @@ export function RallyHeader({ phase, phaseStartedAt, teamName }: RallyHeaderProp
           {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
         </button>
 
-        <span className="text-sm ml-1" style={{ color: 'var(--text-secondary)' }}>
+        <span className="text-base font-medium ml-1" style={{ color: 'var(--text-secondary)' }}>
           {teamName}
         </span>
       </div>

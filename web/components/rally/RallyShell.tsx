@@ -38,6 +38,15 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     })
   }, [])
 
+  const retryWebContainer = useCallback(() => {
+    bootStarted.current = false
+    setWebcontainer(null)
+    setPreviewUrl(null)
+    setSandboxStatus('idle')
+    // Small delay to let state settle, then retry
+    setTimeout(() => ensureWebContainer(), 100)
+  }, [ensureWebContainer])
+
   const handleFileWritten = useCallback((path: string) => {
     setModifiedFiles((prev) => [path, ...prev.filter((p) => p !== path)])
     // First file write triggers auto-transition to build phase
@@ -108,6 +117,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
           onBuildRequested={ensureWebContainer}
           onIdeaCaptured={handleAddIdea}
           onPhaseChange={handlePhaseChange}
+          onRetry={retryWebContainer}
         />
       )}
 

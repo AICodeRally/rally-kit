@@ -50,7 +50,7 @@ export function IdeaBoard({ ideas, onAddIdea }: IdeaBoardProps) {
         className="flex items-center justify-between px-4 py-3 shrink-0"
         style={{ borderBottom: '1px solid var(--border)' }}
       >
-        <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+        <h3 className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>
           Ideas
         </h3>
         <button
@@ -124,7 +124,7 @@ export function IdeaBoard({ ideas, onAddIdea }: IdeaBoardProps) {
         {ideas.length === 0 && (
           <div className="text-center py-8">
             <Lightbulb className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
               Ideas from your design chat will appear here
             </p>
           </div>
@@ -149,12 +149,12 @@ export function IdeaBoard({ ideas, onAddIdea }: IdeaBoardProps) {
                 >
                   <Icon className="w-3 h-3" />
                 </div>
-                <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
+                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
                   {idea.title}
                 </span>
               </div>
               {idea.description && (
-                <p className="text-xs ml-7" style={{ color: 'var(--text-secondary)' }}>
+                <p className="text-sm ml-7" style={{ color: 'var(--text-secondary)' }}>
                   {idea.description}
                 </p>
               )}

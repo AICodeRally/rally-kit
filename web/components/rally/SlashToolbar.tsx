@@ -35,13 +35,13 @@ export function SlashToolbar({
             <button
               key={cmd.label}
               onClick={() => onCommand(cmd.label)}
-              className="shrink-0 flex items-center gap-1.5 px-3 py-2 min-h-[44px] text-xs rounded-lg transition-colors hover:opacity-80 focus-visible:outline-none focus-visible:ring-2"
+              className="shrink-0 flex items-center gap-2 px-4 py-2.5 min-h-[48px] text-sm rounded-lg transition-colors hover:opacity-80 focus-visible:outline-none focus-visible:ring-2"
               style={{
                 backgroundColor: 'var(--bg-muted)',
                 color: 'var(--text-secondary)',
               }}
             >
-              <Icon className="w-3 h-3" style={{ color: 'var(--accent)' }} />
+              <Icon className="w-4 h-4" style={{ color: 'var(--accent)' }} />
               <span className="font-mono">{cmd.label}</span>
               <span className="hidden sm:inline" style={{ color: 'var(--text-muted)' }}>
                 {cmd.description}

@@ -32,7 +32,7 @@ export function PhaseIndicator({
   const secs = remaining % 60
 
   return (
-    <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+    <span className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
       {config.label}
       <span className="ml-2 font-mono tabular-nums">
         {mins}:{secs.toString().padStart(2, '0')}

@@ -72,8 +72,13 @@ export function ChatPanel({
         onBuildRequested()
         // Queue tool call for execution when WebContainer boots
         pendingToolCalls.current.push({ toolCall })
-        // Return result string so AI SDK doesn't hang waiting for tool output
-        return `File queued — sandbox is booting, will write shortly.`
+        // Send tool output so AI SDK doesn't hang waiting
+        addToolOutput({
+          tool: toolCall.toolName,
+          toolCallId: toolCall.toolCallId,
+          output: `File queued — sandbox is booting, will write shortly.`,
+        })
+        return
       }
 
       await executeToolCall(toolCall, webcontainer)
@@ -227,8 +232,8 @@ export function ChatPanel({
             <div
               className={
                 message.role === 'user'
-                  ? 'rounded-lg p-3 text-sm'
-                  : 'text-sm'
+                  ? 'rounded-lg p-3 text-base'
+                  : 'text-base'
               }
               style={
                 message.role === 'user'
@@ -279,7 +284,7 @@ export function ChatPanel({
             onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
             placeholder={isStreaming ? 'AI is working...' : 'Type a message...'}
             disabled={isStreaming}
-            className="flex-1 px-3 py-2 min-h-[44px] text-sm rounded-lg focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50"
+            className="flex-1 px-4 py-3 min-h-[52px] text-base rounded-lg focus-visible:outline-none focus-visible:ring-2 disabled:opacity-50"
             style={{
               backgroundColor: 'var(--bg-muted)',
               color: 'var(--text-primary)',
@@ -289,10 +294,10 @@ export function ChatPanel({
           <button
             onClick={handleSend}
             disabled={isStreaming || !input.trim()}
-            className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2"
+            className="p-3 min-w-[52px] min-h-[52px] flex items-center justify-center text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2"
             style={{ backgroundColor: 'var(--accent)' }}
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-5 h-5" />
           </button>
         </div>
       </div>

@@ -60,7 +60,7 @@ export function DesignStepper({ ideas }: DesignStepperProps) {
                 {done ? <Check className="w-3 h-3" /> : i + 1}
               </div>
               <span
-                className="text-xs font-medium hidden sm:inline"
+                className="text-sm font-medium hidden sm:inline"
                 style={{
                   color: done || active ? 'var(--text-primary)' : 'var(--text-muted)',
                 }}

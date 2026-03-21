@@ -6,9 +6,9 @@ type Theme = 'light' | 'dark'
 type FontSize = 'sm' | 'md' | 'lg'
 
 const FONT_SIZE_MAP: Record<FontSize, string> = {
-  sm: '14px',
-  md: '16px',
-  lg: '18px',
+  sm: '16px',
+  md: '18px',
+  lg: '20px',
 }
 
 interface ThemeContextValue {
@@ -27,7 +27,7 @@ const ThemeContext = createContext<ThemeContextValue>({
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light')
-  const [fontSize, setFontSize] = useState<FontSize>('md')
+  const [fontSize, setFontSize] = useState<FontSize>('lg')
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('rally-theme') as Theme | null

@@ -15,17 +15,47 @@ export type BootStatus =
   | 'ready'
   | 'error'
 
+const BOOT_TIMEOUT_MS = 90_000 // 90 seconds total
+const SERVER_READY_TIMEOUT_MS = 45_000 // 45 seconds for dev server
+
 export async function bootWebContainer(
   onStatus: (status: BootStatus, detail?: string) => void,
 ): Promise<BootResult> {
+  const bootStart = Date.now()
+
+  function checkTimeout(phase: string) {
+    if (Date.now() - bootStart > BOOT_TIMEOUT_MS) {
+      throw new Error(`Sandbox timed out during ${phase} (>${BOOT_TIMEOUT_MS / 1000}s)`)
+    }
+  }
+
   onStatus('booting')
-  const wc = await WebContainer.boot()
+  let wc: WebContainer
+  try {
+    wc = await WebContainer.boot()
+  } catch (err) {
+    onStatus('error', 'Failed to start sandbox — your browser may not support WebContainers')
+    throw err
+  }
 
+  checkTimeout('boot')
   onStatus('mounting')
-  await wc.mount(RALLY_KIT_FILES)
+  try {
+    await wc.mount(RALLY_KIT_FILES)
+  } catch (err) {
+    onStatus('error', 'Failed to load project files')
+    throw err
+  }
 
+  checkTimeout('mount')
   onStatus('installing', 'Running npm install...')
-  const installProcess = await wc.spawn('npm', ['install'])
+  let installProcess
+  try {
+    installProcess = await wc.spawn('npm', ['install'])
+  } catch (err) {
+    onStatus('error', 'Failed to start npm install')
+    throw err
+  }
 
   installProcess.output.pipeTo(
     new WritableStream({
@@ -37,15 +67,27 @@ export async function bootWebContainer(
 
   const installExitCode = await installProcess.exit
   if (installExitCode !== 0) {
-    onStatus('error', 'npm install failed')
+    onStatus('error', 'npm install failed — check browser console for details')
     throw new Error('npm install failed')
   }
 
+  checkTimeout('install')
   onStatus('starting', 'Starting dev server...')
-  await wc.spawn('npm', ['run', 'dev'])
+  try {
+    await wc.spawn('npm', ['run', 'dev'])
+  } catch (err) {
+    onStatus('error', 'Failed to start dev server')
+    throw err
+  }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      onStatus('error', 'Dev server took too long to start — try refreshing')
+      reject(new Error('Dev server timed out'))
+    }, SERVER_READY_TIMEOUT_MS)
+
     wc.on('server-ready', (port, url) => {
+      clearTimeout(timeout)
       onStatus('ready')
       resolve({ webcontainer: wc, previewUrl: url, port })
     })

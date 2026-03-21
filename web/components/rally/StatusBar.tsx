@@ -6,8 +6,8 @@ const STATUS_LABELS: Record<SandboxStatus, string> = {
   mounting: 'Loading project files...',
   installing: 'Installing packages...',
   starting: 'Starting dev server...',
-  ready: 'Connected',
-  error: 'Error — try refreshing',
+  ready: 'Connected — preview is live',
+  error: 'Sandbox error — click retry in the preview panel',
 }
 
 export function StatusBar({ status }: { status: SandboxStatus }) {
@@ -17,15 +17,15 @@ export function StatusBar({ status }: { status: SandboxStatus }) {
 
   return (
     <div
-      className="h-6 px-3 flex items-center gap-2 text-xs font-mono shrink-0"
+      className="h-7 px-3 flex items-center gap-2 text-sm font-mono shrink-0"
       style={{
-        backgroundColor: 'var(--bg-muted)',
+        backgroundColor: isError ? '#fef2f2' : 'var(--bg-muted)',
         borderTop: '1px solid var(--border)',
-        color: 'var(--text-muted)',
+        color: isError ? '#dc2626' : 'var(--text-muted)',
       }}
     >
       <span
-        className={`w-2 h-2 rounded-full ${
+        className={`w-2.5 h-2.5 rounded-full ${
           isReady ? 'bg-green-500' : isIdle ? 'bg-blue-400' : isError ? 'bg-red-500' : 'bg-yellow-500 animate-pulse'
         }`}
       />

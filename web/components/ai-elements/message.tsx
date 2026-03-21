@@ -91,9 +91,9 @@ function renderBlock(block: Block, key: number): React.ReactElement {
     case 'heading': {
       const Tag = ('h' + block.level) as 'h1' | 'h2' | 'h3'
       const sizes: Record<string, string> = {
-        h1: 'text-lg font-bold',
-        h2: 'text-base font-semibold',
-        h3: 'text-sm font-semibold',
+        h1: 'text-xl font-bold',
+        h2: 'text-lg font-semibold',
+        h3: 'text-base font-semibold',
       }
       return (
         <Tag
@@ -109,7 +109,7 @@ function renderBlock(block: Block, key: number): React.ReactElement {
       return (
         <ul key={key} className="my-2 ml-4 space-y-1">
           {block.items.map((item, i) => (
-            <li key={i} className="flex gap-2 text-sm" style={{ color: 'var(--text-primary)' }}>
+            <li key={i} className="flex gap-2 text-base" style={{ color: 'var(--text-primary)' }}>
               <span className="shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--accent)' }} />
               <span>{renderInline(item)}</span>
             </li>
@@ -120,7 +120,7 @@ function renderBlock(block: Block, key: number): React.ReactElement {
       return (
         <ol key={key} className="my-2 ml-4 space-y-1">
           {block.items.map((item, i) => (
-            <li key={i} className="flex gap-2 text-sm" style={{ color: 'var(--text-primary)' }}>
+            <li key={i} className="flex gap-2 text-base" style={{ color: 'var(--text-primary)' }}>
               <span
                 className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium"
                 style={{ backgroundColor: 'var(--bg-muted)', color: 'var(--text-secondary)' }}
@@ -134,7 +134,7 @@ function renderBlock(block: Block, key: number): React.ReactElement {
       )
     case 'paragraph':
       return (
-        <p key={key} className="my-1.5 text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>
+        <p key={key} className="my-2 text-base leading-relaxed" style={{ color: 'var(--text-primary)' }}>
           {renderInline(block.text)}
         </p>
       )

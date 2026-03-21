@@ -48,7 +48,7 @@ export function TeamSetupForm() {
     <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md">
       <div>
         <label
-          className="block text-sm font-medium mb-1"
+          className="block text-base font-medium mb-1"
           style={{ color: 'var(--text-secondary)' }}
         >
           Team Name
@@ -71,7 +71,7 @@ export function TeamSetupForm() {
 
       <div>
         <label
-          className="block text-sm font-medium mb-1"
+          className="block text-base font-medium mb-1"
           style={{ color: 'var(--text-secondary)' }}
         >
           Team Members
@@ -84,7 +84,7 @@ export function TeamSetupForm() {
               value={member}
               onChange={(e) => updateMember(i, e.target.value)}
               placeholder={`Member ${i + 1}`}
-              className="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2"
+              className="w-full px-4 py-3 text-base rounded-lg focus:outline-none focus:ring-2"
               style={{
                 backgroundColor: 'var(--bg-muted)',
                 color: 'var(--text-primary)',
@@ -107,7 +107,7 @@ export function TeamSetupForm() {
 
       <div>
         <label
-          className="block text-sm font-medium mb-2"
+          className="block text-base font-medium mb-2"
           style={{ color: 'var(--text-secondary)' }}
         >
           Track

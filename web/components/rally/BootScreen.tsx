@@ -29,7 +29,7 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
         Setting up your workspace...
       </h2>
 
-      <div className="space-y-3 mb-8 w-64">
+      <div className="space-y-4 mb-8 w-72">
         {STEPS.map((step) => {
           const currentIdx = STEPS.findIndex((s) => s.status === status)
           const stepIdx = STEPS.findIndex((s) => s.status === step.status)
@@ -39,7 +39,7 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
           return (
             <div key={step.status} className="flex items-center gap-3">
               <span
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${
                   isDone
                     ? 'bg-green-500 text-white'
                     : isCurrent
@@ -55,6 +55,7 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
                 {isDone ? '\u2713' : stepIdx + 1}
               </span>
               <span
+                className="text-base"
                 style={{
                   color: isDone || !isCurrent ? 'var(--text-muted)' : 'var(--text-primary)',
                   fontWeight: isCurrent ? 500 : 400,
@@ -67,7 +68,7 @@ export function BootScreen({ status }: { status: SandboxStatus }) {
         })}
       </div>
 
-      <p className="text-sm italic" style={{ color: 'var(--text-muted)' }}>{randomFact}</p>
+      <p className="text-base italic" style={{ color: 'var(--text-muted)' }}>{randomFact}</p>
     </div>
   )
 }

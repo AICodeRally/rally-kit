@@ -40,7 +40,7 @@ export function SplashScreen({ teamName, onComplete }: SplashScreenProps) {
         </div>
 
         <h1
-          className="text-2xl font-light tracking-widest uppercase"
+          className="text-3xl font-light tracking-widest uppercase"
           style={{ color: '#9ca3af' }}
         >
           Rally Kit
@@ -48,11 +48,11 @@ export function SplashScreen({ teamName, onComplete }: SplashScreenProps) {
 
         <GCUBadge />
 
-        <p className="mt-8 text-lg font-medium" style={{ color: '#d1d5db' }}>
+        <p className="mt-8 text-xl font-medium" style={{ color: '#d1d5db' }}>
           {teamName}
         </p>
 
-        <p className="text-xs" style={{ color: '#6b7280' }}>
+        <p className="text-sm" style={{ color: '#6b7280' }}>
           Click anywhere to start
         </p>
       </div>
