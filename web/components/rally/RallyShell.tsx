@@ -11,6 +11,14 @@ import { StatusBar } from './StatusBar'
 import { SplashScreen } from './SplashScreen'
 import type { TeamInfo, Phase, SandboxStatus, DesignIdea } from '@/lib/rally/types'
 
+function sendTelemetry(teamName: string, status: string, detail?: string) {
+  fetch('/api/telemetry', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ team: teamName, status, detail }),
+  }).catch(() => {})  // fire-and-forget — never block UI
+}
+
 export function RallyShell({ team }: { team: TeamInfo }) {
   const [webcontainer, setWebcontainer] = useState<WebContainer | null>(null)
   const [sandboxStatus, setSandboxStatus] = useState<SandboxStatus>('idle')
@@ -29,8 +37,11 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     bootStarted.current = true
     setSandboxStatus('booting')
 
+    sendTelemetry(team.name, 'booting')
+
     bootWebContainer((status, detail) => {
       setSandboxStatus(status)
+      sendTelemetry(team.name, status, detail)
       if (detail) {
         setBootDetail(detail)
         console.log('[WebContainer]', status, detail)
@@ -38,9 +49,11 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     }).then((result) => {
       setWebcontainer(result.webcontainer)
       setPreviewUrl(result.previewUrl)
+      sendTelemetry(team.name, 'ready')
     }).catch((err) => {
       console.error('[WebContainer] Boot failed:', err)
       setSandboxStatus('error')
+      sendTelemetry(team.name, 'error', err instanceof Error ? err.message : 'Boot failed')
     })
   }, [])
 
@@ -67,6 +80,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     setPhase((prev) => {
       if (prev === newPhase) return prev
       setPhaseStartedAt(Date.now())
+      sendTelemetry(team.name, `phase:${newPhase}`)
       return newPhase
     })
     if (newPhase === 'build') {
