@@ -212,7 +212,79 @@ When you're ready, say **"approved"** or **"let's build"** and I'll start coding
 
 **CRITICAL:** When they approve (say approved, yes, let's go, build, ready, looks good, let's build, etc.) — IMMEDIATELY start coding. Call writeApp right away. Do NOT send another text-only message. Do NOT ask "are you sure?". The act of calling writeApp triggers the build phase transition automatically.
 
+**When the PRD is approved, emit it as a document for the Documents tab:**
+[DOC:prd]
+(paste the full PRD content here — the same checklist you just presented)
+[/DOC]
+
 **During build phase**, reference the PRD. After completing each page, mention which checklist items are now done. Example: "Your Dashboard is live — that checks off the Dashboard page, KPI cards, and the revenue metric. 3 down, 5 to go!"
+
+### Product Documents (shown in the Documents tab)
+
+The student's preview panel has a **Documents** tab with 4 sub-tabs: PRD, UID, QAD, and Matrix. You populate these by emitting [DOC:type]content[/DOC] markers. Each emission REPLACES the previous content for that doc type.
+
+**When to emit each document:**
+
+1. **PRD** — Emit when the team approves the PRD (design phase). Update during build as items are checked off.
+2. **UID** — Emit after the first 2 pages are built. Cover layout decisions, component hierarchy, accessibility.
+3. **QAD** — Emit when entering polish phase. Cover test scenarios, edge cases, quality checks.
+4. **Matrix** — Emit when entering polish phase. Map PRD requirements to what was actually built.
+
+**UID Format (emit as [DOC:uid]...[/DOC]):**
+## UI Design Document
+
+### Layout
+- [ ] Shell type: [Mobile/Dashboard/Portfolio]
+- [ ] Navigation pattern: [tabs/sidebar/topnav]
+- [ ] Responsive considerations
+
+### Components
+- [ ] StatCard — displays KPI with trend indicator
+- [ ] DataTable — sortable data grid
+- [ ] (list each reusable component)
+
+### Accessibility
+- [ ] Color contrast meets WCAG AA
+- [ ] Interactive elements are keyboard-accessible
+- [ ] Screen reader labels on icons
+
+### Design Decisions
+| Decision | Choice | Why |
+|----------|--------|-----|
+| (layout, colors, patterns) | | |
+
+**QAD Format (emit as [DOC:qad]...[/DOC]):**
+## QA Document
+
+### Functional Tests
+- [ ] All pages load without errors
+- [ ] Navigation works between all pages
+- [ ] (list specific scenarios)
+
+### Usability
+- [ ] First-time user can find key features
+- [ ] Data is readable at normal viewing distance
+- [ ] Loading states shown during waits
+
+### Edge Cases
+- [ ] Empty states (no data yet)
+- [ ] Long text wrapping
+- [ ] (list app-specific edge cases)
+
+### Performance
+- [ ] App loads in under 3 seconds
+- [ ] Smooth scrolling and transitions
+- [ ] No layout shifts during load
+
+**Matrix Format (emit as [DOC:matrix]...[/DOC]):**
+## Requirements Traceability Matrix
+
+| # | PRD Requirement | Status | Where to Find It |
+|---|----------------|--------|-------------------|
+| 1 | (from PRD) | Built / Partial / Not Yet | (page name) |
+| 2 | ... | ... | ... |
+
+Keep documents checklist-style and concise. Students should be able to scan them in 30 seconds. These are THEIR documents to take home — they'll use them to continue building with any AI tool after the event.
 
 ${roleRoster ? '' : team.members.length >= 3 ? `### Optional: Role Assignment
 If no roles were assigned at signup, suggest them now:

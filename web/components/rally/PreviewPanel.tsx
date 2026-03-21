@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
-import { Download } from 'lucide-react'
+import { DocPanel, type DocType } from './DocPanel'
+import { TakeHomePanel } from './TakeHomePanel'
 
-type PreviewTab = 'product' | 'code' | 'docs'
+type PreviewTab = 'product' | 'code' | 'docs' | 'takehome'
 
 interface PreviewPanelProps {
   appHtml: string | null
@@ -11,6 +12,7 @@ interface PreviewPanelProps {
   teamName?: string
   building?: boolean
   phase?: string
+  docs?: Record<DocType, string>
 }
 
 function PhoneFrame({ children }: { children: React.ReactNode }) {
@@ -99,34 +101,6 @@ function BrowserFrame({ children, title }: { children: React.ReactNode; title?: 
         {children}
       </div>
     </div>
-  )
-}
-
-function ExportButton({ appHtml, teamName }: { appHtml: string; teamName?: string }) {
-  function handleExport() {
-    const blob = new Blob([appHtml], { type: 'text/html' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${(teamName ?? 'my-app').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.html`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
-  return (
-    <button
-      onClick={handleExport}
-      className="absolute top-3 right-3 z-10 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-90"
-      style={{
-        backgroundColor: 'var(--accent)',
-        color: '#fff',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-      }}
-      title="Download your app as HTML"
-    >
-      <Download className="w-4 h-4" />
-      Take It Home
-    </button>
   )
 }
 
@@ -224,11 +198,12 @@ function formatCode(html: string): string {
   return html
 }
 
-function TabBar({ activeTab, onTabChange, hasApp }: { activeTab: PreviewTab; onTabChange: (t: PreviewTab) => void; hasApp: boolean }) {
-  const tabs: { id: PreviewTab; label: string }[] = [
-    { id: 'product', label: 'Product' },
+function TabBar({ activeTab, onTabChange, hasApp, phase }: { activeTab: PreviewTab; onTabChange: (t: PreviewTab) => void; hasApp: boolean; phase?: string }) {
+  const tabs: { id: PreviewTab; label: string; showWhen?: string }[] = [
+    { id: 'product', label: 'App Preview' },
     { id: 'code', label: 'Code' },
     { id: 'docs', label: 'Documents' },
+    { id: 'takehome', label: 'Take Home', showWhen: 'polish' },
   ]
 
   return (
@@ -236,11 +211,13 @@ function TabBar({ activeTab, onTabChange, hasApp }: { activeTab: PreviewTab; onT
       className="flex shrink-0"
       style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--bg-primary)' }}
     >
-      {tabs.map((tab) => (
+      {tabs
+        .filter((tab) => !tab.showWhen || tab.showWhen === phase)
+        .map((tab) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          disabled={!hasApp && tab.id !== 'product'}
+          disabled={!hasApp && tab.id !== 'product' && tab.id !== 'docs'}
           className="px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
             color: activeTab === tab.id ? 'var(--accent)' : 'var(--text-muted)',
@@ -311,90 +288,10 @@ function FileTreeView({ html }: { html: string }) {
   )
 }
 
-function DocsView({ html }: { html: string }) {
-  // Extract component names and mock data references for the "what we built" view
-  const componentMatches = html.match(/(?:function|const)\s+([A-Z][a-zA-Z0-9]+)\s*(?:\(|=)/g) || []
-  const components = componentMatches
-    .map((m) => m.replace(/^(?:function|const)\s+/, '').replace(/\s*[=(]$/, ''))
-    .filter((name) => !['React', 'ReactDOM', 'ErrorBoundary'].includes(name))
+// DocsView replaced by DocPanel component
 
-  const pages = components.filter((c) => c.endsWith('Page') || c === 'Dashboard')
-  const uiComponents = components.filter((c) => !pages.includes(c) && c !== 'App')
-
-  return (
-    <div className="flex-1 overflow-y-auto p-5 space-y-6" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-      <div className="rounded-lg p-5" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-        <h3 className="text-base font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
-          What the AI Built
-        </h3>
-        <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
-          This is a real-time view of what is in your app right now. As the AI builds more pages and features, this list grows.
-        </p>
-
-        {pages.length > 0 && (
-          <div className="mb-4">
-            <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Pages ({pages.length})</h4>
-            <div className="space-y-1">
-              {pages.map((p) => (
-                <div key={p} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-primary)' }}>
-                  <span style={{ color: 'var(--accent)' }}>●</span>
-                  {p.replace(/Page$/, '')}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {uiComponents.length > 0 && (
-          <div className="mb-4">
-            <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>Components ({uiComponents.length})</h4>
-            <div className="flex flex-wrap gap-2">
-              {uiComponents.map((c) => (
-                <span
-                  key={c}
-                  className="px-2 py-1 text-xs rounded font-mono"
-                  style={{ backgroundColor: 'var(--bg-muted)', color: 'var(--text-secondary)' }}
-                >
-                  {c}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <div className="rounded-lg p-5" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-        <h3 className="text-base font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
-          Tech Stack
-        </h3>
-        <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
-          These are the real technologies powering your app — the same ones used by companies like Netflix, Airbnb, and Instagram.
-        </p>
-        <div className="space-y-2">
-          {[
-            { name: 'React 18', desc: 'UI framework by Meta — builds interactive interfaces from components' },
-            { name: 'Tailwind CSS', desc: 'Utility-first CSS — style anything with class names, no custom CSS needed' },
-            { name: 'Babel', desc: 'JavaScript compiler — lets you write modern JSX that browsers understand' },
-          ].map((tech) => (
-            <div key={tech.name} className="flex gap-3 text-sm">
-              <span className="font-semibold shrink-0" style={{ color: 'var(--accent)' }}>{tech.name}</span>
-              <span style={{ color: 'var(--text-muted)' }}>{tech.desc}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="rounded-lg p-5" style={{ backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border)' }}>
-        <h3 className="text-base font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
-          Project File Structure
-        </h3>
-        <FileTreeView html={html} />
-      </div>
-    </div>
-  )
-}
-
-export function PreviewPanel({ appHtml, shell, teamName, building, phase }: PreviewPanelProps) {
+export function PreviewPanel({ appHtml, shell, teamName, building, phase, docs }: PreviewPanelProps) {
+  const safeDocState: Record<DocType, string> = docs || { prd: '', uid: '', qad: '', matrix: '' }
   const [activeTab, setActiveTab] = useState<PreviewTab>('product')
 
   // Safety net: if the iframe navigates away from srcdoc, force it back
@@ -462,7 +359,7 @@ export function PreviewPanel({ appHtml, shell, teamName, building, phase }: Prev
     if (shell === 'mobile') {
       return (
         <div className="relative flex-1 flex">
-          {phase === 'polish' && <ExportButton appHtml={appHtml!} teamName={teamName} />}
+          {/* Export moved to Take Home tab */}
           <PhoneFrame>{iframe}</PhoneFrame>
         </div>
       )
@@ -471,7 +368,7 @@ export function PreviewPanel({ appHtml, shell, teamName, building, phase }: Prev
     if (shell === 'dashboard' || shell === 'portfolio') {
       return (
         <div className="relative flex-1 flex flex-col">
-          {phase === 'polish' && <ExportButton appHtml={appHtml!} teamName={teamName} />}
+          {/* Export moved to Take Home tab */}
           <BrowserFrame>{iframe}</BrowserFrame>
         </div>
       )
@@ -480,7 +377,7 @@ export function PreviewPanel({ appHtml, shell, teamName, building, phase }: Prev
     // No shell selected — plain iframe
     return (
       <div className="flex-1 relative" style={{ backgroundColor: 'var(--bg-secondary)' }}>
-        {phase === 'polish' && <ExportButton appHtml={appHtml!} teamName={teamName} />}
+        {/* Export moved to Take Home tab */}
         {iframe}
       </div>
     )
@@ -488,10 +385,11 @@ export function PreviewPanel({ appHtml, shell, teamName, building, phase }: Prev
 
   return (
     <div className="flex-1 flex flex-col">
-      <TabBar activeTab={activeTab} onTabChange={setActiveTab} hasApp={!!appHtml} />
+      <TabBar activeTab={activeTab} onTabChange={setActiveTab} hasApp={!!appHtml} phase={phase} />
       {activeTab === 'product' && renderProductView()}
       {activeTab === 'code' && <CodeView html={appHtml} />}
-      {activeTab === 'docs' && <DocsView html={appHtml} />}
+      {activeTab === 'docs' && <DocPanel docs={safeDocState} appHtml={appHtml} />}
+      {activeTab === 'takehome' && <TakeHomePanel appHtml={appHtml} docs={safeDocState} teamName={teamName || 'My Team'} />}
     </div>
   )
 }

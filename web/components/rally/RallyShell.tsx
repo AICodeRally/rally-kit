@@ -9,6 +9,7 @@ import { DesignStepper } from './DesignStepper'
 import { StatusBar } from './StatusBar'
 import { SplashScreen } from './SplashScreen'
 import type { TeamInfo, Phase, DesignIdea } from '@/lib/rally/types'
+import type { DocType } from './DocPanel'
 
 class RallyErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -129,6 +130,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
   const [hydrated, setHydrated] = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
   const [chatCollapsed, setChatCollapsed] = useState(false)
+  const [docs, setDocs] = useState<Record<DocType, string>>({ prd: '', uid: '', qad: '', matrix: '' })
 
   // Restore persisted state from sessionStorage after mount (client-only)
   useEffect(() => {
@@ -240,6 +242,10 @@ export function RallyShell({ team }: { team: TeamInfo }) {
     })
   }, [hydrated, appHtml, phase, selectedShell, team.slug, team.name, team.track])
 
+  const handleDocUpdate = useCallback((type: DocType, content: string) => {
+    setDocs((prev) => ({ ...prev, [type]: content }))
+  }, [])
+
   const handleAddIdea = useCallback((idea: DesignIdea) => {
     setIdeas((prev) => {
       if (prev.some((i) => i.title === idea.title)) return prev
@@ -296,6 +302,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
                 onFileWritten={handleFileWritten}
                 onIdeaCaptured={handleAddIdea}
                 onPhaseChange={handlePhaseChange}
+                onDocUpdate={handleDocUpdate}
               />
             </div>
 
@@ -326,7 +333,7 @@ export function RallyShell({ team }: { team: TeamInfo }) {
                     )}
                   </svg>
                 </button>
-                <PreviewPanel appHtml={appHtml} shell={selectedShell} teamName={team.name} building={!appHtml} phase={phase} />
+                <PreviewPanel appHtml={appHtml} shell={selectedShell} teamName={team.name} building={!appHtml} phase={phase} docs={docs} />
               </div>
             )}
           </div>

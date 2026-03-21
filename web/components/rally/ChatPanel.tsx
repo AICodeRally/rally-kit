@@ -10,11 +10,15 @@ import { MessageResponse } from '@/components/ai-elements/message'
 import { SlashToolbar } from './SlashToolbar'
 import { FileChangeNotification } from '@/components/chat/FileChangeNotification'
 import type { TeamInfo, DesignIdea, Phase } from '@/lib/rally/types'
+import type { DocType } from './DocPanel'
 import { Send } from 'lucide-react'
 
 // Pattern for [IDEA:category:title]description[/IDEA] markers.
 // IMPORTANT: Create a new regex per call — global regexes are stateful (lastIndex).
 const IDEA_PATTERN = /\[IDEA:(problem|pages|data|shell|theme):([^\]]+)\]([\s\S]*?)\[\/IDEA\]/g
+
+// Pattern for [DOC:type]content[/DOC] markers — AI emits these to populate document tabs.
+const DOC_PATTERN = /\[DOC:(prd|uid|qad|matrix)\]([\s\S]*?)\[\/DOC\]/g
 
 function extractIdeas(text: string): DesignIdea[] {
   const re = new RegExp(IDEA_PATTERN.source, IDEA_PATTERN.flags)
@@ -31,6 +35,19 @@ function extractIdeas(text: string): DesignIdea[] {
   return ideas
 }
 
+function extractDocs(text: string): { type: DocType; content: string }[] {
+  const re = new RegExp(DOC_PATTERN.source, DOC_PATTERN.flags)
+  const docs: { type: DocType; content: string }[] = []
+  let match: RegExpExecArray | null
+  while ((match = re.exec(text)) !== null) {
+    docs.push({
+      type: match[1] as DocType,
+      content: match[2].trim(),
+    })
+  }
+  return docs
+}
+
 interface ChatPanelProps {
   team: TeamInfo
   phase?: string
@@ -38,6 +55,7 @@ interface ChatPanelProps {
   onFileWritten: (path: string) => void
   onIdeaCaptured?: (idea: DesignIdea) => void
   onPhaseChange?: (phase: Phase) => void
+  onDocUpdate?: (type: DocType, content: string) => void
 }
 
 export function ChatPanel({
@@ -47,6 +65,7 @@ export function ChatPanel({
   onFileWritten,
   onIdeaCaptured,
   onPhaseChange,
+  onDocUpdate,
 }: ChatPanelProps) {
   const [input, setInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -99,6 +118,21 @@ export function ChatPanel({
       }
     }
   }, [messages, onIdeaCaptured])
+
+  // Extract documents from assistant messages
+  useEffect(() => {
+    if (!onDocUpdate) return
+    for (const msg of messages) {
+      if (msg.role !== 'assistant') continue
+      for (const part of msg.parts ?? []) {
+        if (part.type !== 'text' || !part.text) continue
+        const docs = extractDocs(part.text)
+        for (const doc of docs) {
+          onDocUpdate(doc.type, doc.content)
+        }
+      }
+    }
+  }, [messages, onDocUpdate])
 
   // Auto-start rally in design phase (not after a refresh into build/polish)
   const hasStarted = useRef(false)
@@ -182,8 +216,11 @@ export function ChatPanel({
                 try {
                   if (part.type === 'text') {
                     if (!part.text) return null
-                    // Strip IDEA markers from displayed text
-                    const displayText = part.text.replace(new RegExp(IDEA_PATTERN.source, IDEA_PATTERN.flags), '').trim()
+                    // Strip IDEA and DOC markers from displayed text
+                    const displayText = part.text
+                      .replace(new RegExp(IDEA_PATTERN.source, IDEA_PATTERN.flags), '')
+                      .replace(new RegExp(DOC_PATTERN.source, DOC_PATTERN.flags), '')
+                      .trim()
                     if (!displayText) return null
                     return message.role === 'assistant' ? (
                       <MessageResponse key={i}>{displayText}</MessageResponse>
