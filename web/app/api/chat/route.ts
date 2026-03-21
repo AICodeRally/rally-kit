@@ -1,33 +1,12 @@
-import { streamText, convertToModelMessages, stepCountIs } from 'ai'
+import { streamText, convertToModelMessages, stepCountIs, gateway } from 'ai'
 import type { UIMessage } from 'ai'
-import { createAnthropic } from '@ai-sdk/anthropic'
 import { buildSystemPrompt } from '@/lib/ai/system-prompt'
 import { rallyTools } from '@/lib/ai/tools'
 
-// Multi-key rotation: distribute teams across API keys to avoid rate limits.
-// Set ANTHROPIC_API_KEY_1, _2, _3 etc. in env vars. Falls back to ANTHROPIC_API_KEY.
-// Gateway-ready: when AI Gateway is configured, swap this function to use gateway().
-function getModel(teamSlug: string) {
-  const numberedKeys = [
-    process.env.ANTHROPIC_API_KEY_1,
-    process.env.ANTHROPIC_API_KEY_2,
-    process.env.ANTHROPIC_API_KEY_3,
-    process.env.ANTHROPIC_API_KEY_4,
-    process.env.ANTHROPIC_API_KEY_5,
-  ].filter(Boolean) as string[]
-
-  if (numberedKeys.length > 0) {
-    // Deterministic hash — same team always gets same key
-    const hash = [...teamSlug].reduce((a, c) => a + c.charCodeAt(0), 0)
-    const key = numberedKeys[hash % numberedKeys.length]
-    const anthropic = createAnthropic({ apiKey: key })
-    return anthropic('claude-sonnet-4-6')
-  }
-
-  // Fallback: single key from ANTHROPIC_API_KEY
-  const anthropic = createAnthropic()
-  return anthropic('claude-sonnet-4-6')
-}
+// Vercel AI Gateway — OIDC auth is automatic on Vercel deployments.
+// Model routing, failover, cost tracking, and rate limit pooling handled by the gateway.
+// No per-team API key rotation needed — the gateway manages provider capacity.
+const model = gateway('anthropic/claude-sonnet-4.6')
 
 export async function POST(req: Request) {
   const url = new URL(req.url)
@@ -80,7 +59,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: getModel(team.slug),
+    model,
     system: buildSystemPrompt(team),
     messages: modelMessages,
     tools: rallyTools,
