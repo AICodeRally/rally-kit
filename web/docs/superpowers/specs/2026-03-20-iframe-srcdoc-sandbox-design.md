@@ -216,15 +216,93 @@ Telemetry endpoint stays. Status events simplify:
 
 ---
 
+## iframe Security
+
+The iframe uses `sandbox="allow-scripts"` with `srcdoc`. This means:
+- JavaScript executes (React/Babel need this)
+- The iframe gets a unique opaque origin — it **cannot** access the parent frame's DOM, cookies, localStorage, or session tokens
+- No `allow-same-origin` — this is intentional. Student-generated code is untrusted.
+- No `allow-forms`, `allow-popups`, `allow-top-navigation` — students can't submit forms to external URLs or navigate the parent
+
+---
+
+## Error Handling
+
+When the AI generates invalid JSX or runtime errors occur, students must see a helpful error message — not a white screen.
+
+**Two error layers:**
+
+1. **Babel compile errors** — the system prompt instructs the AI to wrap the main `<script type="text/babel">` in a pattern that catches Babel parse failures and shows an error div. Additionally, a global `window.onerror` handler in a separate `<script>` (not `type="text/babel"`) catches anything Babel misses.
+
+2. **React runtime errors** — an `ErrorBoundary` component defined at the top of the Babel script wraps `<App />`. It catches render errors and shows "Something went wrong — tell your AI partner to fix it."
+
+**Error overlay design:**
+```html
+<div style="padding:2rem;background:#fef2f2;border:2px solid #fca5a5;border-radius:12px;margin:2rem;font-family:system-ui">
+  <h2 style="color:#dc2626;margin-bottom:0.5rem">Something went wrong</h2>
+  <p style="color:#7f1d1d">Tell your AI partner: "Hey, the preview broke — can you fix it?"</p>
+  <pre style="margin-top:1rem;padding:1rem;background:#fff;border-radius:8px;overflow:auto;font-size:13px;color:#374151">[error message here]</pre>
+</div>
+```
+
+**Recovery:** The AI sees the error in the tool output ("writeApp succeeded but preview shows error: [message]") — actually, the AI doesn't see iframe errors. But students can paste the error message into chat, and the AI will fix the JSX. The system prompt tells the AI about `/fix` command for this scenario.
+
+---
+
+## Device Frames
+
+The preview iframe is wrapped in a **device frame** that matches the chosen shell:
+
+| Shell | Frame | Description |
+|-------|-------|-------------|
+| MobileShell | Phone bezel | Rounded corners (3rem), notch/dynamic island at top, home bar at bottom, centered at max-w-[375px], dark bezel color |
+| DashboardShell | Browser chrome | Title bar with traffic light dots (red/yellow/green), URL bar showing app name, full-width |
+| PortfolioShell | Browser chrome | Same as DashboardShell |
+| (none selected) | No frame | Plain iframe filling the panel |
+
+**Shell detection:** The `selectedShell` is extracted from the ideas array when an `[IDEA:shell:ShellName]` marker is captured. RallyShell passes it down to BuildWorkspace → PreviewPanel.
+
+**Frames are CSS-only** — pure divs with border-radius, background colors, and nested elements. No images, no SVGs, no external assets.
+
+---
+
+## CDN Reliability
+
+Campus WiFi may block or throttle CDN domains. Mitigation:
+
+1. **Pin CDN versions** — use versioned URLs to avoid breaking changes:
+   - `https://unpkg.com/react@18.3.1/umd/react.development.js`
+   - `https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js`
+   - `https://unpkg.com/@babel/standalone@7.26.5/babel.min.js`
+   - `https://cdn.tailwindcss.com/3.4.17` (pinned v3)
+2. **Use development React** — better error messages for students (extra ~200KB is negligible, CDN-cached)
+3. **Pre-event test** — load rally.aicoderally.com on campus WiFi and verify CDN scripts load. If blocked, fall back to serving bundled copies from `/public/vendor/`.
+4. **Fallback plan** — if CDN is unreachable, the AI generates HTML with `<script>` tags pointing to local `/vendor/*.js` routes that proxy the scripts from the Next.js app.
+
+---
+
+## State on Re-render
+
+Each `writeApp` call replaces the entire iframe content, which resets all React state (form inputs, scroll position, hash route). This is a known and accepted limitation:
+
+- The AI is instructed to set `window.location.hash` to the current page when regenerating, so navigation state is preserved
+- Mock data is hardcoded in the HTML, so it's always present
+- Form state loss is acceptable — students aren't entering real data, they're looking at the preview
+- The AI can restore to any page by setting the default hash in the generated code
+
+---
+
 ## Risk Assessment
 
 | Risk | Mitigation |
 |------|-----------|
-| Babel Standalone adds ~1MB to each generated HTML | CDN-cached after first load; students on same WiFi share cache |
-| AI generates invalid JSX → white screen | Wrap `<script type="text/babel">` output in try/catch; show error overlay in iframe |
+| Babel Standalone adds ~1MB to generated HTML | CDN-cached after first load; students on same WiFi share cache |
+| AI generates invalid JSX → white screen | ErrorBoundary + window.onerror + friendly error overlay (see Error Handling section) |
 | Single HTML grows large for complex apps | 3-hour prototype won't exceed ~2000 lines; Babel handles this fine |
 | No hot reload — full page re-render on update | Sub-100ms render; students won't notice vs HMR |
 | Lucide icons as inline SVGs bloats HTML | Only include icons actually used; typical app uses 5-10 |
+| CDN blocked on campus WiFi | Pin versions, pre-event test, local fallback ready (see CDN Reliability) |
+| State loss on re-render | AI preserves hash route, mock data is static (see State on Re-render) |
 
 ---
 
@@ -238,5 +316,8 @@ Telemetry endpoint stays. Status events simplify:
 6. Hash navigation works between pages
 7. Theme colors apply correctly
 8. Tailwind classes render (CDN working)
-9. Works on campus WiFi equivalent (throttled network)
-10. 3 concurrent teams don't interfere with each other
+9. Error overlay appears on invalid JSX (not white screen)
+10. Device frames render correctly for each shell type
+11. iframe sandbox attribute blocks parent frame access
+12. Works on campus WiFi equivalent (throttled network)
+13. 3 concurrent teams each render independently in their own browser tabs
