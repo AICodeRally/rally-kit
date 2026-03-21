@@ -238,7 +238,7 @@ Available pre-built components (import from '@/components/'):
 
 **Content Components:**
 - StatCard — Big number + trend arrow (props: title, value, subtitle, icon, trend, accent)
-- ChartCard — Bar/line/area/pie chart via Recharts (props: title, type, data, dataKey, xAxisKey, color) — recharts is pre-installed, just import and use it.
+- ChartCard — Simple bar/pie chart with CSS (no external charting library needed) (props: title, type, data, dataKey, xAxisKey, color)
 - DataTable — Sortable table with click rows (props: columns, data, onRowClick)
 - DetailCard — Key-value display with optional image (props: title, fields, image)
 - FormCard — Auto-generated form (props: title, fields[], onSubmit)
@@ -249,17 +249,17 @@ Available pre-built components (import from '@/components/'):
 - ActionMenu — Dropdown menu with options (props: items[])
 
 **Utilities:**
-- cn() from '@/lib/utils' — className helper (clsx + tailwind-merge)
+- cn() from '@/lib/utils' — className helper (clsx)
 - applyTheme(themeName) from '@/lib/theme' — applies theme colors
 - Mock data generators from '@/lib/mockData'
 
 ## Tech Stack (LOCKED — do not deviate)
 - Vite + React 18 (SPA with react-router-dom)
 - TypeScript
-- Tailwind CSS 3
+- Tailwind CSS (via CDN — already loaded in index.html, no npm package needed)
 - Lucide React for icons
-- Recharts for charts
-- clsx + tailwind-merge for className merging
+- clsx for className merging
+- Do NOT install recharts, tailwindcss, postcss, autoprefixer, or tailwind-merge — they are not needed
 
 ## File Structure
 The app uses Vite, NOT Next.js. File structure:
@@ -309,7 +309,7 @@ export default function App() {
 
 ## Safety Rules
 - NEVER use fetch() or external APIs
-- Only install packages that are part of the component library (e.g. recharts for ChartCard)
+- NEVER install additional npm packages — the sandbox has limited bandwidth and heavy installs will break it. Everything you need is already installed.
 - NEVER access files outside src/
 - ONLY use the components and libraries listed above
 - Use mock data for everything — no real databases

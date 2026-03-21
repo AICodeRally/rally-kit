@@ -19,19 +19,11 @@ export const RALLY_KIT_FILES: FileSystemTree = {
             'react-dom': '18.3.1',
             'react-router-dom': '6.28.0',
             'lucide-react': '0.469.0',
-            recharts: '2.15.0',
             clsx: '2.1.1',
-            'tailwind-merge': '3.0.0',
           },
           devDependencies: {
-            '@types/react': '18.3.18',
-            '@types/react-dom': '18.3.5',
             '@vitejs/plugin-react': '4.3.4',
-            typescript: '5.7.3',
             vite: '6.0.7',
-            tailwindcss: '3.4.17',
-            postcss: '8.4.49',
-            autoprefixer: '10.4.20',
           },
         },
         null,
@@ -86,63 +78,6 @@ export default defineConfig({
     },
   },
 
-  'postcss.config.cjs': {
-    file: {
-      contents: `module.exports = { plugins: { tailwindcss: {}, autoprefixer: {} } }`,
-    },
-  },
-
-  'tailwind.config.cjs': {
-    file: {
-      contents: `/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
-        mono: ['"Space Mono"', 'ui-monospace', 'monospace'],
-      },
-      colors: {
-        accent: {
-          DEFAULT: 'var(--color-accent)',
-          light: 'var(--color-accent-light)',
-          dark: 'var(--color-accent-dark)',
-        },
-        secondary: 'var(--color-secondary)',
-        tertiary: 'var(--color-tertiary)',
-        success: 'var(--color-success)',
-        warning: 'var(--color-warning)',
-        danger: 'var(--color-danger)',
-        bg: {
-          primary: 'var(--color-bg-primary)',
-          secondary: 'var(--color-bg-secondary)',
-          card: 'var(--color-bg-card)',
-          'card-hover': 'var(--color-bg-card-hover)',
-          sidebar: 'var(--color-bg-sidebar)',
-          nav: 'var(--color-bg-nav)',
-        },
-        text: {
-          primary: 'var(--color-text-primary)',
-          secondary: 'var(--color-text-secondary)',
-          muted: 'var(--color-text-muted)',
-        },
-        border: {
-          default: 'var(--color-border-default)',
-          subtle: 'var(--color-border-subtle)',
-        },
-      },
-      boxShadow: {
-        card: 'var(--shadow-card)',
-        'card-hover': 'var(--shadow-card-hover)',
-      },
-    },
-  },
-  plugins: [],
-}`,
-    },
-  },
-
   'index.html': {
     file: {
       contents: `<!DOCTYPE html>
@@ -154,6 +89,44 @@ module.exports = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              accent: 'var(--color-accent)',
+              'accent-light': 'var(--color-accent-light)',
+              'accent-dark': 'var(--color-accent-dark)',
+              secondary: 'var(--color-secondary)',
+              tertiary: 'var(--color-tertiary)',
+              success: 'var(--color-success)',
+              warning: 'var(--color-warning)',
+              danger: 'var(--color-danger)',
+              'bg-primary': 'var(--color-bg-primary)',
+              'bg-secondary': 'var(--color-bg-secondary)',
+              'bg-card': 'var(--color-bg-card)',
+              'bg-card-hover': 'var(--color-bg-card-hover)',
+              'bg-sidebar': 'var(--color-bg-sidebar)',
+              'bg-nav': 'var(--color-bg-nav)',
+              'border-default': 'var(--color-border-default)',
+              'border-subtle': 'var(--color-border-subtle)',
+              'text-primary': 'var(--color-text-primary)',
+              'text-secondary': 'var(--color-text-secondary)',
+              'text-muted': 'var(--color-text-muted)',
+            },
+            boxShadow: {
+              card: 'var(--shadow-card)',
+              'card-hover': 'var(--shadow-card-hover)',
+            },
+            fontFamily: {
+              sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
+              mono: ['Space Mono', 'monospace'],
+            },
+          },
+        },
+      }
+    </script>
   </head>
   <body class="font-sans bg-bg-primary text-text-primary min-h-screen">
     <div id="root"></div>
@@ -248,11 +221,7 @@ export default function Home() {
 
       'globals.css': {
         file: {
-          contents: `@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
+          contents: `:root {
   --color-accent: #0ea5e9;
   --color-accent-light: #38bdf8;
   --color-accent-dark: #0284c7;
@@ -345,40 +314,59 @@ export default function StatCard({ title, value, subtitle, icon: Icon, trend, ac
 
           'ChartCard.tsx': {
             file: {
-              contents: `import {
-  ResponsiveContainer, BarChart, Bar, LineChart, Line, AreaChart, Area,
-  PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
-} from 'recharts'
+              contents: `import { cn } from '@/lib/utils'
 
-const COLORS = { orange: '#f97316', cyan: '#06b6d4', purple: '#a855f7', green: '#22c55e', yellow: '#eab308', red: '#ef4444' }
+const COLORS: Record<string, string> = { orange: '#f97316', cyan: '#06b6d4', purple: '#a855f7', green: '#22c55e', yellow: '#eab308', red: '#ef4444' }
 
 interface ChartCardProps {
   title: string; subtitle?: string; type: 'bar' | 'line' | 'area' | 'pie'
   data: Record<string, unknown>[]; dataKey: string; xAxisKey?: string
-  color?: keyof typeof COLORS; height?: number
+  color?: string; height?: number
 }
 
 export default function ChartCard({ title, subtitle, type, data, dataKey, xAxisKey = 'name', color = 'orange', height = 300 }: ChartCardProps) {
-  const c = COLORS[color]
-  const tooltipStyle = { backgroundColor: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', color: '#0f172a', fontSize: '14px' }
+  const c = COLORS[color] || color
+  const values = data.map(d => Number(d[dataKey]) || 0)
+  const maxVal = Math.max(...values, 1)
+
   return (
     <div className="bg-bg-card border border-border-default rounded-xl p-6 shadow-card">
       <div className="mb-4">
         <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide">{title}</h3>
         {subtitle && <p className="text-xs text-text-muted mt-1">{subtitle}</p>}
       </div>
-      <div style={{ height }}>
-        <ResponsiveContainer width="100%" height="100%">
-          {type === 'bar' ? (
-            <BarChart data={data}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey={xAxisKey} stroke="#94a3b8" fontSize={12} /><YAxis stroke="#94a3b8" fontSize={12} /><Tooltip contentStyle={tooltipStyle} /><Bar dataKey={dataKey} fill={c} radius={[4, 4, 0, 0]} /></BarChart>
-          ) : type === 'line' ? (
-            <LineChart data={data}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey={xAxisKey} stroke="#94a3b8" fontSize={12} /><YAxis stroke="#94a3b8" fontSize={12} /><Tooltip contentStyle={tooltipStyle} /><Line type="monotone" dataKey={dataKey} stroke={c} strokeWidth={2} dot={{ fill: c, r: 4 }} /></LineChart>
-          ) : type === 'area' ? (
-            <AreaChart data={data}><CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" /><XAxis dataKey={xAxisKey} stroke="#94a3b8" fontSize={12} /><YAxis stroke="#94a3b8" fontSize={12} /><Tooltip contentStyle={tooltipStyle} /><Area type="monotone" dataKey={dataKey} stroke={c} fill={c} fillOpacity={0.1} /></AreaChart>
-          ) : (
-            <PieChart><Pie data={data} cx="50%" cy="50%" outerRadius={80} dataKey={dataKey} nameKey={xAxisKey} label>{data.map((_, i) => <Cell key={i} fill={Object.values(COLORS)[i % 6]} />)}</Pie><Tooltip contentStyle={tooltipStyle} /><Legend /></PieChart>
-          )}
-        </ResponsiveContainer>
+      <div style={{ height }} className="flex items-end gap-2">
+        {type === 'pie' ? (
+          <div className="w-full h-full flex items-center justify-center gap-4 flex-wrap">
+            {data.map((d, i) => {
+              const val = Number(d[dataKey]) || 0
+              const total = values.reduce((a, b) => a + b, 0) || 1
+              const pct = Math.round((val / total) * 100)
+              const barColor = Object.values(COLORS)[i % 6]
+              return (
+                <div key={i} className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded" style={{ backgroundColor: barColor }} />
+                  <span className="text-sm text-text-primary">{String(d[xAxisKey])}: {pct}%</span>
+                </div>
+              )
+            })}
+          </div>
+        ) : (
+          data.map((d, i) => {
+            const val = Number(d[dataKey]) || 0
+            const pct = (val / maxVal) * 100
+            return (
+              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full gap-1">
+                <span className="text-xs text-text-muted font-medium">{val.toLocaleString()}</span>
+                <div
+                  className={cn('w-full rounded-t-md transition-all duration-300', type === 'line' ? 'rounded-b-md' : '')}
+                  style={{ height: pct + '%', backgroundColor: c, minHeight: '4px' }}
+                />
+                <span className="text-xs text-text-muted truncate max-w-full">{String(d[xAxisKey])}</span>
+              </div>
+            )
+          })
+        )}
       </div>
     </div>
   )
@@ -670,8 +658,7 @@ export default function PortfolioShell({ appName, navItems, heroContent, childre
           'utils.ts': {
             file: {
               contents: `import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-export function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)) }`,
+export function cn(...inputs: ClassValue[]) { return clsx(inputs) }`,
             },
           },
 
