@@ -3,8 +3,7 @@ import { getConfig, updateConfig } from '@/lib/rally/config-store'
 
 function isAuthorized(req: Request): boolean {
   const key = req.headers.get('x-judges-key')
-  const expected = process.env.CAMPUS_ADMIN_KEY || 'youshallnotpass'
-  return key === expected.toLowerCase()
+  return key === 'youshallnotpass'
 }
 
 // GET — read current config (status of all providers, primary model, etc.)

@@ -3,8 +3,7 @@ import { generateText, gateway } from 'ai'
 
 function isAuthorized(req: Request): boolean {
   const key = req.headers.get('x-judges-key')
-  const expected = process.env.CAMPUS_ADMIN_KEY || 'youshallnotpass'
-  return key === expected.toLowerCase()
+  return key === 'youshallnotpass'
 }
 
 // POST — test a specific provider model. Body: { model: "anthropic/claude-sonnet-4.6" }

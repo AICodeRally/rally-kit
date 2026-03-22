@@ -348,8 +348,8 @@ function SettingsPanel() {
 export default function SettingsPage() {
   return (
     <PasscodeGate
-      passcode={process.env.NEXT_PUBLIC_CAMPUS_ADMIN_KEY || 'youshallnotpass'}
-      storageKey="rally-judges-auth"
+      passcode="youshallnotpass"
+      storageKey="rally-live-showcase-passcode"
       label="Judges Access"
     >
       <div className="min-h-screen p-6" style={{ backgroundColor: 'var(--bg-primary)' }}>
