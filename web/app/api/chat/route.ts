@@ -17,7 +17,14 @@ import { getModelConfig } from '@/lib/rally/config-store'
 // Application-level retry handles network/gateway failures.
 // ──────────────────────────────────────────────────────────────────────
 
+// Allow streaming responses up to 60 seconds (Vercel defaults to 10s for serverless)
+export const maxDuration = 60
+
 const RETRY_DELAY_MS = 1000
+
+// Simple per-team rate limiter — prevents students from spamming during streaming
+const rateLimiter = new Map<string, number>()
+const RATE_LIMIT_MS = 2000 // min 2 seconds between requests per team
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -48,6 +55,17 @@ export async function POST(req: Request) {
     return new Response('Invalid team parameter', { status: 400 })
   }
 
+  // Per-team rate limiting — prevents spam during streaming
+  const now = Date.now()
+  const lastRequest = rateLimiter.get(team.slug)
+  if (lastRequest && now - lastRequest < RATE_LIMIT_MS) {
+    return new Response(
+      JSON.stringify({ error: 'Slow down — your AI is still thinking!' }),
+      { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': '2' } },
+    )
+  }
+  rateLimiter.set(team.slug, now)
+
   let messages: UIMessage[]
   try {
     const body = await req.json()
@@ -60,6 +78,12 @@ export async function POST(req: Request) {
       }
     }
     messages = body.messages
+
+    // Context window safety — keep last 80 messages to prevent overflow.
+    // System prompt is ~7K tokens; 80 messages ≈ ~120K tokens; leaves headroom for output.
+    if (messages.length > 80) {
+      messages = messages.slice(-80)
+    }
   } catch {
     return new Response('Invalid request body', { status: 400 })
   }
