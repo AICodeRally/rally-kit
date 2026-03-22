@@ -1,0 +1,15 @@
+{
+  "_meta": {
+    "description": "Naming patterns and examples for Step 6.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "patterns": [
+    { "pattern": "Noun + Noun", "examples": ["PawPath", "TaskForge", "MealMap", "CodeNest", "BudgetBridge"], "tip": "Two real words smashed together" },
+    { "pattern": "Adjective + Noun", "examples": ["SwiftSitter", "BrightBooks", "FreshFleet", "QuickQuote", "TrueTrack"], "tip": "Describes the vibe + the thing" },
+    { "pattern": "Verb + Object", "examples": ["BookIt", "TrackMySpend", "FindMyGig", "ScanReceipt", "GrowLocal"], "tip": "Says exactly what the app does" },
+    { "pattern": "Made-Up Word", "examples": ["Pawfect", "Brewtiful", "Skoolify", "Taskr", "Fitlytics"], "tip": "Sounds fun, memorable, unique" },
+    { "pattern": "Abbreviation / Acronym", "examples": ["PMO Hub", "GCU Connect", "EZBook", "AI Dash", "BizPulse"], "tip": "Short, punchy, professional" }
+  ],
+  "contributed": []
+}

@@ -28,3 +28,4 @@ DEMO_SCRIPT.md
 # Logs
 firebase-debug.log
 *.log
+.vercel

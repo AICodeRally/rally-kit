@@ -1,0 +1,76 @@
+{
+  "_meta": {
+    "description": "Pre-built domain model skeletons by business type. Claude picks the closest match and customizes, saving massive token generation time.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "patterns": {
+    "service-business": {
+      "entities": ["Customers", "Services", "Appointments", "Reviews"],
+      "kpis": ["Appointments this week", "Revenue this month", "Total customers", "Avg rating", "Most popular service"],
+      "pages": ["Dashboard", "Appointments", "Customers", "Services"],
+      "sampleName": "Pawfect Grooming"
+    },
+    "product-business": {
+      "entities": ["Products", "Orders", "Customers", "Categories"],
+      "kpis": ["Orders today", "Revenue this month", "Products listed", "Top seller", "Avg order value"],
+      "pages": ["Dashboard", "Products", "Orders", "Customers"],
+      "sampleName": "Brewtiful Coffee"
+    },
+    "marketplace": {
+      "entities": ["Listings", "Buyers", "Sellers", "Transactions", "Reviews"],
+      "kpis": ["Active listings", "Transactions this week", "Total users", "Revenue (fees)", "Avg listing price"],
+      "pages": ["Dashboard", "Listings", "Users", "Transactions"],
+      "sampleName": "PawPath Marketplace"
+    },
+    "saas-tool": {
+      "entities": ["Users", "Projects", "Tasks", "Activity"],
+      "kpis": ["Active users", "Tasks completed this week", "Projects in progress", "Avg tasks per user"],
+      "pages": ["Dashboard", "Projects", "Tasks", "Team"],
+      "sampleName": "TaskForge"
+    },
+    "content-platform": {
+      "entities": ["Creators", "Posts", "Subscribers", "Comments"],
+      "kpis": ["Published this week", "Total subscribers", "Engagement rate", "Top creator"],
+      "pages": ["Dashboard", "Content", "Audience", "Analytics"],
+      "sampleName": "BrightBlog"
+    },
+    "student-planner": {
+      "entities": ["Courses", "Assignments", "Schedule", "Goals"],
+      "kpis": ["Assignments due this week", "GPA tracker", "Study hours today", "Courses this semester"],
+      "pages": ["Dashboard", "Schedule", "Assignments", "Courses"],
+      "sampleName": "StudyPulse"
+    },
+    "campus-community": {
+      "entities": ["Events", "Groups", "Members", "Posts"],
+      "kpis": ["Events this week", "Active groups", "New members", "Posts today"],
+      "pages": ["Feed", "Events", "Groups", "Profile"],
+      "sampleName": "CampusVibe"
+    },
+    "budget-tracker": {
+      "entities": ["Transactions", "Categories", "Budgets", "Goals"],
+      "kpis": ["Spent this month", "Budget remaining", "Top category", "Savings progress"],
+      "pages": ["Dashboard", "Transactions", "Budgets", "Goals"],
+      "sampleName": "MintLite"
+    },
+    "fitness-health": {
+      "entities": ["Workouts", "Exercises", "Progress", "Goals"],
+      "kpis": ["Workouts this week", "Calories burned", "Current streak", "Personal bests"],
+      "pages": ["Dashboard", "Workouts", "Progress", "Plan"],
+      "sampleName": "FitTrack"
+    },
+    "job-tracker": {
+      "entities": ["Applications", "Companies", "Contacts", "Interviews"],
+      "kpis": ["Applications sent", "Interviews scheduled", "Response rate", "Offers received"],
+      "pages": ["Dashboard", "Applications", "Companies", "Contacts"],
+      "sampleName": "CareerPulse"
+    },
+    "portfolio-site": {
+      "entities": ["Projects", "Skills", "Experience", "Contact"],
+      "kpis": ["Projects showcased", "Skills listed", "Years experience", "Contact requests"],
+      "pages": ["Home", "Projects", "About", "Contact"],
+      "sampleName": "MyPortfolio"
+    }
+  },
+  "contributed": []
+}

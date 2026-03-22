@@ -4,6 +4,8 @@
  * Rally Kit — Vibe Code Rally Design System
  * LIGHT theme — readability first (16px+ body, high contrast)
  * Accent colors set dynamically via theme.ts
+ *
+ * Landing page uses AICR brand (dark). Student app uses light theme.
  */
 
 @theme {
@@ -39,6 +41,9 @@
   /* Shadows */
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+
+  /* AICR Brand — Rally gradient */
+  --rally-gradient: linear-gradient(90deg, #06b6d4, #3b82f6, #4a235a, #ec4899, #f97316, #06b6d4);
 }
 
 /* Smooth rendering */
@@ -55,6 +60,38 @@ body {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   line-height: 1.6;
+}
+
+/* ═══ AICR Brand Gradients (from aicoderally.com) ═══ */
+
+@keyframes gradientRotate {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Animated gradient background (accent lines, hr) */
+.gradient-animate {
+  background: var(--rally-gradient);
+  background-size: 300% 100%;
+  animation: gradientRotate 15s ease infinite;
+}
+
+/* AI brand gradient — orange to yellow, static */
+.ai-gradient {
+  background: linear-gradient(to top, #f97316, #fbbf24);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Rally animated gradient text — all instances flow in sync */
+.gradient-text {
+  background: var(--rally-gradient);
+  background-size: 300% 100%;
+  animation: gradientRotate 24s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Sidebar scrollbar */

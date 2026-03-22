@@ -1,0 +1,119 @@
+{
+  "_meta": {
+    "description": "Pre-built mock data sets by domain pattern. Claude copies and customizes instead of generating from scratch. Each set has enough data for a realistic demo.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "service-business": {
+    "customers": [
+      { "id": "c1", "name": "Sarah Chen", "email": "sarah.chen@gmail.com", "phone": "(602) 555-1234", "status": "Active", "since": "Jan 2026" },
+      { "id": "c2", "name": "Marcus Johnson", "email": "marcus.j@outlook.com", "phone": "(480) 555-5678", "status": "Active", "since": "Feb 2026" },
+      { "id": "c3", "name": "Ava Rodriguez", "email": "ava.rod@gmail.com", "phone": "(623) 555-9012", "status": "Active", "since": "Mar 2026" },
+      { "id": "c4", "name": "Jake Thompson", "email": "jake.t@yahoo.com", "phone": "(520) 555-3456", "status": "Pending", "since": "Mar 2026" },
+      { "id": "c5", "name": "Priya Patel", "email": "priya.p@gmail.com", "phone": "(602) 555-7890", "status": "Active", "since": "Jan 2026" },
+      { "id": "c6", "name": "Liam O'Brien", "email": "liam.ob@outlook.com", "phone": "(480) 555-2345", "status": "Active", "since": "Feb 2026" }
+    ],
+    "services": [
+      { "name": "Basic Service", "price": 35, "duration": "30 min" },
+      { "name": "Standard Service", "price": 55, "duration": "45 min" },
+      { "name": "Premium Service", "price": 85, "duration": "60 min" },
+      { "name": "Express Service", "price": 25, "duration": "15 min" },
+      { "name": "Deluxe Package", "price": 120, "duration": "90 min" }
+    ],
+    "appointments": [
+      { "time": "9:00 AM", "customer": "Sarah Chen", "service": "Premium Service", "status": "Completed" },
+      { "time": "10:00 AM", "customer": "Marcus Johnson", "service": "Standard Service", "status": "Completed" },
+      { "time": "11:30 AM", "customer": "Ava Rodriguez", "service": "Basic Service", "status": "In Progress" },
+      { "time": "1:00 PM", "customer": "Priya Patel", "service": "Deluxe Package", "status": "Upcoming" },
+      { "time": "2:30 PM", "customer": "Jake Thompson", "service": "Standard Service", "status": "Upcoming" },
+      { "time": "3:30 PM", "customer": "Liam O'Brien", "service": "Express Service", "status": "Upcoming" }
+    ],
+    "kpiValues": { "appointmentsToday": 8, "revenueMonth": 4280, "totalCustomers": 156, "avgRating": 4.8 },
+    "chartData": {
+      "weeklyRevenue": [
+        { "day": "Mon", "revenue": 420 }, { "day": "Tue", "revenue": 580 }, { "day": "Wed", "revenue": 510 },
+        { "day": "Thu", "revenue": 690 }, { "day": "Fri", "revenue": 820 }, { "day": "Sat", "revenue": 950 }, { "day": "Sun", "revenue": 310 }
+      ],
+      "serviceBreakdown": [
+        { "service": "Basic", "count": 35 }, { "service": "Standard", "count": 45 },
+        { "service": "Premium", "count": 28 }, { "service": "Express", "count": 22 }, { "service": "Deluxe", "count": 15 }
+      ]
+    }
+  },
+  "product-business": {
+    "products": [
+      { "id": "p1", "name": "Classic Blend", "category": "Coffee", "price": 14.99, "stock": 48, "status": "In Stock" },
+      { "id": "p2", "name": "Morning Boost", "category": "Coffee", "price": 16.99, "stock": 32, "status": "In Stock" },
+      { "id": "p3", "name": "Chai Latte Mix", "category": "Tea", "price": 12.99, "stock": 64, "status": "In Stock" },
+      { "id": "p4", "name": "Ceramic Mug Set", "category": "Merch", "price": 24.99, "stock": 8, "status": "Low Stock" },
+      { "id": "p5", "name": "Cold Brew Kit", "category": "Equipment", "price": 34.99, "stock": 15, "status": "In Stock" },
+      { "id": "p6", "name": "Gift Box Sampler", "category": "Gifts", "price": 39.99, "stock": 0, "status": "Out of Stock" }
+    ],
+    "orders": [
+      { "id": "#1042", "customer": "Alex Kim", "items": 3, "total": "$47.97", "status": "Delivered", "date": "Mar 21" },
+      { "id": "#1041", "customer": "Jordan Lee", "items": 1, "total": "$34.99", "status": "Shipped", "date": "Mar 21" },
+      { "id": "#1040", "customer": "Casey Park", "items": 2, "total": "$29.98", "status": "Processing", "date": "Mar 20" },
+      { "id": "#1039", "customer": "Morgan Davis", "items": 4, "total": "$69.96", "status": "Delivered", "date": "Mar 20" },
+      { "id": "#1038", "customer": "Riley Chen", "items": 1, "total": "$16.99", "status": "Delivered", "date": "Mar 19" }
+    ],
+    "kpiValues": { "ordersToday": 23, "revenueMonth": 12450, "productsListed": 48, "avgOrderValue": 52 },
+    "chartData": {
+      "monthlyRevenue": [
+        { "month": "Oct", "revenue": 8200 }, { "month": "Nov", "revenue": 9800 }, { "month": "Dec", "revenue": 14200 },
+        { "month": "Jan", "revenue": 10500 }, { "month": "Feb", "revenue": 11200 }, { "month": "Mar", "revenue": 12450 }
+      ],
+      "categoryBreakdown": [
+        { "category": "Coffee", "sales": 45 }, { "category": "Tea", "sales": 20 },
+        { "category": "Merch", "sales": 15 }, { "category": "Equipment", "sales": 12 }, { "category": "Gifts", "sales": 8 }
+      ]
+    }
+  },
+  "marketplace": {
+    "listings": [
+      { "id": "l1", "title": "Vintage Camera", "seller": "PhotoPro Mike", "price": 150, "category": "Electronics", "posted": "2 days ago" },
+      { "id": "l2", "title": "Handmade Candles (6-pack)", "seller": "CraftsByAva", "price": 28, "category": "Home", "posted": "1 day ago" },
+      { "id": "l3", "title": "Guitar Lessons (4 sessions)", "seller": "MusicWithJake", "price": 120, "category": "Services", "posted": "3 hours ago" },
+      { "id": "l4", "title": "Custom Logo Design", "seller": "DesignStudio", "price": 75, "category": "Services", "posted": "5 hours ago" },
+      { "id": "l5", "title": "Mountain Bike", "seller": "OutdoorGear", "price": 340, "category": "Sports", "posted": "1 day ago" }
+    ],
+    "kpiValues": { "activeListings": 342, "transactionsWeek": 67, "totalUsers": 1204, "platformRevenue": 2180 }
+  },
+  "student-planner": {
+    "courses": [
+      { "name": "BUS 301 — Business Strategy", "professor": "Dr. Williams", "time": "MWF 9:00 AM", "grade": "A-" },
+      { "name": "MKT 250 — Digital Marketing", "professor": "Prof. Chen", "time": "TTh 10:30 AM", "grade": "B+" },
+      { "name": "FIN 200 — Financial Accounting", "professor": "Dr. Patel", "time": "MWF 11:00 AM", "grade": "B" },
+      { "name": "CIS 105 — Computer Applications", "professor": "Prof. Lee", "time": "TTh 2:00 PM", "grade": "A" },
+      { "name": "COM 225 — Public Speaking", "professor": "Dr. Martin", "time": "MWF 1:00 PM", "grade": "A-" }
+    ],
+    "assignments": [
+      { "name": "Marketing Plan Draft", "course": "MKT 250", "due": "Mar 25", "status": "In Progress" },
+      { "name": "Financial Statement Analysis", "course": "FIN 200", "due": "Mar 26", "status": "Not Started" },
+      { "name": "Group Presentation Slides", "course": "COM 225", "due": "Mar 27", "status": "In Progress" },
+      { "name": "Case Study Response", "course": "BUS 301", "due": "Mar 28", "status": "Not Started" },
+      { "name": "Excel Project", "course": "CIS 105", "due": "Apr 1", "status": "Not Started" }
+    ],
+    "kpiValues": { "dueThisWeek": 5, "gpa": 3.6, "studyHoursToday": 3.5, "courses": 5 }
+  },
+  "fitness-health": {
+    "workouts": [
+      { "date": "Mar 22", "type": "Upper Body", "duration": "45 min", "calories": 380 },
+      { "date": "Mar 21", "type": "Running", "duration": "30 min", "calories": 320 },
+      { "date": "Mar 20", "type": "HIIT", "duration": "25 min", "calories": 290 },
+      { "date": "Mar 19", "type": "Leg Day", "duration": "50 min", "calories": 420 },
+      { "date": "Mar 18", "type": "Yoga", "duration": "40 min", "calories": 180 }
+    ],
+    "kpiValues": { "workoutsWeek": 4, "caloriesBurned": 2340, "streak": 12, "personalBests": 3 }
+  },
+  "job-tracker": {
+    "applications": [
+      { "company": "Google", "role": "Associate PM", "applied": "Mar 18", "status": "Interview", "next": "Phone screen Mar 25" },
+      { "company": "Deloitte", "role": "Business Analyst", "applied": "Mar 15", "status": "Applied", "next": "Waiting" },
+      { "company": "Nike", "role": "Marketing Coordinator", "applied": "Mar 12", "status": "Interview", "next": "Final round Mar 24" },
+      { "company": "Amazon", "role": "Operations Associate", "applied": "Mar 10", "status": "Rejected", "next": "-" },
+      { "company": "HubSpot", "role": "Sales Development Rep", "applied": "Mar 8", "status": "Offer", "next": "Decision by Mar 28" }
+    ],
+    "kpiValues": { "applicationsSent": 24, "interviews": 3, "responseRate": 38, "offers": 1 }
+  },
+  "contributed": []
+}

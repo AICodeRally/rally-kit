@@ -1,0 +1,126 @@
+{
+  "_meta": {
+    "description": "Pre-built page skeletons by domain pattern. Claude copies the closest match and customizes instead of writing from scratch. Each template specifies which components to use and how to wire them.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "dashboard": {
+    "description": "Main overview page — every app gets one",
+    "components": ["StatCard", "MetricRow", "ChartCard", "DataTable"],
+    "templates": {
+      "service-business": {
+        "stats": [
+          { "label": "Appointments Today", "mockValue": "8", "trend": "+12%", "icon": "CalendarCheck" },
+          { "label": "Revenue This Month", "mockValue": "$4,280", "trend": "+8%", "icon": "DollarSign" },
+          { "label": "Total Customers", "mockValue": "156", "trend": "+3%", "icon": "Users" },
+          { "label": "Avg Rating", "mockValue": "4.8", "trend": "+0.2", "icon": "Star" }
+        ],
+        "charts": [
+          { "type": "bar", "title": "Weekly Revenue", "dataKey": "revenue", "xKey": "day" },
+          { "type": "pie", "title": "Services Breakdown", "dataKey": "count", "nameKey": "service" }
+        ],
+        "table": { "title": "Today's Appointments", "columns": ["Time", "Customer", "Service", "Status"] }
+      },
+      "product-business": {
+        "stats": [
+          { "label": "Orders Today", "mockValue": "23", "trend": "+18%", "icon": "ShoppingCart" },
+          { "label": "Revenue This Month", "mockValue": "$12,450", "trend": "+15%", "icon": "DollarSign" },
+          { "label": "Products Listed", "mockValue": "48", "trend": "+5", "icon": "Package" },
+          { "label": "Avg Order Value", "mockValue": "$52", "trend": "+$4", "icon": "TrendingUp" }
+        ],
+        "charts": [
+          { "type": "bar", "title": "Monthly Revenue", "dataKey": "revenue", "xKey": "month" },
+          { "type": "pie", "title": "Top Categories", "dataKey": "sales", "nameKey": "category" }
+        ],
+        "table": { "title": "Recent Orders", "columns": ["Order #", "Customer", "Items", "Total", "Status"] }
+      },
+      "marketplace": {
+        "stats": [
+          { "label": "Active Listings", "mockValue": "342", "trend": "+28", "icon": "LayoutGrid" },
+          { "label": "Transactions This Week", "mockValue": "67", "trend": "+22%", "icon": "ArrowRightLeft" },
+          { "label": "Total Users", "mockValue": "1,204", "trend": "+89", "icon": "Users" },
+          { "label": "Platform Revenue", "mockValue": "$2,180", "trend": "+11%", "icon": "DollarSign" }
+        ],
+        "charts": [
+          { "type": "bar", "title": "Weekly Transactions", "dataKey": "count", "xKey": "day" },
+          { "type": "pie", "title": "Listing Categories", "dataKey": "count", "nameKey": "category" }
+        ],
+        "table": { "title": "Recent Transactions", "columns": ["Date", "Buyer", "Seller", "Item", "Amount"] }
+      },
+      "student-planner": {
+        "stats": [
+          { "label": "Due This Week", "mockValue": "5", "trend": "2 urgent", "icon": "AlertCircle" },
+          { "label": "GPA", "mockValue": "3.6", "trend": "+0.1", "icon": "TrendingUp" },
+          { "label": "Study Hours Today", "mockValue": "3.5h", "trend": "+0.5h", "icon": "Clock" },
+          { "label": "Courses", "mockValue": "5", "trend": "Fall 2026", "icon": "BookOpen" }
+        ],
+        "charts": [
+          { "type": "bar", "title": "Study Hours This Week", "dataKey": "hours", "xKey": "day" },
+          { "type": "pie", "title": "Time by Course", "dataKey": "hours", "nameKey": "course" }
+        ],
+        "table": { "title": "Upcoming Assignments", "columns": ["Assignment", "Course", "Due Date", "Status"] }
+      },
+      "fitness-health": {
+        "stats": [
+          { "label": "Workouts This Week", "mockValue": "4", "trend": "+1", "icon": "Dumbbell" },
+          { "label": "Calories Burned", "mockValue": "2,340", "trend": "+12%", "icon": "Flame" },
+          { "label": "Current Streak", "mockValue": "12 days", "trend": "Best: 18", "icon": "Zap" },
+          { "label": "Personal Bests", "mockValue": "3", "trend": "This month", "icon": "Trophy" }
+        ],
+        "charts": [
+          { "type": "bar", "title": "Weekly Activity", "dataKey": "minutes", "xKey": "day" },
+          { "type": "pie", "title": "Workout Types", "dataKey": "count", "nameKey": "type" }
+        ],
+        "table": { "title": "Recent Workouts", "columns": ["Date", "Type", "Duration", "Calories"] }
+      },
+      "job-tracker": {
+        "stats": [
+          { "label": "Applications Sent", "mockValue": "24", "trend": "+6 this week", "icon": "Send" },
+          { "label": "Interviews Scheduled", "mockValue": "3", "trend": "Next: Tue", "icon": "CalendarCheck" },
+          { "label": "Response Rate", "mockValue": "38%", "trend": "+5%", "icon": "TrendingUp" },
+          { "label": "Offers", "mockValue": "1", "trend": "Pending", "icon": "Trophy" }
+        ],
+        "charts": [
+          { "type": "bar", "title": "Applications by Week", "dataKey": "count", "xKey": "week" },
+          { "type": "pie", "title": "Status Breakdown", "dataKey": "count", "nameKey": "status" }
+        ],
+        "table": { "title": "Recent Applications", "columns": ["Company", "Role", "Applied", "Status"] }
+      }
+    }
+  },
+  "list-page": {
+    "description": "Browse/list page — DataTable or ListItem based",
+    "components": ["PageHeader", "DataTable", "ListItem"],
+    "columnSets": {
+      "customers": ["Name", "Email", "Phone", "Status", "Joined"],
+      "orders": ["Order #", "Customer", "Date", "Total", "Status"],
+      "products": ["Name", "Category", "Price", "Stock", "Status"],
+      "appointments": ["Date", "Time", "Customer", "Service", "Status"],
+      "listings": ["Title", "Seller", "Price", "Category", "Posted"],
+      "applications": ["Company", "Role", "Date Applied", "Status", "Next Step"],
+      "courses": ["Course", "Professor", "Time", "Grade", "Status"],
+      "workouts": ["Date", "Type", "Duration", "Calories", "Notes"]
+    }
+  },
+  "detail-page": {
+    "description": "Single item view — DetailCard + related data",
+    "components": ["PageHeader", "DetailCard", "ListItem", "StatCard"],
+    "patterns": {
+      "customer-detail": { "sections": ["Contact Info", "Recent Orders", "Notes"] },
+      "product-detail": { "sections": ["Product Info", "Pricing", "Inventory", "Reviews"] },
+      "listing-detail": { "sections": ["Listing Info", "Seller Profile", "Similar Items"] },
+      "profile": { "sections": ["Personal Info", "Stats", "Activity", "Settings"] }
+    }
+  },
+  "form-page": {
+    "description": "Create/edit page — FormCard based",
+    "components": ["PageHeader", "FormCard"],
+    "fieldSets": {
+      "customer": ["Name (text)", "Email (email)", "Phone (tel)", "Notes (textarea)"],
+      "product": ["Name (text)", "Category (select)", "Price (number)", "Description (textarea)", "In Stock (select)"],
+      "appointment": ["Customer (select)", "Service (select)", "Date (date)", "Time (select)", "Notes (textarea)"],
+      "listing": ["Title (text)", "Category (select)", "Price (number)", "Description (textarea)", "Photos (file)"]
+    }
+  },
+  "contributed": []
+}

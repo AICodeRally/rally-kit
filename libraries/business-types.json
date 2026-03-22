@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "description": "Business type options for Step 2 (Idea). Claude reads this instead of generating from scratch.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "tracks": {
+    "startup-ai": {
+      "label": "Startup AI",
+      "seed": [
+        { "title": "Product Business", "brands": "Shopify, Amazon", "pitch": "Sell physical or digital products online" },
+        { "title": "Service Business", "brands": "Square, Calendly", "pitch": "Offer expertise — consulting, freelancing, coaching" },
+        { "title": "Marketplace", "brands": "Airbnb, Etsy, StockX", "pitch": "Connect buyers and sellers, take a cut" },
+        { "title": "SaaS Tool", "brands": "Notion, Slack, Canva", "pitch": "Software that solves a specific problem" },
+        { "title": "Content Platform", "brands": "Substack, TikTok", "pitch": "Publish, share, monetize content" }
+      ],
+      "contributed": []
+    },
+    "campus-ai": {
+      "label": "Campus AI",
+      "seed": [
+        { "title": "Student Planner", "brands": "Notion, Todoist", "pitch": "Organize classes, assignments, deadlines" },
+        { "title": "Campus Community", "brands": "Discord, GroupMe", "pitch": "Connect students around events, clubs, housing" },
+        { "title": "Budget Tracker", "brands": "Venmo, Mint", "pitch": "Track spending, split costs, save money" },
+        { "title": "Fitness / Health", "brands": "Strava, Nike Run Club", "pitch": "Workouts, nutrition, wellness goals" },
+        { "title": "Study Tool", "brands": "Quizlet, Chegg", "pitch": "Flashcards, study groups, exam prep" }
+      ],
+      "contributed": []
+    },
+    "my-future": {
+      "label": "Working Toward My Future",
+      "seed": [
+        { "title": "Job Tracker", "brands": "LinkedIn, Handshake", "pitch": "Track applications, contacts, follow-ups" },
+        { "title": "Portfolio Site", "brands": "Behance, Dribbble", "pitch": "Show your work and skills to employers" },
+        { "title": "Career Planner", "brands": "Glassdoor, Coursera", "pitch": "Map career paths, salaries, required skills" },
+        { "title": "Skills Dashboard", "brands": "Udemy, Kaggle", "pitch": "Track what you're learning and certifications" },
+        { "title": "Network Builder", "brands": "LinkedIn, Lunchclub", "pitch": "Manage professional connections and outreach" }
+      ],
+      "contributed": []
+    }
+  }
+}

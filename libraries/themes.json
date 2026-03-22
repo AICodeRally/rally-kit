@@ -1,0 +1,24 @@
+{
+  "_meta": {
+    "description": "Color theme options for Step 8. 14 themes + custom.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "seed": [
+    { "name": "Ocean", "vibe": "Clean, professional, trustworthy", "brands": "Stripe, Linear, Vercel", "accent": "#0ea5e9", "secondary": "#06b6d4", "tertiary": "#8b5cf6" },
+    { "name": "Sunset", "vibe": "Bold, energetic, attention-grabbing", "brands": "Strava, Soundcloud, Reddit", "accent": "#f97316", "secondary": "#eab308", "tertiary": "#ef4444" },
+    { "name": "Forest", "vibe": "Natural, calm, growth-oriented", "brands": "Robinhood, Spotify, Mint", "accent": "#22c55e", "secondary": "#14b8a6", "tertiary": "#84cc16" },
+    { "name": "Berry", "vibe": "Creative, playful, premium", "brands": "Figma, Notion, Twitch", "accent": "#a855f7", "secondary": "#ec4899", "tertiary": "#6366f1" },
+    { "name": "Slate", "vibe": "Minimal, sophisticated, neutral", "brands": "Apple, GitHub, Tesla", "accent": "#64748b", "secondary": "#0ea5e9", "tertiary": "#8b5cf6" },
+    { "name": "Neon", "vibe": "Electric, futuristic, high-energy", "brands": "Discord, Razer, Cyberpunk", "accent": "#22d3ee", "secondary": "#a3e635", "tertiary": "#f472b6" },
+    { "name": "Lava", "vibe": "Intense, powerful, urgent", "brands": "YouTube, Netflix, ESPN", "accent": "#ef4444", "secondary": "#f97316", "tertiary": "#eab308" },
+    { "name": "Midnight", "vibe": "Deep, mysterious, premium", "brands": "Starlink, Calm, Headspace", "accent": "#6366f1", "secondary": "#8b5cf6", "tertiary": "#06b6d4" },
+    { "name": "Rose", "vibe": "Warm, friendly, approachable", "brands": "Airbnb, Pinterest, Glossier", "accent": "#f43f5e", "secondary": "#fb7185", "tertiary": "#fda4af" },
+    { "name": "Arctic", "vibe": "Icy, crisp, ultra-clean", "brands": "Dropbox, Zoom, Salesforce", "accent": "#38bdf8", "secondary": "#e0f2fe", "tertiary": "#7dd3fc" },
+    { "name": "Gold", "vibe": "Luxury, premium, high-end", "brands": "Louis Vuitton, Amex, Rolls-Royce", "accent": "#eab308", "secondary": "#ca8a04", "tertiary": "#fbbf24" },
+    { "name": "Mocha", "vibe": "Earthy, warm, artisan", "brands": "Starbucks, Etsy, Patagonia", "accent": "#92400e", "secondary": "#b45309", "tertiary": "#d97706" },
+    { "name": "Coral", "vibe": "Tropical, vibrant, fun", "brands": "Duolingo, Headspace, Calm", "accent": "#fb923c", "secondary": "#f87171", "tertiary": "#fbbf24" },
+    { "name": "Mono", "vibe": "Black and white, stark, modern", "brands": "Nike, Uber, X (Twitter)", "accent": "#ffffff", "secondary": "#a1a1aa", "tertiary": "#71717a" }
+  ],
+  "contributed": []
+}

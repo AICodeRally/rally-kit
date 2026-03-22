@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "description": "Sub-category niches for Step 3. Keyed by parent business type.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "service-business": {
+    "seed": [
+      { "title": "Fitness & Training", "brands": "ClassPass, Peloton", "pitch": "Personal training, group classes, gym management" },
+      { "title": "Home Services", "brands": "TaskRabbit, Thumbtack", "pitch": "Cleaning, repairs, moving, landscaping" },
+      { "title": "Tutoring & Education", "brands": "Wyzant, Chegg Tutors", "pitch": "Academic help, test prep, language learning" },
+      { "title": "Events & Catering", "brands": "Eventbrite, Caterspot", "pitch": "Party planning, catering, venue booking" },
+      { "title": "Beauty & Wellness", "brands": "Booksy, StyleSeat", "pitch": "Salons, spas, massage, skincare" },
+      { "title": "Pet Services", "brands": "Rover, Wag!", "pitch": "Pet sitting, walking, grooming, vet visits" },
+      { "title": "Auto Services", "brands": "YourMechanic, RepairPal", "pitch": "Oil changes, repairs, detailing, inspections" },
+      { "title": "Health & Wellness", "brands": "Calm, Headspace", "pitch": "Therapy, meditation, nutrition coaching" }
+    ],
+    "contributed": []
+  },
+  "product-business": {
+    "seed": [
+      { "title": "Food & Beverage", "brands": "DoorDash, Goldbelly", "pitch": "Baked goods, meal prep, specialty drinks" },
+      { "title": "Fashion & Apparel", "brands": "SHEIN, Depop", "pitch": "Clothing, accessories, custom merch" },
+      { "title": "Baby & Kids", "brands": "BuyBuyBaby, Primary", "pitch": "Children's products, toys, parenting tools" },
+      { "title": "Eco & Sustainability", "brands": "Thrive Market, Package Free", "pitch": "Green products, refills, ethical goods" },
+      { "title": "Music & Audio", "brands": "Bandcamp, Reverb", "pitch": "Instruments, beats, music gear, lessons" },
+      { "title": "Auto Parts & Gear", "brands": "AutoZone, CarParts.com", "pitch": "Parts, accessories, custom builds" },
+      { "title": "Local Delivery", "brands": "Instacart, GoPuff", "pitch": "Groceries, pharmacy, convenience delivery" }
+    ],
+    "contributed": []
+  },
+  "marketplace": {
+    "seed": [
+      { "title": "Freelance Services", "brands": "Fiverr, Upwork", "pitch": "Connect clients with freelancers" },
+      { "title": "Local Buy/Sell", "brands": "OfferUp, Facebook Marketplace", "pitch": "Buy and sell locally" },
+      { "title": "Rental Platform", "brands": "Turo, Fat Llama", "pitch": "Rent out stuff you own" },
+      { "title": "Talent Booking", "brands": "Bark, GigSalad", "pitch": "Book performers, speakers, entertainers" }
+    ],
+    "contributed": []
+  },
+  "saas-tool": {
+    "seed": [
+      { "title": "Project Management", "brands": "Asana, Monday", "pitch": "Task tracking, team collaboration" },
+      { "title": "CRM", "brands": "HubSpot, Salesforce", "pitch": "Manage customers and sales pipeline" },
+      { "title": "Scheduling", "brands": "Calendly, Acuity", "pitch": "Appointment booking and calendar management" },
+      { "title": "Analytics", "brands": "Mixpanel, Amplitude", "pitch": "Track usage, engagement, conversions" }
+    ],
+    "contributed": []
+  }
+}

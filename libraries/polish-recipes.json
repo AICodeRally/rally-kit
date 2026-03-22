@@ -1,0 +1,112 @@
+{
+  "_meta": {
+    "description": "Polish options and code recipes for Phase 3. Claude presents these as a menu instead of guessing what to do.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "quickWins": [
+    {
+      "name": "Realistic Mock Data",
+      "time": "2 min",
+      "impact": "high",
+      "desc": "Replace generic data with names, prices, dates that match the business",
+      "how": "Swap mock.ts data arrays with domain-specific realistic values from mock-data-sets.json"
+    },
+    {
+      "name": "Empty States",
+      "time": "1 min per page",
+      "impact": "medium",
+      "desc": "Add friendly 'nothing here yet' messages when lists are empty",
+      "how": "Wrap DataTable/ListItem sections with: if data.length === 0 → <EmptyState icon={...} title='...' subtitle='...' />"
+    },
+    {
+      "name": "Status Badges",
+      "time": "2 min",
+      "impact": "medium",
+      "desc": "Color-code status labels (green=active, yellow=pending, red=cancelled)",
+      "how": "Add colored spans in DataTable cells: green (#22c55e) for active/completed, yellow (#eab308) for pending, red (#ef4444) for cancelled"
+    },
+    {
+      "name": "Page Titles + Subtitles",
+      "time": "1 min per page",
+      "impact": "medium",
+      "desc": "Add PageHeader with a title and helpful subtitle on every page",
+      "how": "Add <PageHeader title='...' subtitle='...' /> at top of each page"
+    },
+    {
+      "name": "Trend Arrows on Stats",
+      "time": "1 min",
+      "impact": "medium",
+      "desc": "Show green up-arrows and red down-arrows on StatCards",
+      "how": "StatCard already supports trend prop — just add realistic trend values"
+    }
+  ],
+  "mediumEffort": [
+    {
+      "name": "Branded Header",
+      "time": "3 min",
+      "impact": "high",
+      "desc": "Add the business name + logo area to the shell header",
+      "how": "Customize shell's appName and add a gradient accent bar"
+    },
+    {
+      "name": "Action Buttons",
+      "time": "3 min",
+      "impact": "medium",
+      "desc": "Add 'New Order', 'Add Customer' etc buttons that show a toast or modal",
+      "how": "Add buttons to PageHeader actions prop, wire to simple alert() or state toggle"
+    },
+    {
+      "name": "Metric Row",
+      "time": "2 min",
+      "impact": "medium",
+      "desc": "Add a compact row of secondary stats below the main stat cards",
+      "how": "Add <MetricRow items={[...]} /> between StatCards and main content"
+    },
+    {
+      "name": "Chart Variety",
+      "time": "3 min",
+      "impact": "high",
+      "desc": "Add a second chart type (line, area, or pie) for visual interest",
+      "how": "Add another <ChartCard type='pie' ... /> with different data slice"
+    },
+    {
+      "name": "Search Bar",
+      "time": "3 min",
+      "impact": "medium",
+      "desc": "Add a filter/search input above tables",
+      "how": "Add state + input above DataTable, filter data array on change"
+    }
+  ],
+  "advancedPolish": [
+    {
+      "name": "Tab Navigation",
+      "time": "5 min",
+      "impact": "high",
+      "desc": "Add tabs within a page (e.g., All / Active / Completed)",
+      "how": "Add state-driven tab buttons, filter displayed data by selected tab"
+    },
+    {
+      "name": "Detail Drill-Down",
+      "time": "5 min",
+      "impact": "high",
+      "desc": "Click a table row to see a detail view",
+      "how": "Add onClick to rows, show DetailCard in a conditional panel or new route"
+    },
+    {
+      "name": "Animations",
+      "time": "3 min",
+      "impact": "medium",
+      "desc": "Add fade-in and slide-up on page load",
+      "how": "CSS keyframes + animation classes (no Framer Motion needed)"
+    },
+    {
+      "name": "Dark Mode Toggle",
+      "time": "5 min",
+      "impact": "medium",
+      "desc": "Add a sun/moon toggle to switch between light and dark",
+      "how": "CSS variables swap, state in shell, save to localStorage"
+    }
+  ],
+  "contributed": []
+}

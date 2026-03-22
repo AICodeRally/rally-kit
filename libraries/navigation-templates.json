@@ -1,0 +1,117 @@
+{
+  "_meta": {
+    "description": "Pre-built navigation configs by domain pattern + shell. Claude copies and customizes.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "templates": {
+    "service-business": {
+      "dashboard": {
+        "routes": [
+          { "path": "/", "label": "Dashboard", "icon": "LayoutDashboard" },
+          { "path": "/appointments", "label": "Appointments", "icon": "CalendarCheck" },
+          { "path": "/customers", "label": "Customers", "icon": "Users" },
+          { "path": "/services", "label": "Services", "icon": "Wrench" }
+        ]
+      },
+      "mobile": {
+        "routes": [
+          { "path": "/", "label": "Home", "icon": "Home" },
+          { "path": "/bookings", "label": "Book", "icon": "CalendarPlus" },
+          { "path": "/history", "label": "History", "icon": "Clock" },
+          { "path": "/reviews", "label": "Reviews", "icon": "Star" },
+          { "path": "/profile", "label": "Profile", "icon": "User" }
+        ]
+      }
+    },
+    "product-business": {
+      "dashboard": {
+        "routes": [
+          { "path": "/", "label": "Dashboard", "icon": "LayoutDashboard" },
+          { "path": "/products", "label": "Products", "icon": "Package" },
+          { "path": "/orders", "label": "Orders", "icon": "ShoppingCart" },
+          { "path": "/customers", "label": "Customers", "icon": "Users" }
+        ]
+      },
+      "mobile": {
+        "routes": [
+          { "path": "/", "label": "Shop", "icon": "Store" },
+          { "path": "/cart", "label": "Cart", "icon": "ShoppingCart" },
+          { "path": "/orders", "label": "Orders", "icon": "Package" },
+          { "path": "/favorites", "label": "Saved", "icon": "Heart" },
+          { "path": "/profile", "label": "Profile", "icon": "User" }
+        ]
+      }
+    },
+    "marketplace": {
+      "dashboard": {
+        "routes": [
+          { "path": "/", "label": "Dashboard", "icon": "LayoutDashboard" },
+          { "path": "/listings", "label": "Listings", "icon": "LayoutGrid" },
+          { "path": "/transactions", "label": "Transactions", "icon": "ArrowRightLeft" },
+          { "path": "/users", "label": "Users", "icon": "Users" }
+        ]
+      },
+      "mobile": {
+        "routes": [
+          { "path": "/", "label": "Browse", "icon": "Search" },
+          { "path": "/sell", "label": "Sell", "icon": "PlusCircle" },
+          { "path": "/messages", "label": "Messages", "icon": "MessageSquare" },
+          { "path": "/activity", "label": "Activity", "icon": "Bell" },
+          { "path": "/profile", "label": "Profile", "icon": "User" }
+        ]
+      }
+    },
+    "student-planner": {
+      "mobile": {
+        "routes": [
+          { "path": "/", "label": "Today", "icon": "Home" },
+          { "path": "/schedule", "label": "Schedule", "icon": "Calendar" },
+          { "path": "/assignments", "label": "Due", "icon": "ClipboardList" },
+          { "path": "/courses", "label": "Courses", "icon": "BookOpen" },
+          { "path": "/profile", "label": "Profile", "icon": "User" }
+        ]
+      }
+    },
+    "fitness-health": {
+      "mobile": {
+        "routes": [
+          { "path": "/", "label": "Today", "icon": "Home" },
+          { "path": "/workouts", "label": "Workouts", "icon": "Dumbbell" },
+          { "path": "/progress", "label": "Progress", "icon": "TrendingUp" },
+          { "path": "/plan", "label": "Plan", "icon": "Calendar" },
+          { "path": "/profile", "label": "Profile", "icon": "User" }
+        ]
+      }
+    },
+    "job-tracker": {
+      "dashboard": {
+        "routes": [
+          { "path": "/", "label": "Dashboard", "icon": "LayoutDashboard" },
+          { "path": "/applications", "label": "Applications", "icon": "Send" },
+          { "path": "/companies", "label": "Companies", "icon": "Building2" },
+          { "path": "/contacts", "label": "Contacts", "icon": "Users" }
+        ]
+      },
+      "portfolio": {
+        "routes": [
+          { "path": "/", "label": "Home", "icon": "Home" },
+          { "path": "/projects", "label": "Projects", "icon": "Folder" },
+          { "path": "/about", "label": "About", "icon": "User" },
+          { "path": "/contact", "label": "Contact", "icon": "Mail" }
+        ]
+      }
+    },
+    "portfolio-site": {
+      "portfolio": {
+        "routes": [
+          { "path": "/", "label": "Home", "icon": "Home" },
+          { "path": "/projects", "label": "Projects", "icon": "Folder" },
+          { "path": "/about", "label": "About", "icon": "User" },
+          { "path": "/contact", "label": "Contact", "icon": "Mail" }
+        ]
+      }
+    }
+  },
+  "contributed": []
+}

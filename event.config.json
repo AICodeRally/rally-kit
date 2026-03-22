@@ -1,0 +1,48 @@
+{
+  "eventName": "Vibe Code Rally",
+  "tagline": "Build a real product using AI in 3 hours.",
+  "subTagline": "No experience needed. Just show up.",
+  "date": "March 25",
+  "time": "5–8 PM",
+  "location": "GCU Campus",
+  "room": "CCOB 42-217/9",
+  "maxSpots": 60,
+  "teamsOf": "3-4",
+  "partner": {
+    "name": "GCU Project Management Club",
+    "short": "GCU PM Club",
+    "logoUrl": "https://media.licdn.com/dms/image/v2/D560BAQF0-LZRgiDS9g/company-logo_200_200/company-logo_200_200/0/1729480348849/gcuprojectmanagementclub_logo?e=2147483647&v=beta&t=c_rwuaoFV8X0J78YevTprAks8zX78BHkta8Lg7jhLCs",
+    "color": "#F0AB00"
+  },
+  "tracks": [
+    {
+      "title": "Campus AI",
+      "subtitle": "Build a tool to solve a student's pain points",
+      "desc": "Study planner, resume builder, email assistant, personal organizer for homework/projects/life tasks",
+      "icon": "GraduationCap",
+      "color": "#8b5cf6"
+    },
+    {
+      "title": "Startup AI",
+      "subtitle": "Build something to kick start your business",
+      "desc": "Marketing tool, content generator, pricing engine, 90-day ideation tool for startup activities",
+      "icon": "TrendingUp",
+      "color": "#06b6d4"
+    },
+    {
+      "title": "Working Toward My Future",
+      "subtitle": "Build a tool to help you get hired",
+      "desc": "AI-powered job finder, career path evaluator, personal CRM, AI proficiency demo app",
+      "icon": "Briefcase",
+      "color": "#f97316"
+    }
+  ],
+  "schedule": [
+    { "time": "5:00 PM", "title": "Doors Open & Kickoff", "desc": "Check in, grab pizza, meet your team, and get set up with AI tools.", "color": "#f97316" },
+    { "time": "5:30 PM", "title": "Build Sprint Begins", "desc": "Teams start building. Describe your ideas to AI and watch them come to life.", "color": "#06b6d4" },
+    { "time": "7:15 PM", "title": "Pencils Down", "desc": "Finish up your projects and prepare a 2-minute demo.", "color": "#8b5cf6" },
+    { "time": "7:30 PM", "title": "Demo Showcase", "desc": "Each team presents their product to the judges and audience.", "color": "#F0AB00" },
+    { "time": "7:50 PM", "title": "Prizes & Wrap-Up", "desc": "Winners announced. Prizes awarded. Network and celebrate.", "color": "#22c55e" }
+  ],
+  "bringLaptop": true
+}

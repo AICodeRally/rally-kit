@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "description": "User model patterns for Step 4. How the app's users interact.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "seed": [
+    {
+      "title": "One-Sided",
+      "desc": "One type of user does everything",
+      "example": "A budget app — the user tracks their own spending",
+      "brands": "Mint, Todoist, Strava",
+      "dataModel": ["Users", "User's content/items"],
+      "bestFor": ["Personal tools", "Trackers", "Planners"]
+    },
+    {
+      "title": "Two-Sided",
+      "desc": "Two user types that interact — buyers/sellers, hosts/guests, etc.",
+      "example": "A marketplace — sellers list, buyers browse and purchase",
+      "brands": "Airbnb, Uber, Etsy",
+      "dataModel": ["Side A users", "Side B users", "Transactions between them"],
+      "bestFor": ["Marketplaces", "Booking platforms", "Service connectors"]
+    },
+    {
+      "title": "Team / Multi-Role",
+      "desc": "One org with different roles — admin, manager, member",
+      "example": "A team dashboard — admin manages, members view their tasks",
+      "brands": "Slack, Notion, Asana",
+      "dataModel": ["Organization", "Members with roles", "Shared resources"],
+      "bestFor": ["Business tools", "SaaS", "Team collaboration"]
+    },
+    {
+      "title": "Solo Operator",
+      "desc": "One power user runs the whole show — no customer login",
+      "example": "A freelancer tracking clients and invoices",
+      "brands": "QuickBooks Self-Employed, Wave",
+      "dataModel": ["The operator", "Their clients/contacts", "Their transactions"],
+      "bestFor": ["Freelancers", "Small business owners", "Side hustles"]
+    }
+  ],
+  "contributed": []
+}

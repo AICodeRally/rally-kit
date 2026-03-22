@@ -1,0 +1,34 @@
+{
+  "_meta": {
+    "description": "Shell/layout options for Step 7.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "seed": [
+    {
+      "name": "Dashboard",
+      "shell": "DashboardShell",
+      "bestFor": "Startup AI",
+      "desc": "Sidebar + charts + tables + KPIs",
+      "features": ["Collapsible sidebar navigation", "Stat cards with trends", "Data tables with sorting", "Chart cards (bar, line, pie)"],
+      "brands": "Shopify admin, Notion workspace, QuickBooks"
+    },
+    {
+      "name": "Mobile App",
+      "shell": "MobileShell",
+      "bestFor": "Campus AI",
+      "desc": "Bottom tabs + cards + lists",
+      "features": ["Bottom tab navigation (5 tabs)", "Scrollable card feed", "Compact stat cards", "List items with badges"],
+      "brands": "Instagram, Cash App, Strava"
+    },
+    {
+      "name": "Portfolio",
+      "shell": "PortfolioShell",
+      "bestFor": "My Future",
+      "desc": "Top nav + hero + content grid",
+      "features": ["Horizontal top navigation", "Hero section with profile", "Project cards in grid", "Detail cards side by side"],
+      "brands": "Behance, Dribbble, personal website"
+    }
+  ],
+  "contributed": []
+}

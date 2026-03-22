@@ -1,0 +1,76 @@
+{
+  "_meta": {
+    "description": "Demo script templates and judging criteria for Phase 3. Claude fills in the blanks instead of writing from scratch.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "scriptTemplate": {
+    "structure": [
+      {
+        "section": "Hook",
+        "time": "10 sec",
+        "prompt": "Start with the problem. One sentence that makes judges nod.",
+        "examples": [
+          "Ever tried to book a dog groomer and had to call 5 places?",
+          "Students waste 3 hours a week just figuring out what's due when.",
+          "Small coffee roasters lose 30% of potential sales because they have no online store."
+        ]
+      },
+      {
+        "section": "Solution",
+        "time": "15 sec",
+        "prompt": "What you built and who it's for. Name the app.",
+        "template": "We built [APP NAME] — a [one-line description] for [target user]. It [main value prop]."
+      },
+      {
+        "section": "Demo Walk-Through",
+        "time": "60-90 sec",
+        "prompt": "Show each page. Say what it does and why it matters. Point to specific numbers.",
+        "tips": [
+          "Start with the dashboard — it's the most impressive",
+          "Point to specific data: 'You can see we have 156 customers and $4,280 in revenue this month'",
+          "Show 2-3 pages max — don't rush through everything",
+          "If you built a form, show it: 'Adding a new appointment takes 10 seconds'"
+        ]
+      },
+      {
+        "section": "How We Built It",
+        "time": "15 sec",
+        "prompt": "Brief mention of AI + team roles.",
+        "template": "We built this in [X] hours using AI as our coding partner. [CEO name] made the business decisions, [Designer name] guided the look and feel, and [Presenter name] — that's me — is showing it to you now."
+      },
+      {
+        "section": "Vision",
+        "time": "10 sec",
+        "prompt": "Where this goes next. One bold sentence.",
+        "examples": [
+          "With real payments and notifications, this could launch in a month.",
+          "We'd add real-time scheduling and SMS reminders — that's a business I'd actually use.",
+          "This dashboard could help any small service business go from Post-it notes to professional in a day."
+        ]
+      },
+      {
+        "section": "Close",
+        "time": "5 sec",
+        "prompt": "Thank the judges. State team name.",
+        "template": "Thanks for watching. We're Team [NAME], and this is [APP NAME]."
+      }
+    ]
+  },
+  "judgingCriteria": [
+    { "criterion": "Business Viability", "weight": "25%", "what": "Does the app solve a real problem? Is there a clear customer?" },
+    { "criterion": "Product Quality", "weight": "25%", "what": "Does the app look polished? Is the data realistic? Does it feel complete?" },
+    { "criterion": "Use of AI", "weight": "20%", "what": "Did the team leverage AI effectively? Did they direct it well?" },
+    { "criterion": "Presentation", "weight": "20%", "what": "Was the demo clear, confident, and well-structured?" },
+    { "criterion": "Creativity", "weight": "10%", "what": "Is the idea unique or does it put a fresh spin on something?" }
+  ],
+  "presenterTips": [
+    "Stand up when presenting — it projects confidence",
+    "Make eye contact with judges, not the screen",
+    "Point to specific numbers on screen ('We have 156 customers')",
+    "If something breaks during demo, laugh it off: 'Live demo magic!'",
+    "Practice the 2-minute version. If you go over, judges tune out",
+    "End strong — your last sentence is what judges remember"
+  ],
+  "contributed": []
+}

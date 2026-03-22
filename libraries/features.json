@@ -1,0 +1,55 @@
+{
+  "_meta": {
+    "description": "Feature catalog for Step 5. Pre-built feature options grouped by category.",
+    "lastUpdated": "2026-03-22",
+    "totalRallies": 0
+  },
+  "groups": [
+    {
+      "label": "Browse + Discover",
+      "seed": [
+        { "name": "Search + Filter", "desc": "Find items by keyword, category, price, location" },
+        { "name": "Map View", "desc": "See items or locations on an interactive map" },
+        { "name": "Categories / Tags", "desc": "Organize content into browsable groups" },
+        { "name": "Favorites", "desc": "Save items for later with a heart/star button" }
+      ]
+    },
+    {
+      "label": "Profiles + Identity",
+      "seed": [
+        { "name": "User Profiles", "desc": "Name, photo, bio, preferences" },
+        { "name": "Reviews + Ratings", "desc": "Star ratings and written reviews" },
+        { "name": "Verification", "desc": "Badges or checks for trusted users" },
+        { "name": "Photo Upload", "desc": "Users upload images for listings or profiles" }
+      ]
+    },
+    {
+      "label": "Booking + Commerce",
+      "seed": [
+        { "name": "Book / Schedule", "desc": "Pick a date/time and reserve a slot" },
+        { "name": "Shopping Cart", "desc": "Add items, review, checkout" },
+        { "name": "Payments", "desc": "Accept money (Stripe, Venmo-style)" },
+        { "name": "Order Tracking", "desc": "Status updates: ordered → shipped → delivered" }
+      ]
+    },
+    {
+      "label": "Data + Analytics",
+      "seed": [
+        { "name": "Dashboard KPIs", "desc": "Big numbers — revenue, users, orders, growth" },
+        { "name": "Charts + Graphs", "desc": "Bar, line, pie charts with real data" },
+        { "name": "Activity Feed", "desc": "Timeline of recent events and actions" },
+        { "name": "Notifications", "desc": "Alerts for new orders, messages, updates" }
+      ]
+    },
+    {
+      "label": "Engagement",
+      "seed": [
+        { "name": "Messaging", "desc": "Chat between users or with support" },
+        { "name": "Social Sharing", "desc": "Share to Instagram, TikTok, Twitter" },
+        { "name": "Rewards / Points", "desc": "Loyalty program, achievements, streaks" },
+        { "name": "Settings / Preferences", "desc": "App config, notification prefs, account" }
+      ]
+    }
+  ],
+  "contributed": []
+}
