@@ -5,6 +5,7 @@ import { RallyHeader } from './RallyHeader'
 import { ChatPanel } from './ChatPanel'
 import { PreviewPanel } from './PreviewPanel'
 import { IdeaBoard } from './IdeaBoard'
+import { DesignGuide } from './DesignGuide'
 import { DesignStepper } from './DesignStepper'
 import { StatusBar } from './StatusBar'
 import { SplashScreen } from './SplashScreen'
@@ -308,8 +309,8 @@ export function RallyShell({ team }: { team: TeamInfo }) {
 
             {/* Right panel — IdeaBoard in design, PreviewPanel in build/polish */}
             {phase === 'design' ? (
-              <div className="w-[300px] shrink-0">
-                <IdeaBoard ideas={ideas} onAddIdea={handleAddIdea} />
+              <div className="w-[420px] shrink-0">
+                <DesignGuide />
               </div>
             ) : (
               <div className="flex-1 flex relative">
